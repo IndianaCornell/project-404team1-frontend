@@ -1,4 +1,16 @@
 @import "./variables.css";
+@import "modern-normalize/modern-normalize.css";
+@import "./fonts.css";
+
+:root {
+  --font-sans: "Mulish", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
 
 *,
 *::before,
@@ -9,7 +21,6 @@
 }
 
 body {
-  font-family: "Inter", sans-serif;
   background: var(--color-white);
   color: var(--color-black);
 }
@@ -29,6 +40,8 @@ textarea,
 select {
   font: inherit;
 }
+
+input[type="checkbox"] { appearance: none; -webkit-appearance: none; }
 
 a {
   color: inherit;

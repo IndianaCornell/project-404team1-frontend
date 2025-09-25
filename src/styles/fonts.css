@@ -1,0 +1,8 @@
+@font-face {
+    font-family: "Mulish";
+    src:
+    url("@/assets/fonts/Mulish-Variable.woff2") format("woff2-variations");
+    font-weight: 200 1000;   
+    font-style: normal;
+    font-display: swap;
+}
