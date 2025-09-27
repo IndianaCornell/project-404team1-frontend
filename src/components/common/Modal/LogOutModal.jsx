@@ -10,20 +10,17 @@ export default function LogOutModal({ open, onClose }) {
   const onConfirm = () => {
     dispatch(logOut());
     onClose?.();
-    // якщо в проекті є /login — перенаправляємо туди
     navigate("/login", { replace: true });
   };
 
   return (
-    <Modal isOpen={open} onClose={onClose} title="Confirm logout">
-      <p className="text-sm text-gray-700 mb-4">
-        Are you sure you want to log out?
-      </p>
-      <div className="flex justify-end gap-2">
+    <Modal isOpen={open} onClose={onClose} title="Log out">
+      <p className="mt-2">Are you sure you want to log out?</p>
+      <div className="mt-4 flex gap-3 justify-end">
         <button
           type="button"
           onClick={onClose}
-          className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+          className="px-4 py-2 rounded bg-gray-100 hover:bg-gray-200"
         >
           Cancel
         </button>

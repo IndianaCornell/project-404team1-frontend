@@ -1,90 +1,87 @@
-import { useEffect, useMemo, useState } from "react";
-import { skipToken } from "@reduxjs/toolkit/query";
+import { useEffect } from "react";
 import {
   useGetUserRecipesQuery,
+  useGetUserFavoritesQuery,
   useGetFollowersQuery,
   useGetFollowingQuery,
 } from "@/lib/api";
 import RecipePreview from "./RecipePreview";
 import UserCard from "./UserCard";
-import ListPagination from "./ListPagination"; 
+import ListPagination from "./ListPagination";
 
-export default function ListItems({ activeTab, userId }) {
-  const [page, setPage] = useState(1);
+function EmptyState({ tab }) {
+  const map = {
+    my: "No recipes yet.",
+    favorites: "No favorites yet.",
+    followers: "No followers yet.",
+    following: "You are not following anyone yet.",
+  };
+  return <p className="text-center text-gray-500 py-8">{map[tab] || "No data."}</p>;
+}
 
-  // Сбрасываем страницу при смене вкладки/пользователя
+export default function ListItems({
+  activeTab,
+  userId,
+  page,
+  onPageChange,
+  onEmptyPage,
+}) {
+  const limit = 12;
+
+  const recipesQ =
+    activeTab === "my"
+      ? useGetUserRecipesQuery({ userId, page, limit })
+      : undefined;
+
+  const favQ =
+    activeTab === "favorites"
+      ? useGetUserFavoritesQuery({ userId, page, limit })
+      : undefined;
+
+  const followersQ =
+    activeTab === "followers"
+      ? useGetFollowersQuery({ userId, page, limit })
+      : undefined;
+
+  const followingQ =
+    activeTab === "following"
+      ? useGetFollowingQuery({ userId, page, limit })
+      : undefined;
+
+  const data =
+    recipesQ?.data ||
+    favQ?.data ||
+    followersQ?.data ||
+    followingQ?.data ||
+    { items: [], total: 0, page, perPage: limit };
+
+  const items = data.items || [];
+  const total = data.total || 0;
+  const perPage = data.perPage || limit;
+
   useEffect(() => {
-    setPage(1);
-  }, [activeTab, userId]);
-
-  const isMy = activeTab === "my";
-  const isFav = activeTab === "favorites";
-  const isFollowers = activeTab === "followers";
-  const isFollowing = activeTab === "following";
-
-  // Рецепты (один эндпоинт с tab: 'own' | 'favorites')
-  const {
-    data: recipesData,
-    isLoading: recipesLoading,
-    isError: recipesError,
-  } = useGetUserRecipesQuery(
-    isMy || isFav ? { userId, page, tab: isMy ? "own" : "favorites" } : skipToken
-  );
-
-  // Соц-списки
-  const {
-    data: followersData,
-    isLoading: followersLoading,
-    isError: followersError,
-  } = useGetFollowersQuery(isFollowers ? { userId, page } : skipToken);
-
-  const {
-    data: followingData,
-    isLoading: followingLoading,
-    isError: followingError,
-  } = useGetFollowingQuery(isFollowing ? { userId, page } : skipToken);
-
-  // Выбираем активный источник данных
-  const { data, isLoading, isError } = useMemo(() => {
-    if (isMy || isFav) return { data: recipesData, isLoading: recipesLoading, isError: recipesError };
-    if (isFollowers)  return { data: followersData, isLoading: followersLoading, isError: followersError };
-    if (isFollowing)  return { data: followingData, isLoading: followingLoading, isError: followingError };
-    return { data: null, isLoading: false, isError: false };
-  }, [
-    isMy, isFav, isFollowers, isFollowing,
-    recipesData, recipesLoading, recipesError,
-    followersData, followersLoading, followersError,
-    followingData, followingLoading, followingError,
-  ]);
-
-  // Если после удаления страница опустела — вернуться на предыдущую
-  useEffect(() => {
-    if (!data) return;
-    const items = data.items ?? [];
-    if (page > 1 && items.length === 0) {
-      setPage((p) => Math.max(1, p - 1));
-    }
-  }, [data, page]);
-
-  if (isLoading) return <div className="p-4">Loading…</div>;
-  if (isError)   return <div className="p-4 text-red-500">Failed to load.</div>;
-  if (!data || !data.items?.length) return <div className="p-4 text-gray-500">No items yet.</div>;
+    if (items.length === 0 && page > 1) onEmptyPage?.();
+  }, [items.length, page]);
 
   return (
-    <div className="mt-4 space-y-4">
-      {(isMy || isFav)
-        ? data.items.map((r) => (
-            <RecipePreview key={r.id} item={r} userId={userId} tabKey={activeTab} />
-          ))
-        : data.items.map((u) => (
-            <UserCard key={u.id} user={u} context={activeTab} />
-          ))}
+    <div className="mt-4">
+      {items.length === 0 ? (
+        <EmptyState tab={activeTab} />
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {activeTab === "my" || activeTab === "favorites"
+            ? items.map((r) => (
+                <RecipePreview key={r.id} item={r} userId={userId} tabKey={activeTab} />
+              ))
+            : items.map((u) => <UserCard key={u.id} user={u} context={activeTab} />)}
+        </div>
+      )}
 
       <ListPagination
-        page={data.page ?? page}
-        perPage={data.perPage ?? 12}
-        total={data.total ?? 0}
-        onPageChange={setPage}
+        page={page}
+        perPage={perPage}
+        total={total}
+        onPageChange={onPageChange}
       />
     </div>
   );
