@@ -81,3 +81,11 @@
 .option:hover {
   background: var(--color-hover);
 }
+
+.dropdownArea {
+  width: 330px;
+}
+
+.dropdownIngredient {
+  width: 315px;
+}

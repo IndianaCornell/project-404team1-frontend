@@ -1,11 +1,3 @@
-.inputWrapper {
-  position: relative;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
 .input {
   width: 100%;
   height: 40px;
@@ -19,6 +11,12 @@
   font-weight: var(--font-weight-regular);
   letter-spacing: var(--letter-spacing-sm);
   color: var(--color-black);
+  outline: none;
+  transition: border-color 0.2s, border-width 0.2s;
+}
+
+.input:focus {
+  border-bottom: 2px solid var(--color-black);
 }
 
 .input::placeholder {

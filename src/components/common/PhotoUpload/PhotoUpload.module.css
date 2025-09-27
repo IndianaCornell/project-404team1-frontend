@@ -1,24 +1,33 @@
 .photoUpload {
   width: 551px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.photoLabel {
+  width: 551px;
   height: 400px;
   border: 1px dashed var(--color-gray);
   border-radius: var(--radius-lg);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--color-white);
-}
-
-.photoLabel {
-  display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   cursor: pointer;
   gap: var(--spacing-sm);
 }
 
 .photoInput {
   display: none;
+}
+
+.previewImage {
+  width: 551px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
 }
 
 .uploadText {
@@ -29,4 +38,14 @@
   letter-spacing: var(--letter-spacing-sm);
   color: var(--color-black);
   text-decoration: underline;
+}
+
+.uploadLink {
+  font-family: var(--font-family-base);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--color-black);
+  text-decoration: underline;
+  cursor: pointer;
 }

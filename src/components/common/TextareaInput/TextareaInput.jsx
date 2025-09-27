@@ -7,9 +7,13 @@ const TextareaInput = ({ name, placeholder, maxLength, value, className }) => {
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "40px";
-      textareaRef.current.style.height =
-        textareaRef.current.scrollHeight + "px";
+      if (value.length === 0) {
+        textareaRef.current.style.height = "40px";
+      } else {
+        textareaRef.current.style.height = "40px";
+        textareaRef.current.style.height =
+          textareaRef.current.scrollHeight + "px";
+      }
     }
   }, [value]);
 

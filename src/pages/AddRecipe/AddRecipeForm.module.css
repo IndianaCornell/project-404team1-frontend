@@ -47,6 +47,9 @@
 .formContainer {
   display: flex;
   gap: 40px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .leftCol {
@@ -55,7 +58,9 @@
 
 .rightCol {
   flex: 1;
-  max-width: 576px;
+  max-width: 649px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .header {

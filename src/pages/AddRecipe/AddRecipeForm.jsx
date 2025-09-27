@@ -1,7 +1,7 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import styles from "./AddRecipeForm.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Dropdown from "../../components/common/Dropdown/Dropdown";
 import TextInput from "../../components/common/TextInput/TextInput";
 import AddIngredientButton from "../../components/common/AddIngredientButton/AddIngredientButton";
@@ -9,9 +9,36 @@ import CookingTimeSelector from "../../components/common/CookingTimeSelector/Coo
 import TextareaInput from "../../components/common/TextareaInput/TextareaInput";
 import FormActions from "../../components/common/FormActions/FormActions";
 import PhotoUpload from "../../components/common/PhotoUpload/PhotoUpload";
+import dropdownStyles from "../../components/common/Dropdown/Dropdown.module.css";
 
 const AddRecipeForm = () => {
   const [time, setTime] = useState(10);
+  const [categories, setCategories] = useState([]);
+  const [areas, setAreas] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [catRes, areaRes, ingRes] = await Promise.all([
+          fetch("http://localhost:5000/categories"),
+          fetch("http://localhost:5000/areas"),
+          fetch("http://localhost:5000/ingredients"),
+        ]);
+        const [catData, areaData, ingData] = await Promise.all([
+          catRes.json(),
+          areaRes.json(),
+          ingRes.json(),
+        ]);
+        setCategories(catData);
+        setAreas(areaData);
+        setIngredients(ingData);
+      } catch (err) {
+        console.error("Failed to load dropdown data", err);
+      }
+    };
+    fetchData();
+  }, []);
 
   const decreaseTime = () => {
     if (time > 1) setTime(time - 1);
@@ -20,37 +47,6 @@ const AddRecipeForm = () => {
   const increaseTime = () => {
     setTime(time + 1);
   };
-
-  const categories = [
-    "Beef",
-    "Breakfast",
-    "Desserts",
-    "Lamb",
-    "Miscellaneous",
-    "Pasta",
-    "Pork",
-    "Seafood",
-    "Side",
-    "Starter",
-  ];
-
-  const areas = [
-    "French",
-    "Spanish",
-    "Italian",
-    "English",
-    "Norwegian",
-    "Ukrainian",
-  ];
-
-  const ingredients = [
-    "Cabbage",
-    "Cucumber",
-    "Tomato",
-    "Corn",
-    "Radish",
-    "Parsley",
-  ];
 
   return (
     <div className={styles.wrapper}>
@@ -91,7 +87,11 @@ const AddRecipeForm = () => {
         {({ values, errors, touched, setFieldValue, resetForm }) => (
           <Form className={styles.formContainer}>
             <div className={styles.leftCol}>
-              <Field name="photo" component={PhotoUpload} />
+              <PhotoUpload
+                value={values.photo}
+                onChange={(file) => setFieldValue("photo", file)}
+                onClear={() => setFieldValue("photo", null)}
+              />
             </div>
 
             <div className={styles.rightCol}>
@@ -113,7 +113,7 @@ const AddRecipeForm = () => {
                 <div className={styles.fieldGroup}>
                   <Dropdown
                     label="CATEGORY"
-                    options={categories}
+                    options={categories.map((c) => c.name)}
                     value={values.category}
                     onChange={(val) => setFieldValue("category", val)}
                     placeholder="Select a category"
@@ -136,10 +136,11 @@ const AddRecipeForm = () => {
               <div className={styles.fieldGroup}>
                 <Dropdown
                   label="AREA"
-                  options={areas}
+                  options={areas.map((a) => a.name)}
                   value={values.area}
                   onChange={(val) => setFieldValue("area", val)}
                   placeholder="Select an area"
+                  className={dropdownStyles.dropdownArea}
                 />
                 {errors.area && touched.area && (
                   <div className={styles.error}>{errors.area}</div>
@@ -151,10 +152,11 @@ const AddRecipeForm = () => {
                 <div className={styles.ingredientsRow}>
                   <Dropdown
                     label=""
-                    options={ingredients}
+                    options={ingredients.map((i) => i.name)}
                     value={values.ingredient}
                     onChange={(val) => setFieldValue("ingredient", val)}
                     placeholder="Add the ingredient"
+                    className={dropdownStyles.dropdownIngredient}
                   />
                   <TextInput
                     name="quantity"
@@ -190,6 +192,7 @@ const AddRecipeForm = () => {
                 onDelete={() => {
                   resetForm();
                   setTime(10);
+                  setFieldValue("photo", null);
                 }}
                 onSubmit={() => console.log("Submit clicked")}
               />
