@@ -1,9 +1,3 @@
-import React from 'react'
-
-const MainTitle = () => {
-  return (
-    <div>MainTitle</div>
-  )
+export default function MainTitle({ children }) {
+  return <h1 className="text-2xl md:text-3xl font-bold">{children}</h1>;
 }
-
-export default MainTitle

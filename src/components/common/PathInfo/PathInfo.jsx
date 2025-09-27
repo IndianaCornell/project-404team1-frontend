@@ -1,9 +1,18 @@
-import React from 'react'
+import { Link, useLocation } from "react-router-dom";
 
-const PathInfo = () => {
+export default function PathInfo({ title }) {
+  const location = useLocation();
+
   return (
-    <div>PathInfo</div>
-  )
+    <nav
+      className="flex items-center gap-2 text-sm text-gray-500"
+      aria-label="Breadcrumb"
+    >
+      <Link to="/" className="hover:underline text-gray-600">Home</Link>
+      <span aria-hidden="true">/</span>
+      <span title={location.pathname} className="text-gray-800">
+        {title}
+      </span>
+    </nav>
+  );
 }
-
-export default PathInfo
