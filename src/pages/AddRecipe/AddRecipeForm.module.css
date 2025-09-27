@@ -97,9 +97,10 @@
 }
 
 .error {
-  font-size: var(--font-size-xs);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
   color: var(--color-error);
-  margin-top: -8px;
+  margin-top: -30px;
   margin-bottom: 16px;
 }
 
@@ -138,13 +139,6 @@
 
 .dropdownArea {
   max-width: 330px;
-}
-
-.ingredientsRow {
-  display: flex;
-  gap: 20px;
-  width: 100%;
-  margin-bottom: 40px;
 }
 
 .textInputTitle {

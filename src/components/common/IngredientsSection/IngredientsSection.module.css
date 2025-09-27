@@ -1,0 +1,91 @@
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 60px;
+}
+
+.fieldLabel {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-sm);
+  letter-spacing: var(--letter-spacing-sm);
+  text-transform: uppercase;
+  color: var(--color-black);
+  margin-bottom: 16px;
+}
+
+.ingredientsRow {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+.cards {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--color-white);
+  width: 178px;
+  height: 90px;
+  position: relative;
+  font-family: var(--font-family-base);
+}
+
+.image {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-gray);
+  background-color: var(--color-hover); /* дефолтная заглушка */
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
+  color: var(--color-black);
+  letter-spacing: var(--letter-spacing-sm);
+}
+
+.quantity {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-sm);
+  color: var(--color-gray);
+  letter-spacing: var(--letter-spacing-sm);
+}
+
+.remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: none;
+  border: none;
+  font-size: var(--icon-size-sm);
+  cursor: pointer;
+  color: var(--color-black);
+}

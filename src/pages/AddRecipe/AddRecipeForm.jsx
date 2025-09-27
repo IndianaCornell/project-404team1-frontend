@@ -3,42 +3,48 @@ import * as Yup from "yup";
 import styles from "./AddRecipeForm.module.css";
 import { useState, useEffect } from "react";
 import Dropdown from "../../components/common/Dropdown/Dropdown";
-import TextInput from "../../components/common/TextInput/TextInput";
-import AddIngredientButton from "../../components/common/AddIngredientButton/AddIngredientButton";
 import CookingTimeSelector from "../../components/common/CookingTimeSelector/CookingTimeSelector";
 import TextareaInput from "../../components/common/TextareaInput/TextareaInput";
 import FormActions from "../../components/common/FormActions/FormActions";
 import PhotoUpload from "../../components/common/PhotoUpload/PhotoUpload";
 import dropdownStyles from "../../components/common/Dropdown/Dropdown.module.css";
+import IngredientsSection from "../../components/common/IngredientsSection/IngredientsSection";
 
 const AddRecipeForm = () => {
   const [time, setTime] = useState(10);
   const [categories, setCategories] = useState([]);
-  const [areas, setAreas] = useState([]);
-  const [ingredients, setIngredients] = useState([]);
+  const [addedIngredients, setAddedIngredients] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [catRes, areaRes, ingRes] = await Promise.all([
-          fetch("http://localhost:5000/categories"),
-          fetch("http://localhost:5000/areas"),
-          fetch("http://localhost:5000/ingredients"),
-        ]);
-        const [catData, areaData, ingData] = await Promise.all([
-          catRes.json(),
-          areaRes.json(),
-          ingRes.json(),
-        ]);
+        const catRes = await fetch("http://localhost:3000/api/categories");
+        const catData = await catRes.json();
         setCategories(catData);
-        setAreas(areaData);
-        setIngredients(ingData);
       } catch (err) {
-        console.error("Failed to load dropdown data", err);
+        console.error("Failed to load categories", err);
       }
     };
     fetchData();
   }, []);
+
+  const areas = [
+    "French",
+    "Spanish",
+    "Italian",
+    "English",
+    "Norwegian",
+    "Ukrainian",
+  ];
+
+  const ingredients = [
+    "Cabbage",
+    "Cucumber",
+    "Tomato",
+    "Corn",
+    "Radish",
+    "Parsley",
+  ];
 
   const decreaseTime = () => {
     if (time > 1) setTime(time - 1);
@@ -82,7 +88,13 @@ const AddRecipeForm = () => {
           quantity: Yup.string().required("Quantity is required"),
           preparation: Yup.string().required("Preparation is required"),
         })}
-        onSubmit={(values) => console.log({ ...values, cookingTime: time })}
+        onSubmit={(values) =>
+          console.log({
+            ...values,
+            cookingTime: time,
+            ingredients: addedIngredients,
+          })
+        }
       >
         {({ values, errors, touched, setFieldValue, resetForm }) => (
           <Form className={styles.formContainer}>
@@ -136,7 +148,7 @@ const AddRecipeForm = () => {
               <div className={styles.fieldGroup}>
                 <Dropdown
                   label="AREA"
-                  options={areas.map((a) => a.name)}
+                  options={areas}
                   value={values.area}
                   onChange={(val) => setFieldValue("area", val)}
                   placeholder="Select an area"
@@ -147,31 +159,15 @@ const AddRecipeForm = () => {
                 )}
               </div>
 
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel}>INGREDIENTS</label>
-                <div className={styles.ingredientsRow}>
-                  <Dropdown
-                    label=""
-                    options={ingredients.map((i) => i.name)}
-                    value={values.ingredient}
-                    onChange={(val) => setFieldValue("ingredient", val)}
-                    placeholder="Add the ingredient"
-                    className={dropdownStyles.dropdownIngredient}
-                  />
-                  <TextInput
-                    name="quantity"
-                    placeholder="Enter quantity"
-                    showCounter={false}
-                    value={values.quantity}
-                  />
-                </div>
-                <AddIngredientButton
-                  onClick={() => console.log("Add ingredient")}
-                />
-                {errors.ingredient && touched.ingredient && (
-                  <div className={styles.error}>{errors.ingredient}</div>
-                )}
-              </div>
+              <IngredientsSection
+                ingredients={ingredients}
+                values={values}
+                setFieldValue={setFieldValue}
+                errors={errors}
+                touched={touched}
+                addedIngredients={addedIngredients}
+                setAddedIngredients={setAddedIngredients}
+              />
 
               <div className={`${styles.fieldGroup} ${styles.noMargin}`}>
                 <label className={`${styles.fieldLabel} ${styles.noMargin}`}>
@@ -193,6 +189,7 @@ const AddRecipeForm = () => {
                   resetForm();
                   setTime(10);
                   setFieldValue("photo", null);
+                  setAddedIngredients([]);
                 }}
                 onSubmit={() => console.log("Submit clicked")}
               />
