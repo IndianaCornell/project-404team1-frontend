@@ -1,0 +1,24 @@
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  letter-spacing: var(--letter-spacing-sm);
+  text-transform: uppercase;
+}
+
+.link {
+  color: var(--color-gray);
+  text-decoration: none;
+}
+
+.separator {
+  color: var(--color-gray);
+}
+
+.current {
+  color: var(--color-black);
+}

@@ -1,0 +1,49 @@
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.fieldLabel {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-md);
+  line-height: 24px;
+  letter-spacing: var(--letter-spacing-sm);
+  text-transform: uppercase;
+  color: var(--color-black);
+  margin-bottom: var(--spacing-md);
+}
+
+.cookingTime {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.roundButton {
+  width: var(--button-size-round);
+  height: var(--button-size-round);
+  border: 1px solid var(--color-gray);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  cursor: pointer;
+}
+
+.roundButton span {
+  font-size: var(--icon-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-black);
+}
+
+.timeText {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  line-height: 24px;
+  letter-spacing: var(--letter-spacing-sm);
+  color: var(--color-gray);
+}

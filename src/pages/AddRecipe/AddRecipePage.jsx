@@ -1,7 +1,11 @@
-import React from "react";
+import AddRecipeForm from "./AddRecipeForm";
 
 const AddRecipePage = () => {
-  return <div>AddRecipePage</div>;
+  return (
+    <main>
+      <AddRecipeForm />
+    </main>
+  );
 };
 
 export default AddRecipePage;
