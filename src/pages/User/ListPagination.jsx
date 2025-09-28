@@ -1,44 +1,62 @@
-export default function ListPagination({ page = 1, perPage = 10, total = 0, onPageChange }) {
-  if (!total || total <= perPage) return null;
+import { useMemo } from "react";
 
-  const totalPages = Math.ceil(total / perPage);
-  const go = (p) => () => p !== page && onPageChange?.(p);
+function PageButton({ children, active, disabled, onClick, ariaLabel }) {
+  return (
+    <button
+      type="button"
+      className={`page${active ? " active" : ""}`}
+      disabled={disabled}
+      onClick={onClick}
+      aria-label={ariaLabel}
+      aria-current={active ? "page" : undefined}
+    >
+      {children}
+    </button>
+  );
+}
 
-  // простая пагинация 1..N; при желании можно добавить "..." и окна
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+/**
+ * Простой диапазон: 1 ... pages (без многоточий).
+ */
+export default function ListPagination({ page, pages, onPage }) {
+  const numbers = useMemo(
+    () => Array.from({ length: pages }, (_, i) => i + 1),
+    [pages]
+  );
+
+  if (!pages || pages <= 1) return null;
+
+  const toPrev = () => page > 1 && onPage(page - 1);
+  const toNext = () => page < pages && onPage(page + 1);
 
   return (
-    <nav className="flex items-center justify-center gap-2 mt-6" aria-label="Pagination">
-      <button
-        onClick={go(page - 1)}
+    <nav className="pagination" role="navigation" aria-label="Pagination">
+      <PageButton
+        ariaLabel="Previous page"
         disabled={page <= 1}
-        className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-        aria-label="Previous page"
+        onClick={toPrev}
       >
-        Prev
-      </button>
+        ‹
+      </PageButton>
 
-      {pages.map((p) => (
-        <button
-          key={p}
-          onClick={go(p)}
-          className={`px-3 py-1 rounded ${
-            page === p ? "bg-black text-white" : "bg-gray-100 hover:bg-gray-200"
-          }`}
-          aria-current={page === p ? "page" : undefined}
+      {numbers.map((n) => (
+        <PageButton
+          key={n}
+          active={n === page}
+          onClick={() => onPage(n)}
+          ariaLabel={`Page ${n}`}
         >
-          {p}
-        </button>
+          {n}
+        </PageButton>
       ))}
 
-      <button
-        onClick={go(page + 1)}
-        disabled={page >= totalPages}
-        className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-        aria-label="Next page"
+      <PageButton
+        ariaLabel="Next page"
+        disabled={page >= pages}
+        onClick={toNext}
       >
-        Next
-      </button>
+        ›
+      </PageButton>
     </nav>
   );
 }

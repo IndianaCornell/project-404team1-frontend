@@ -1,76 +1,68 @@
-import { useState } from "react";
-import {
-  useUploadAvatarMutation,
-  useFollowUserMutation,
-  useUnfollowUserMutation,
-} from "@/lib/api";
-
-const defaultAvatar = "/images/default-avatar.png";
-
-export default function UserInfo({ user, stats, isSelf }) {
-  const [preview, setPreview] = useState(null);
-  const [uploadAvatar, { isLoading: avatarPending }] = useUploadAvatarMutation();
-  const [follow] = useFollowUserMutation();
-  const [unfollow] = useUnfollowUserMutation();
-  const [isFollowing, setIsFollowing] = useState(!!user?.isFollowing);
-
-  const onFile = async (e) => {
-    const f = e.target.files?.[0];
-    if (!f || !user?.id) return;
-    setPreview(URL.createObjectURL(f));
-    try {
-      await uploadAvatar({ userId: user.id, file: f }).unwrap();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const toggleFollow = async () => {
-    if (!user?.id || isSelf) return;
-    const next = !isFollowing;
-    setIsFollowing(next);
-    try {
-      if (next) await follow(user.id).unwrap();
-      else await unfollow(user.id).unwrap();
-    } catch {
-      setIsFollowing(!next);
-    }
-  };
+export default function UserInfo({ user, stats, isSelf, onLogout }) {
+  if (!user) return null;
 
   return (
-    <section className="mt-4 p-4 border rounded-xl bg-white">
-      <div className="flex gap-4 items-center">
-        <img
-          src={preview ?? user?.avatarUrl ?? defaultAvatar}
-          alt="avatar"
-          className="w-20 h-20 rounded-full object-cover border"
-        />
-
-        <div className="flex-1">
-          <div className="text-sm text-gray-600">Email: {user?.email ?? "—"}</div>
-          <ul className="flex gap-4 mt-2 text-sm">
-            <li>Recipes: {stats?.recipesCount ?? 0}</li>
-            <li>Favorites: {stats?.favoritesCount ?? 0}</li>
-            <li>Followers: {stats?.followersCount ?? 0}</li>
-            <li>Following: {stats?.followingCount ?? 0}</li>
-          </ul>
+    <aside className="profile-left">
+      <div className="profile-card">
+        {/* Аватар */}
+        <div className="profile-avatar">
+          <img
+            src={user.avatar || "/default-avatar.png"}
+            alt={user.name}
+            width={120}
+            height={120}
+            className="avatar-img"
+          />
+          {isSelf && (
+            <button
+              className="plus"
+              type="button"
+              aria-label="Upload avatar"
+              onClick={() => console.log("upload avatar")}
+            >
+              +
+            </button>
+          )}
         </div>
 
-        {isSelf ? (
-          <label className="px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 cursor-pointer">
-            {avatarPending ? "Uploading..." : "Upload avatar"}
-            <input type="file" hidden accept="image/*" onChange={onFile} />
-          </label>
-        ) : (
-          <button
-            type="button"
-            className="px-3 py-2 rounded bg-gray-900 text-white hover:bg-black"
-            onClick={toggleFollow}
-          >
-            {isFollowing ? "Unfollow" : "Follow"}
-          </button>
+        {/* Имя */}
+        <div className="profile-name">{user.name?.toUpperCase()}</div>
+
+        {/* Email */}
+        {user.email && (
+          <div className="profile-stat">
+            <label>Email:</label>
+            <value>{user.email}</value>
+          </div>
         )}
+
+        {/* Счётчики */}
+        <div className="profile-stats">
+          <div className="profile-stat">
+            <label>Added recipes:</label>
+            <value>{stats?.createdRecipes ?? 0}</value>
+          </div>
+          <div className="profile-stat">
+            <label>Favorites:</label>
+            <value>{stats?.favoritesCount ?? 0}</value>
+          </div>
+          <div className="profile-stat">
+            <label>Followers:</label>
+            <value>{stats?.followersCount ?? 0}</value>
+          </div>
+          <div className="profile-stat">
+            <label>Following:</label>
+            <value>{stats?.followingCount ?? 0}</value>
+          </div>
+        </div>
       </div>
-    </section>
+
+      {/* Кнопка LogOut */}
+      {isSelf && (
+        <button className="profile-logout" type="button" onClick={onLogout}>
+          LOG OUT
+        </button>
+      )}
+    </aside>
   );
 }

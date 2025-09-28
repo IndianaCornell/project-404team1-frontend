@@ -1,32 +1,38 @@
-const tabs = [
-  { key: "my", label: "My recipes" },
-  { key: "favorites", label: "Favorites" },
-  { key: "followers", label: "Followers" },
-  { key: "following", label: "Following" },
+import { useEffect, useRef } from "react";
+
+const TABS = [
+  { key: "my", label: "MY RECIPES" },
+  { key: "favorites", label: "MY FAVORITES" },
+  { key: "followers", label: "FOLLOWERS" },
+  { key: "following", label: "FOLLOWING" },
 ];
 
 export default function TabsList({ active, onChange }) {
+  const ref = useRef(null);
+  const underlineRef = useRef(null);
+
+  useEffect(() => {
+    const activeTab = ref.current?.querySelector(".profile-tab.active");
+    const underline = underlineRef.current;
+    if (activeTab && underline) {
+      underline.style.width = `${activeTab.offsetWidth}px`;
+      underline.style.left = `${activeTab.offsetLeft}px`;
+    }
+  }, [active]);
+
   return (
-    <div
-      className="flex gap-4 border-b border-gray-200 mt-6"
-      role="tablist"
-      aria-label="User profile tabs"
-    >
-      {tabs.map((t) => (
+    <div className="profile-tabs" ref={ref}>
+      {TABS.map((t) => (
         <button
           key={t.key}
-          role="tab"
-          aria-selected={active === t.key}
-          className={`px-2 pb-2 -mb-px border-b-2 transition-colors ${
-            active === t.key
-              ? "border-black font-semibold text-black"
-              : "border-transparent text-gray-500 hover:text-black"
-          }`}
+          type="button"
+          className={`profile-tab ${active === t.key ? "active" : ""}`}
           onClick={() => onChange(t.key)}
         >
           {t.label}
         </button>
       ))}
+      <span ref={underlineRef} className="active-underline" aria-hidden />
     </div>
   );
 }

@@ -1,0 +1,192 @@
+:root{
+  --clr-black:#050505; --clr-text:#1A1A1A; --clr-gray:#BFBEBE; --clr-bg:#fff;
+  --fz-title-dt:40px; --lh-title-dt:44px;
+  --fz-title-mb:28px; --lh-title-mb:32px;
+  --fz-tab:20px; --lh-tab:24px;
+  --fz-body:16px; --lh-body:24px;
+  --fz-cap:14px; --lh-cap:20px;
+
+  --r-card:30px; --r-img:15px; --r-round:100px;
+
+  /* desktop/base sizes */
+  --avatar:120px; --preview:100px; --mini:40px; --avatar-sm:85px;
+}
+
+/* Базовые стили (Laptop ≥1200px) */
+.profile-page{background:var(--clr-bg);}
+.profile-title{font:800 var(--fz-title-dt)/var(--lh-title-dt) Mulish, sans-serif; text-transform:uppercase; color:var(--clr-black);}
+.profile-sub{max-width:460px; font:500 var(--fz-body)/var(--lh-body) Mulish, sans-serif; color:var(--clr-gray);}
+
+.profile-card{padding:40px 80px; border:1px solid var(--clr-gray); border-radius:var(--r-card); display:flex; flex-direction:column; align-items:center; gap:20px;}
+.profile-avatar{position:relative; width:var(--avatar); height:var(--avatar); border-radius:var(--r-round); overflow:hidden;}
+.profile-name{font:800 20px/24px Mulish; text-transform:uppercase; color:var(--clr-black);}
+.profile-stats{display:flex; flex-direction:column; gap:8px;}
+.profile-stat label{font:500 var(--fz-cap)/var(--lh-cap) Mulish; color:var(--clr-gray); margin-right:8px;}
+.profile-stat value{font:700 var(--fz-body)/var(--lh-body) Mulish; color:var(--clr-text);}
+.profile-logout{background:#1A1A1A; color:#fff; border-radius:var(--r-card); padding:16px 162px; font:700 var(--fz-body)/var(--lh-body) Mulish; text-transform:uppercase;}
+
+.profile-tabs{display:flex; gap:40px; position:relative; margin-top:40px;}
+.profile-tab{font:800 var(--fz-tab)/var(--lh-tab) Mulish; text-transform:uppercase; color:var(--clr-gray); cursor:pointer; background:none; border:none; padding:0;}
+.profile-tab.active{color:var(--clr-black);}
+.profile-tabs::before{content:""; position:absolute; left:0; right:0; bottom:-14px; height:1px; background:var(--clr-gray);}
+.profile-tabs .active-underline{position:absolute; height:3px; width:120px; left:0; bottom:-15px; background:var(--clr-black); transition:left .25s ease;}
+
+.follower-row{display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:16px 75px; max-width:846px;}
+.follower-row + .divider{height:1px; background:var(--clr-gray); max-width:846px;}
+.follower-avatar{width:var(--avatar-sm); height:var(--avatar-sm); border-radius:var(--r-round); object-fit:cover;}
+.follower-name{font:800 20px/24px Mulish; text-transform:uppercase; color:var(--clr-black);}
+.follower-own{font:500 var(--fz-cap)/var(--lh-cap) Mulish; color:var(--clr-gray);}
+.follower-follow{border:1px solid var(--clr-gray); border-radius:var(--r-card); padding:10px 24px; font:700 var(--fz-body)/var(--lh-body) Mulish; text-transform:uppercase; background:transparent; color:var(--clr-text);}
+.follower-previews{display:flex; gap:12px;}
+.follower-previews img{width:var(--preview); height:var(--preview); border-radius:var(--r-img); object-fit:cover;}
+.follower-link{border:1px solid var(--clr-gray); border-radius:var(--r-card); padding:12px; display:inline-grid; place-items:center; background:transparent;}
+
+.pagination{display:flex; gap:6px; padding:0 6px; margin-top:24px;}
+.pagination .page{width:40px; height:40px; border-radius:50%; display:grid; place-items:center; font:400 14px/20px Mulish; background:transparent;}
+.pagination .page.active{border:1px solid var(--clr-gray); color:var(--clr-text);}
+
+/* Tablet (до 1199 px) */
+@media (max-width: 1199px){
+  .follower-row{grid-template-columns:auto 1fr auto; gap:16px 24px; max-width:100%;}
+  .follower-previews img{width:var(--preview); height:var(--preview);}
+  .profile-logout{padding:16px 120px;}
+}
+
+/* Mobile (до 767 px): масштабируем ключевые размеры */
+@media (max-width: 767px){
+  :root{
+    --avatar:96px; --avatar-sm:72px; --preview:80px;
+  }
+  .profile-title{font:800 var(--fz-title-mb)/var(--lh-title-mb) Mulish;}
+  .profile-card{padding:24px; gap:16px;}
+  .profile-tabs{gap:24px;}
+  .follower-row{grid-template-columns:auto 1fr; gap:12px; max-width:100%;}
+  .follower-previews{grid-column:1 / -1; order:3;}
+  .profile-logout{padding:14px 72px;}
+}
+
+.recipe-card {
+  border: 1px solid var(--clr-gray);
+  border-radius: var(--r-card);
+  background: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recipe-img {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--r-img);
+  object-fit: cover;
+}
+
+.recipe-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recipe-title {
+  font: 800 20px/24px Mulish, sans-serif;
+  text-transform: uppercase;
+  color: var(--clr-black);
+}
+
+recipe-desc {
+  font: 500 16px/24px Mulish, sans-serif;
+  color: var(--clr-gray);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* webkit */
+  line-clamp: 2;         /* стандарт */
+}
+
+.recipe-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.recipe-link,
+.recipe-delete {
+  border: 1px solid var(--clr-gray);
+  border-radius: var(--r-card);
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--clr-text);
+  cursor: pointer;
+}
+
+.recipe-link:hover,
+.recipe-delete:hover {
+  background: var(--clr-gray);
+  color: var(--clr-black);
+}
+
+/* ===== layout (секции справа/слева) ===== */
+.profile-layout{
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:48px;
+  margin-top:48px;
+}
+.profile-right{ display:block; }
+
+@media (max-width:1199px){
+  .profile-layout{ grid-template-columns:300px 1fr; gap:32px; }
+}
+@media (max-width:767px){
+  .profile-layout{ grid-template-columns:1fr; gap:24px; }
+}
+
+/* ===== общие служебные ===== */
+.empty-state{ text-align:center; color:#6b7280; padding:48px 0; }
+.list-section{ margin-top:24px; }
+.list-stack{ display:flex; flex-direction:column; gap:16px; }
+
+/* ===== плюсик на аватаре ===== */
+.profile-avatar .plus{
+  position:absolute; left:50%; transform:translateX(-50%);
+  bottom:-6px; background:var(--clr-black); color:#fff;
+  font:700 20px/20px Mulish, sans-serif;
+  border-radius:30px; padding:10px 16px; border:none; cursor:pointer;
+}
+.profile-avatar .plus:hover{ filter:brightness(1.1); }
+.profile-avatar .plus:focus-visible{
+  outline:2px solid #111; outline-offset:2px;
+}
+
+/* ===== улучшения табов ===== */
+.profile-tabs .active-underline{
+  transition:left .25s ease, width .25s ease;
+}
+.profile-tab:focus-visible{
+  outline:2px solid var(--clr-black);
+  outline-offset:4px;
+  border-radius:6px;
+}
+
+/* ===== интерактивы карточек ===== */
+.follower-follow:focus-visible,
+.follower-link:focus-visible,
+.recipe-link:focus-visible,
+.recipe-delete:focus-visible{
+  outline:2px solid var(--clr-black);
+  outline-offset:2px;
+}
+
+/* лёгкий hover для интерактивных капсул */
+.follower-follow:hover,
+.follower-link:hover,
+.recipe-link:hover,
+.recipe-delete:hover{
+  background:#f3f4f6;
+}
+
+/* чтобы value в .profile-stat не ломал потоки */
+.profile-stat value{ display:inline-block; }
