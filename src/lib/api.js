@@ -49,7 +49,7 @@ export const api = createApi({
       invalidatesTags: (r, e, userId) => [
         { type: "UserStats", id: userId },
         { type: "Followers", id: userId },
-        { type: "Following", id: "ME" },
+        { type: "Following", id: "me" },
       ],
     }),
     unfollowUser: build.mutation({
@@ -57,7 +57,7 @@ export const api = createApi({
       invalidatesTags: (r, e, userId) => [
         { type: "UserStats", id: userId },
         { type: "Followers", id: userId },
-        { type: "Following", id: "ME" },
+        { type: "Following", id: "me" },
       ],
     }),
 
@@ -96,7 +96,7 @@ export const api = createApi({
       query: ({ userId, page = 1, limit = 12 }) =>
         `/users/${userId}/following?page=${page}&limit=${limit}`,
       providesTags: (r, e, { userId }) => [
-        { type: "Following", id: userId || "ME" },
+        { type: "Following", id: userId || "me" },
       ],
     }),
   }),

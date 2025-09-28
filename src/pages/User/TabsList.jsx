@@ -1,5 +1,5 @@
 const tabs = [
-  { key: "my",        label: "My recipes" },
+  { key: "my", label: "My recipes" },
   { key: "favorites", label: "Favorites" },
   { key: "followers", label: "Followers" },
   { key: "following", label: "Following" },

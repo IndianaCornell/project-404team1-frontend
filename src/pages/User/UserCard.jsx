@@ -1,14 +1,12 @@
 import { Link } from "react-router-dom";
-import Button from "../../components/ui/Button.jsx";
-import Icon from "../../components/ui/Icon.jsx";
-import { useFollowUserMutation, useUnfollowUserMutation } from "../../lib/api";
+import { useFollowUserMutation, useUnfollowUserMutation } from "@/lib/api";
 import { useState } from "react";
 
 const defaultAvatar = "/images/default-avatar.png";
 
 export default function UserCard({ user, context }) {
   const [isFollowing, setIsFollowing] = useState(!!user.meta?.isFollowing || !!user.isFollowing);
-  const [follow] = useFollowUserMutation();
+  const [follow]   = useFollowUserMutation();
   const [unfollow] = useUnfollowUserMutation();
   const [pending, setPending] = useState(false);
 
@@ -18,7 +16,7 @@ export default function UserCard({ user, context }) {
     setIsFollowing(next);
     try {
       if (next) await follow(user.id).unwrap();
-      else await unfollow(user.id).unwrap();
+      else      await unfollow(user.id).unwrap();
     } catch {
       setIsFollowing(!next);
     } finally {
@@ -35,19 +33,21 @@ export default function UserCard({ user, context }) {
           <p className="text-sm text-gray-600">Recipes: {user.recipesCount ?? 0}</p>
           {user.lastRecipes?.length ? (
             <ul className="hidden md:list-disc md:ml-5 md:block text-sm">
-              {user.lastRecipes.map((r) => (
-                <li key={r.id}>{r.title}</li>
-              ))}
+              {user.lastRecipes.map((r) => <li key={r.id}>{r.title}</li>)}
             </ul>
           ) : null}
         </div>
+
         <div className="flex items-center gap-2">
-          <Link to={`/user/${user.id}`} className="icon-link text-gray-500 hover:text-black" aria-label="Open user">
-            <Icon name="arrow-right" />
-          </Link>
-          <Button onClick={toggle} disabled={pending}>
-            {pending ? "..." : isFollowing ? "Unfollow" : "Follow"}
-          </Button>
+          <Link to={`/user/${user.id}`} aria-label="Open user" className="text-gray-600 hover:text-black">→</Link>
+          <button
+            type="button"
+            onClick={toggle}
+            disabled={pending}
+            className="px-3 py-1 rounded bg-black text-white hover:opacity-90 disabled:opacity-60"
+          >
+            {pending ? "…" : isFollowing ? "Unfollow" : "Follow"}
+          </button>
         </div>
       </div>
     </article>

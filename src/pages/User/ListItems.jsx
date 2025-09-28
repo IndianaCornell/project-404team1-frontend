@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import {
   useGetUserRecipesQuery,
   useGetUserFavoritesQuery,
@@ -7,7 +7,7 @@ import {
 } from "@/lib/api";
 import RecipePreview from "./RecipePreview";
 import UserCard from "./UserCard";
-import ListPagination from "./ListPagination";
+import Pagination from "@/components/common/Pagination/Pagination.jsx";
 
 function EmptyState({ tab }) {
   const map = {
@@ -20,7 +20,7 @@ function EmptyState({ tab }) {
 }
 
 export default function ListItems({
-  activeTab,
+  activeTab,     // 'my' | 'favorites' | 'followers' | 'following'
   userId,
   page,
   onPageChange,
@@ -28,40 +28,65 @@ export default function ListItems({
 }) {
   const limit = 12;
 
-  const recipesQ =
-    activeTab === "my"
-      ? useGetUserRecipesQuery({ userId, page, limit })
-      : undefined;
+  const isMy        = activeTab === "my";
+  const isFav       = activeTab === "favorites";
+  const isFollowers = activeTab === "followers";
+  const isFollowing = activeTab === "following";
 
-  const favQ =
-    activeTab === "favorites"
-      ? useGetUserFavoritesQuery({ userId, page, limit })
-      : undefined;
+  // ❗️Хуки всегда вызываются, но с флагом skip
+  const recipesQ   = useGetUserRecipesQuery(
+    { userId, page, limit },
+    { skip: !isMy }
+  );
 
-  const followersQ =
-    activeTab === "followers"
-      ? useGetFollowersQuery({ userId, page, limit })
-      : undefined;
+  const favQ       = useGetUserFavoritesQuery(
+    { userId, page, limit },
+    { skip: !isFav }
+  );
 
-  const followingQ =
-    activeTab === "following"
-      ? useGetFollowingQuery({ userId, page, limit })
-      : undefined;
+  const followersQ = useGetFollowersQuery(
+    { userId, page, limit },
+    { skip: !isFollowers }
+  );
 
-  const data =
-    recipesQ?.data ||
-    favQ?.data ||
-    followersQ?.data ||
-    followingQ?.data ||
-    { items: [], total: 0, page, perPage: limit };
+  const followingQ = useGetFollowingQuery(
+    { userId, page, limit },
+    { skip: !isFollowing }
+  );
 
-  const items = data.items || [];
-  const total = data.total || 0;
-  const perPage = data.perPage || limit;
+  // Берём активный источник данных
+  const data = isMy
+    ? recipesQ.data
+    : isFav
+    ? favQ.data
+    : isFollowers
+    ? followersQ.data
+    : isFollowing
+    ? followingQ.data
+    : undefined;
 
+  const items = useMemo(() => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    return data.items || data.results || [];
+  }, [data]);
+
+  const { total, perPage } = useMemo(() => {
+    const total =
+      (data && (data.total ?? data.count)) ??
+      (data && data.totalPages && (data.totalPages * (data.perPage || limit))) ??
+      0;
+
+    const perPage = (data && (data.perPage ?? data.limit)) ?? limit;
+    return { total, perPage };
+  }, [data]);
+
+  const totalPages = Math.max(1, Math.ceil((total || 0) / (perPage || limit)));
+
+  // Если после удаления страница опустела — шаг назад
   useEffect(() => {
     if (items.length === 0 && page > 1) onEmptyPage?.();
-  }, [items.length, page]);
+  }, [items.length, page, onEmptyPage]);
 
   return (
     <div className="mt-4">
@@ -69,18 +94,19 @@ export default function ListItems({
         <EmptyState tab={activeTab} />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {activeTab === "my" || activeTab === "favorites"
+          {isMy || isFav
             ? items.map((r) => (
-                <RecipePreview key={r.id} item={r} userId={userId} tabKey={activeTab} />
+                <RecipePreview key={r.id} item={r} tabKey={activeTab} />
               ))
-            : items.map((u) => <UserCard key={u.id} user={u} context={activeTab} />)}
+            : items.map((u) => (
+                <UserCard key={u.id} user={u} context={activeTab} />
+              ))}
         </div>
       )}
 
-      <ListPagination
+      <Pagination
         page={page}
-        perPage={perPage}
-        total={total}
+        pagesCount={totalPages}
         onPageChange={onPageChange}
       />
     </div>
