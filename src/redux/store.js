@@ -7,6 +7,7 @@ import ingredientsReducer from "./slices/ingredientsSlice";
 import recipesReducer from "./slices/recipesSlice";
 import usersReducer from "./slices/usersSlice";
 import testimonialsReducer from "./slices/testimonialsSlice";
+import notificationsReducer from "./slices/notificationsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     recipes: recipesReducer,
     users: usersReducer,
     testimonials: testimonialsReducer,
+    notifications: notificationsReducer,
   },
 });

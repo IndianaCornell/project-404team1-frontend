@@ -15,36 +15,48 @@ const IngredientsSection = ({
 }) => {
   const handleAdd = () => {
     if (!values.ingredient || !values.quantity) return;
+
+    const ingredientObj = ingredients.find((i) => i.name === values.ingredient);
+
     const newIngredient = {
       name: values.ingredient,
       quantity: values.quantity,
-      image: `/images/${values.ingredient.toLowerCase()}.png`,
+      image: ingredientObj?.img,
     };
-    setAddedIngredients([...addedIngredients, newIngredient]);
+
+    const updated = [...addedIngredients, newIngredient];
+    setAddedIngredients(updated);
+    setFieldValue("ingredients", updated);
     setFieldValue("ingredient", "");
     setFieldValue("quantity", "");
   };
 
   const handleRemove = (index) => {
-    setAddedIngredients(addedIngredients.filter((_, i) => i !== index));
+    const updated = addedIngredients.filter((_, i) => i !== index);
+    setAddedIngredients(updated);
+    setFieldValue("ingredients", updated); // синхронизация
   };
 
-  const handleImageError = (e) => {
-    e.target.src = "/images/placeholder.png";
-  };
+  const hasIngredientsError = touched.ingredients && errors.ingredients;
 
   return (
     <div className={styles.fieldGroup}>
       <label className={styles.fieldLabel}>INGREDIENTS</label>
-      <div className={styles.ingredientsRow}>
+
+      <div
+        className={`${styles.ingredientsRow} ${
+          hasIngredientsError ? styles.withError : ""
+        }`}
+      >
         <Dropdown
           label=""
-          options={ingredients}
+          options={ingredients.map((i) => i.name)}
           value={values.ingredient}
           onChange={(val) => setFieldValue("ingredient", val)}
           placeholder="Add the ingredient"
           className={dropdownStyles.dropdownIngredient}
         />
+
         <TextInput
           name="quantity"
           placeholder="Enter quantity"
@@ -52,18 +64,18 @@ const IngredientsSection = ({
           value={values.quantity}
         />
       </div>
+
+      {hasIngredientsError && (
+        <div className={styles.error}>Ingredients are required</div>
+      )}
+
       <AddIngredientButton onClick={handleAdd} />
 
       {addedIngredients.length > 0 && (
         <div className={styles.cards}>
           {addedIngredients.map((item, index) => (
             <div key={index} className={styles.card}>
-              <img
-                src={item.image}
-                alt={item.name}
-                className={styles.image}
-                onError={handleImageError}
-              />
+              <img src={item.image} alt={item.name} className={styles.image} />
               <div className={styles.texts}>
                 <span className={styles.name}>{item.name}</span>
                 <span className={styles.quantity}>{item.quantity}</span>
@@ -78,10 +90,6 @@ const IngredientsSection = ({
             </div>
           ))}
         </div>
-      )}
-
-      {errors.ingredient && touched.ingredient && (
-        <div className={styles.error}>{errors.ingredient}</div>
       )}
     </div>
   );
