@@ -1,6 +1,7 @@
-@import "./variables.css";
 @import "modern-normalize/modern-normalize.css";
 @import "./fonts.css";
+@import "./variables.css";
+@import "./buttons.css";
 
 :root {
   --font-sans: "Mulish", system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
@@ -22,6 +23,7 @@ html {
 }
 
 body {
+  margin: 0;
   background: var(--color-white);
   color: var(--color-black);
 }
@@ -54,18 +56,20 @@ a {
 
 .container {
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 8px;
 }
 
 @media (min-width: 768px) {
   .container {
     max-width: 768px;
+    padding: 16px;
   }
 }
 
 @media (min-width: 1440px) {
   .container {
     max-width: 1440px;
+    padding: 20px;
   }
 }
 

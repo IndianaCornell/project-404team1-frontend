@@ -1,0 +1,82 @@
+.btn {
+  --btn-bg: #1A1A1A;
+  --btn-fg: #fff;
+  --btn-bd: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  height: 46px;
+  padding: 14px 30px;
+  border-radius: 30px;
+
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: 1px solid #E8E8E8;
+
+ font-size: 12px;
+font-style: normal;
+font-weight: 700;
+line-height: 18px; /* 150% */
+letter-spacing: -0.24px;
+text-transform: uppercase;
+
+  transition: background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+
+.btn:hover { box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+.btn:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
+
+.btn--primary { --btn-bg:#1A1A1A;; --btn-fg:#fff; --btn-bd:#1A1A1A;; }
+.btn--outline { --btn-bg:#fff; --btn-fg:#1A1A1A;; --btn-bd:#1A1A1A;; }
+.btn--ghost   { --btn-bg:transparent; --btn-fg:#1A1A1A;; --btn-bd:transparent; }
+
+.btn--lg { height:46px; padding:14px 30px; border: 1px solid #BFBEBE;}
+.btn--md { height:46px; padding:14px 30px;; border: 1px solid #E8E8E8;}
+/* .btn--sm { height:40px; padding:0 18px; } */
+
+.segment {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  background: #fff;
+  border-radius: 30px;
+}
+
+.segment__btn {
+  position: relative;
+  z-index: 1;
+  width: 104px;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 30px;
+  border: 0;
+  background: transparent;
+  color: #111;
+  font-size: 12px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 18px; /* 150% */
+    letter-spacing: -0.24px;
+    text-transform: uppercase;
+  cursor: pointer;
+}
+
+.segment__slider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(50% - 4px); /* 2 * gap/2 */
+  border-radius: 30px;
+  border: 1px solid #E8E8E8;
+  background: #111;
+  transition: transform .25s ease;
+}
+
+.segment--2 .segment__slider[data-pos="right"] { transform: translateX(calc(100% + 8px)); }
+.segment--2 .segment__slider[data-pos="left"]  { transform: translateX(0); }
+
+.segment__btn--active { color: #fff; }

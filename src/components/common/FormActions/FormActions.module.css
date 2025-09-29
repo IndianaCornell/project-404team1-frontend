@@ -1,0 +1,35 @@
+.actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.delete {
+  width: var(--button-size-round);
+  height: var(--button-size-round);
+  border: 1px solid var(--color-gray);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  cursor: pointer;
+}
+
+.icon {
+  width: 56px;
+  height: 56px;
+  stroke: var(--color-black);
+  flex-shrink: 0;
+}
+
+.publish {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) 39px;
+  cursor: pointer;
+}

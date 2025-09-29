@@ -1,0 +1,108 @@
+.formContainer {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.leftCol {
+  flex: 1;
+}
+
+.rightCol {
+  flex: 1;
+  max-width: 649px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionLabel {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-lg);
+  line-height: 28px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-gray);
+}
+
+.fieldLabel {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-md);
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-black);
+  margin-bottom: 16px;
+}
+
+.error {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  margin-top: 16px;
+  margin-left: 10px;
+}
+
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 60px;
+}
+
+.dropdownArea {
+  max-width: 330px;
+}
+
+.textInputTitle {
+  margin-bottom: 60px;
+}
+
+.noMargin {
+  margin-bottom: 0;
+}
+
+.inputTitle {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-md);
+  letter-spacing: var(--letter-spacing-sm);
+  text-transform: uppercase;
+
+  color: var(--color-gray);
+  border: none;
+  /* border-bottom: 1px solid var(--color-gray); */
+  padding: 8px 4px;
+  outline: none;
+  transition: border-color 0.2s, color 0.2s;
+  background: transparent;
+}
+
+.inputTitle:focus {
+  border-bottom: 1px solid var(--color-black);
+  color: var(--color-black);
+}
+
+.inputTitle:not(:placeholder-shown) {
+  color: var(--color-black);
+}
+
+
