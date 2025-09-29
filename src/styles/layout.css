@@ -1,0 +1,20 @@
+:root{
+  --container: 1180px;                 /* контентная ширина из макета */
+  --gutter-x: 20px;                    /* боковые поля */
+  --h1: 28px;                          /* PROFILE */
+  --h1-weight: 800;
+  --sub: 14px;                         /* подзаголовок */
+  --muted: #6B7280;
+  --stroke: #EAEAEA;
+  --bg-soft: #F4F4F4;
+}
+
+.container{
+  max-width: var(--container);
+  width: 100%;
+  margin: 0 auto;
+  padding: 24px var(--gutter-x);
+}
+
+.app-header{ border-bottom: 1px solid var(--stroke); background:#fff; }
+.app-footer{ border-top: 1px solid var(--stroke); background:#fff; }

@@ -1,9 +1,16 @@
-import React from 'react'
+import Logo from "./Logo";
+import NetworkLinks from "./NetworkLinks";
+import Copyright from "./Copyright";
+import "@/styles/footer.css";
 
-const Footer = () => {
+export default function Footer() {
   return (
-    <div>Footer</div>
-  )
+    <footer className="app-footer">
+      <div className="container footer-row">
+        <Logo />
+        <NetworkLinks />
+        <Copyright />
+      </div>
+    </footer>
+  );
 }
-
-export default Footer

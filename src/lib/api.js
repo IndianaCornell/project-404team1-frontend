@@ -1,3 +1,4 @@
+// src/lib/api.js
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
@@ -12,98 +13,136 @@ export const api = createApi({
   }),
   tagTypes: [
     "User",
-    "UserStats",
+    "UserById",
     "Recipes",
     "Favorites",
     "Followers",
     "Following",
   ],
-  endpoints: (build) => ({
-    // User profile
-    getUserProfile: build.query({
-      query: (userId) => `/users/${userId}`,
-      providesTags: (r, e, id) => [{ type: "User", id }],
-    }),
-    getUserStats: build.query({
-      query: (userId) => `/users/${userId}/stats`,
-      providesTags: (r, e, id) => [{ type: "UserStats", id }],
+  endpoints: (b) => ({
+    // Мій профіль (для власної сторінки)
+    getMe: b.query({
+      query: () => `/users/me`,
+      providesTags: ["User"],
     }),
 
-    // Avatar upload
-    uploadAvatar: build.mutation({
-      query: ({ userId, file }) => {
-        const formData = new FormData();
-        formData.append("avatar", file);
-        return {
-          url: `/users/${userId}/avatar`,
-          method: "PATCH",
-          body: formData,
-        };
+    // Профіль за id (для сторінок інших користувачів)
+    getUser: b.query({
+      query: (id) => `/users/${id}`,
+      providesTags: (_r, _e, id) => [{ type: "UserById", id }],
+    }),
+
+    // Якщо бек віддає окрему статистику (якщо ні — можна прибрати)
+    getUserStats: b.query({
+      query: (id) => `/users/${id}/stats`,
+      providesTags: (_r, _e, id) => [{ type: "UserById", id }],
+    }),
+
+    uploadAvatar: b.mutation({
+      query: ({ file }) => {
+        const form = new FormData();
+        form.append("avatar", file);
+        return { url: `/users/me/avatar`, method: "PATCH", body: form };
       },
-      invalidatesTags: (r, e, { userId }) => [{ type: "User", id: userId }],
+      invalidatesTags: ["User"],
     }),
 
-    // Follow / Unfollow
-    followUser: build.mutation({
-      query: (userId) => ({ url: `/users/${userId}/follow`, method: "POST" }),
-      invalidatesTags: (r, e, userId) => [
-        { type: "UserStats", id: userId },
-        { type: "Followers", id: userId },
-        { type: "Following", id: "me" },
-      ],
+    // Списки з серверною пагінацією
+    getUserRecipes: b.query({
+      query: ({ userId, page }) => `/users/${userId}/recipes?page=${page}`,
+      providesTags: ["Recipes"],
     }),
-    unfollowUser: build.mutation({
-      query: (userId) => ({ url: `/users/${userId}/follow`, method: "DELETE" }),
-      invalidatesTags: (r, e, userId) => [
-        { type: "UserStats", id: userId },
-        { type: "Followers", id: userId },
-        { type: "Following", id: "me" },
-      ],
+    getUserFavorites: b.query({
+      query: ({ userId, page }) => `/users/${userId}/favorites?page=${page}`,
+      providesTags: ["Favorites"],
     }),
-
-    // Lists with server pagination
-    getUserRecipes: build.query({
-      query: ({ userId, page = 1, limit = 12 }) =>
-        `/users/${userId}/recipes?page=${page}&limit=${limit}`,
-      providesTags: (r, e, { userId }) => [{ type: "Recipes", id: userId }],
+    getFollowers: b.query({
+      query: ({ userId, page }) => `/users/${userId}/followers?page=${page}`,
+      providesTags: ["Followers"],
     }),
-    getUserFavorites: build.query({
-      query: ({ userId, page = 1, limit = 12 }) =>
-        `/users/${userId}/favorites?page=${page}&limit=${limit}`,
-      providesTags: (r, e, { userId }) => [{ type: "Favorites", id: userId }],
+    getFollowing: b.query({
+      query: ({ userId, page }) => `/users/${userId}/following?page=${page}`,
+      providesTags: ["Following"],
     }),
 
-    // Delete own recipe or remove from favorites
-    deleteRecipe: build.mutation({
-      query: (recipeId) => ({ url: `/recipes/${recipeId}`, method: "DELETE" }),
-      invalidatesTags: [{ type: "Recipes" }, { type: "UserStats" }],
+    // Follow / Unfollow з оптимістичними оновленнями і перерахунком лічильників
+    followUser: b.mutation({
+      query: ({ targetUserId }) => ({
+        url: `/users/${targetUserId}/follow`,
+        method: "POST",
+      }),
+      async onQueryStarted({ targetUserId }, { dispatch, queryFulfilled }) {
+        const patchTarget = dispatch(
+          api.util.updateQueryData("getUser", targetUserId, (draft) => {
+            if (draft) {
+              draft.followersCount = (draft.followersCount || 0) + 1;
+              draft.isFollowedByMe = true;
+            }
+          })
+        );
+        const patchMe = dispatch(
+          api.util.updateQueryData("getMe", undefined, (me) => {
+            if (me) me.followingCount = (me.followingCount || 0) + 1;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchTarget.undo();
+          patchMe.undo();
+        }
+      },
+      invalidatesTags: ["Followers", "Following", "User", "UserById"],
     }),
-    deleteFromFavorites: build.mutation({
-      query: (recipeId) => ({
-        url: `/favorites/${recipeId}`,
+
+    unfollowUser: b.mutation({
+      query: ({ targetUserId }) => ({
+        url: `/users/${targetUserId}/unfollow`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "Favorites" }, { type: "UserStats" }],
+      async onQueryStarted({ targetUserId }, { dispatch, queryFulfilled }) {
+        const patchTarget = dispatch(
+          api.util.updateQueryData("getUser", targetUserId, (draft) => {
+            if (draft) {
+              draft.followersCount = Math.max(
+                0,
+                (draft.followersCount || 0) - 1
+              );
+              draft.isFollowedByMe = false;
+            }
+          })
+        );
+        const patchMe = dispatch(
+          api.util.updateQueryData("getMe", undefined, (me) => {
+            if (me)
+              me.followingCount = Math.max(0, (me.followingCount || 0) - 1);
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchTarget.undo();
+          patchMe.undo();
+        }
+      },
+      invalidatesTags: ["Followers", "Following", "User", "UserById"],
     }),
 
-    // Followers / Following
-    getFollowers: build.query({
-      query: ({ userId, page = 1, limit = 12 }) =>
-        `/users/${userId}/followers?page=${page}&limit=${limit}`,
-      providesTags: (r, e, { userId }) => [{ type: "Followers", id: userId }],
+    // Видалення рецептів
+    deleteRecipe: b.mutation({
+      query: ({ id }) => ({ url: `/recipes/${id}`, method: "DELETE" }),
+      invalidatesTags: ["Recipes", "User"],
     }),
-    getFollowing: build.query({
-      query: ({ userId, page = 1, limit = 12 }) =>
-        `/users/${userId}/following?page=${page}&limit=${limit}`,
-      providesTags: (r, e, { userId }) => [
-        { type: "Following", id: userId || "me" },
-      ],
+    deleteFromFavorites: b.mutation({
+      query: ({ id }) => ({ url: `/favorites/${id}`, method: "DELETE" }),
+      invalidatesTags: ["Favorites", "User"],
     }),
   }),
 });
 
 export const {
-  useGetUserProfileQuery,
+  useGetMeQuery,
+  useGetUserQuery,
   useGetUserStatsQuery,
   useUploadAvatarMutation,
   useFollowUserMutation,

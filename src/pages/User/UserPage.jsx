@@ -3,71 +3,99 @@ import { useSelector } from "react-redux";
 import { useParams, useSearchParams } from "react-router-dom";
 
 import PathInfo from "@/components/common/PathInfo/PathInfo";
+import MainTitle from "@/components/common/Typography/MainTitle";
+import Subtitle from "@/components/common/Typography/Subtitle";
 import LogOutModal from "@/components/common/Modal/LogOutModal";
 
-import UserInfo from "@/pages/User/UserInfo";
-import TabsList from "@/pages/User/TabsList";
-import ListItems from "@/pages/User/ListItems";
+import UserInfo from "./UserInfo";
+import TabsList from "./TabsList";
+import ListItems from "./ListItems";
 
 import { selectMe } from "@/redux/store";
-import { useGetUserProfileQuery, useGetUserStatsQuery } from "@/lib/api";
+import { useGetUserQuery, useGetUserStatsQuery } from "@/lib/api";
 
 import "@/styles/profile.css";
 
-const TABS = ["my", "favorites", "followers", "following"];
-const DEFAULT_TAB = "my";
+const ALL_TABS = ["my", "favorites", "followers", "following"];
 
 export default function UserPage() {
-  const { id } = useParams();
+  const { id: routeId } = useParams();
   const me = useSelector(selectMe);
-  const isSelf = me && String(me.id) === String(id);
+  const isSelf = Boolean(me?.id) && String(me.id) === String(routeId);
 
+  // ===== URL state: tab + page =====
   const [sp, setSp] = useSearchParams();
-  const activeTabFromUrl = sp.get("tab") || DEFAULT_TAB;
-  const activeTab = useMemo(
-    () => (TABS.includes(activeTabFromUrl) ? activeTabFromUrl : DEFAULT_TAB),
-    [activeTabFromUrl]
-  );
-  const page = Number(sp.get("page") || 1);
 
-  // если в URL прилетел левый tab — аккуратно правим его
+  // дефолтная вкладка зависит от того, чей это профиль
+  const initialTab = isSelf ? "my" : "followers";
+  const rawTab = sp.get("tab") || initialTab;
+  const activeTab = useMemo(
+    () => (ALL_TABS.includes(rawTab) ? rawTab : initialTab),
+    [rawTab, initialTab]
+  );
+  const page = Number(sp.get("page") || "1");
+
+  // при смене статуса isSelf — поправить некорректные/пустые query-параметры
   useEffect(() => {
-    if (!TABS.includes(activeTabFromUrl)) {
-      setSp({ tab: DEFAULT_TAB, page: "1" }, { replace: true });
+    const hasValidTab = sp.get("tab") && ALL_TABS.includes(sp.get("tab"));
+    const hasPage = Boolean(sp.get("page"));
+    if (!hasValidTab || !hasPage) {
+      const next = new URLSearchParams(sp);
+      if (!hasValidTab) next.set("tab", initialTab);
+      if (!hasPage) next.set("page", "1");
+      setSp(next, { replace: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTabFromUrl]);
+  }, [isSelf]);
 
+  // ===== Данные профиля (хуки вызываем безусловно, условия в skip) =====
   const {
     data: user,
     isLoading: userLoading,
     isError: userError,
-  } = useGetUserProfileQuery(id, { skip: !id });
+  } = useGetUserQuery(routeId, { skip: !routeId });
 
+  // stats может не существовать на бэке — это ок
   const {
     data: stats,
     isLoading: statsLoading,
     isError: statsError,
-  } = useGetUserStatsQuery(id, { skip: !id });
+  } = useGetUserStatsQuery(routeId, { skip: !routeId });
 
+  // ===== UI actions =====
   const [logoutOpen, setLogoutOpen] = useState(false);
 
   const handleTabChange = (nextTab) => {
-    setSp({ tab: nextTab, page: "1" });
-    // скроллим к началу правой колонки
-    document.getElementById("profile-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const next = new URLSearchParams(sp);
+    next.set("tab", nextTab);
+    next.set("page", "1");
+    setSp(next);
+    document
+      .getElementById("profile-content")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const handlePageChange = (nextPage) => {
-    setSp({ tab: activeTab, page: String(nextPage) });
-    document.getElementById("profile-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const next = new URLSearchParams(sp);
+    next.set("tab", activeTab);
+    next.set("page", String(nextPage));
+    setSp(next);
+    document
+      .getElementById("profile-content")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  // «откат» на предыдущую страницу, если текущая опустела (вызывается из ListItems)
   const handleEmptyPage = () => {
-    if (page > 1) setSp({ tab: activeTab, page: String(page - 1) });
+    if (page > 1) {
+      const next = new URLSearchParams(sp);
+      next.set("tab", activeTab);
+      next.set("page", String(page - 1));
+      setSp(next, { replace: true });
+    }
   };
 
-  // простые состояния загрузки/ошибки заголовка и карточки профиля
+  // ===== Состояния заголовка/левой колонки =====
   const headerIsLoading = userLoading || statsLoading;
   const headerHasError = userError || statsError;
 
@@ -75,31 +103,39 @@ export default function UserPage() {
     <div className="profile-page">
       <PathInfo title="Profile" />
 
-      <h1 className="profile-title">PROFILE</h1>
-      <p className="profile-sub">Personal area with your recipes and followers</p>
+      <MainTitle>PROFILE</MainTitle>
+      <Subtitle>Personal area with your recipes and followers</Subtitle>
 
       <div className="profile-layout">
-        {/* Левая колонка: инфо + LogOut */}
-        <UserInfo
-          user={user}
-          stats={stats}
-          isSelf={isSelf}
-          onLogout={() => setLogoutOpen(true)}
-        />
-
-        {/* Правая колонка: вкладки + списки */}
-        <section className="profile-right" id="profile-content" aria-live="polite">
-          <TabsList active={activeTab} onChange={handleTabChange} />
-
+        {/* Левая колонка: информация профиля + LogOut (только для себя) */}
+        <section className="profile-left" aria-live="polite">
           {headerIsLoading && <div className="empty-state">Loading...</div>}
           {headerHasError && !headerIsLoading && (
             <div className="empty-state">Failed to load profile</div>
           )}
+          {!headerIsLoading && !headerHasError && (
+            <UserInfo
+              user={user}
+              stats={stats}
+              isSelf={isSelf}
+              onLogout={() => setLogoutOpen(true)}
+            />
+          )}
+        </section>
 
+        {/* Правая колонка: вкладки + серверные списки + пагинация */}
+        <section className="profile-right" id="profile-content" aria-live="polite">
+          <TabsList
+            active={activeTab}
+            onChange={handleTabChange}
+            showMyAndFav={isSelf} // скрыть "my/favorites" на чужом профиле
+          />
+
+          {/* ListItems сам делает запросы по активной вкладке и странице */}
           {!headerIsLoading && !headerHasError && (
             <ListItems
               activeTab={activeTab}
-              userId={id}
+              userId={routeId}
               page={page}
               onPageChange={handlePageChange}
               onEmptyPage={handleEmptyPage}
@@ -108,7 +144,10 @@ export default function UserPage() {
         </section>
       </div>
 
-      <LogOutModal open={logoutOpen} onClose={() => setLogoutOpen(false)} />
+      {/* Модалка выхода — только на своём профиле */}
+      {isSelf && (
+        <LogOutModal open={logoutOpen} onClose={() => setLogoutOpen(false)} />
+      )}
     </div>
   );
 }

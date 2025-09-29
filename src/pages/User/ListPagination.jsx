@@ -1,62 +1,32 @@
-import { useMemo } from "react";
-
-function PageButton({ children, active, disabled, onClick, ariaLabel }) {
-  return (
-    <button
-      type="button"
-      className={`page${active ? " active" : ""}`}
-      disabled={disabled}
-      onClick={onClick}
-      aria-label={ariaLabel}
-      aria-current={active ? "page" : undefined}
-    >
-      {children}
-    </button>
-  );
-}
-
-/**
- * Простой диапазон: 1 ... pages (без многоточий).
- */
-export default function ListPagination({ page, pages, onPage }) {
-  const numbers = useMemo(
-    () => Array.from({ length: pages }, (_, i) => i + 1),
-    [pages]
-  );
-
-  if (!pages || pages <= 1) return null;
-
-  const toPrev = () => page > 1 && onPage(page - 1);
-  const toNext = () => page < pages && onPage(page + 1);
+export default function ListPagination({ page, perPage, total, onPage }) {
+  const pages = Math.max(1, Math.ceil((total || 0) / (perPage || 1)));
+  if (pages <= 1) return null;
+  const nums = Array.from({ length: pages }, (_, i) => i + 1);
 
   return (
-    <nav className="pagination" role="navigation" aria-label="Pagination">
-      <PageButton
-        ariaLabel="Previous page"
-        disabled={page <= 1}
-        onClick={toPrev}
-      >
-        ‹
-      </PageButton>
+    <nav className="pagination" aria-label="pagination">
+      {page > 1 && (
+        <button onClick={() => onPage(page - 1)} aria-label="Previous page">
+          ←
+        </button>
+      )}
 
-      {numbers.map((n) => (
-        <PageButton
-          key={n}
-          active={n === page}
-          onClick={() => onPage(n)}
-          ariaLabel={`Page ${n}`}
+      {nums.map((p) => (
+        <button
+          key={p}
+          onClick={() => onPage(p)}
+          disabled={p === page}
+          aria-current={p === page ? "page" : undefined}
         >
-          {n}
-        </PageButton>
+          {p}
+        </button>
       ))}
 
-      <PageButton
-        ariaLabel="Next page"
-        disabled={page >= pages}
-        onClick={toNext}
-      >
-        ›
-      </PageButton>
+      {page < pages && (
+        <button onClick={() => onPage(page + 1)} aria-label="Next page">
+          →
+        </button>
+      )}
     </nav>
   );
 }

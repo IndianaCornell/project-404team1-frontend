@@ -1,0 +1,10 @@
+.footer-row{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items:center;
+  gap:16px;
+  padding:24px 0;
+  color:var(--muted);
+}
+.footer-row>*:nth-child(2){ text-align:center; }
+.footer-row>*:nth-child(3){ text-align:right; }
