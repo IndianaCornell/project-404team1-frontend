@@ -1,0 +1,31 @@
+.iconLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #bfbebe;
+  background: transparent;
+  transition: transform 150ms ease, border-color 150ms ease,
+    background 150ms ease;
+}
+
+.iconLink:hover,
+.iconLink:focus-visible {
+  transform: translateY(-1px);
+  border-color: #050505;
+  background: #050505;
+  outline: none;
+}
+
+.iconLinkIcon {
+  width: 18px;
+  height: 18px;
+  filter: none;
+}
+
+.iconLink:hover .iconLinkIcon,
+.iconLink:focus-visible .iconLinkIcon {
+  filter: invert(1) brightness(2);
+}

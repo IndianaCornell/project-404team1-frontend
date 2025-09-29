@@ -10,6 +10,7 @@ export const getRecipes = createAsyncThunk(
   },
 );
 
+
 export const getRecipesByCategory = createAsyncThunk(
   "recipes/getByCategory",
   async ({ category, page = 1, limit = 12, ...filters } = {}) => {
@@ -27,3 +28,4 @@ export const getPopularRecipes = createAsyncThunk(
     return response.data;
   },
 );
+

@@ -1,20 +1,17 @@
 .breadcrumbs {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-family: var(--font-family-base);
-  font-weight: var(--font-weight-bold);
+  gap: 8px;
   font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs);
-  letter-spacing: var(--letter-spacing-sm);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-base);
   text-transform: uppercase;
-}
-
-.link {
   color: var(--color-gray);
-  text-decoration: none;
+  margin-bottom: 40px;
+  line-height: 18px;
+  letter-spacing: -2%;
 }
 
+.link,
 .separator {
   color: var(--color-gray);
 }
