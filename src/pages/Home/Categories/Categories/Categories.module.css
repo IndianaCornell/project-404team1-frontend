@@ -1,0 +1,36 @@
+.categoriesSection {
+    max-width: 1280px;
+    margin: 0 auto;
+    @media (min-width: 768px) and (max-width: 1440px) {
+        max-width: 704px;
+    }
+}
+
+.sectionTitle {
+    font-family: Mulish, sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 44px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: var(--color-dark);
+    @media (max-width: 768px) {
+        font-size: 28px;
+        line-height: 32px;
+    }
+}
+
+.sectionSubtitle {
+    font-family: Mulish, sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    max-width: 550px;
+    color: var(--color-dark);
+    margin-bottom: 40px;
+    @media (max-width: 768px) {
+        font-size: 14px;
+        line-height: 20px;
+        color: var(--color-gray);
+    }
+}

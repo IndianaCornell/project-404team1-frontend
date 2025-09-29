@@ -1,25 +1,31 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import recipesJson from "@/mocks/recipes.json";
+import { api } from "@lib/api.js";
 
-const delay = (milliseconds) =>
-  new Promise((resolve) => setTimeout(resolve, milliseconds));
+export const getRecipes = createAsyncThunk(
+  "recipes/getAll",
+  async ({ page = 1, limit = 12, ...filters } = {}) => {
+    const params = new URLSearchParams({ page, limit, ...filters });
+    const response = await api.get(`/recipes?${params}`);
+    return response.data;
+  },
+);
 
-export const getRecipes = createAsyncThunk("recipes/getAll", async () => {
-  await delay(150);
-  return recipesJson;
-});
 
-export const addRecipe = createAsyncThunk("recipes/add", async (newRecipe) => {
-  console.log("DISPATCHED RECIPE:", newRecipe);
-  await delay(150);
-  if (newRecipe.photo) {
-    const formData = new FormData();
-    formData.append("photo", newRecipe.photo);
-    formData.append("data", JSON.stringify({ ...newRecipe, photo: undefined }));
-    return {
-      ...newRecipe,
-      photo: URL.createObjectURL(newRecipe.photo),
-    };
-  }
-  return newRecipe;
-});
+export const getRecipesByCategory = createAsyncThunk(
+  "recipes/getByCategory",
+  async ({ category, page = 1, limit = 12, ...filters } = {}) => {
+    const params = new URLSearchParams({ category, page, limit, ...filters });
+    const recipesResponse = await api.get(`/recipes?${params}`);
+    return { recipes: recipesResponse.data, category };
+  },
+);
+
+export const getPopularRecipes = createAsyncThunk(
+  "recipes/getPopular",
+  async ({ page = 1, limit = 12 } = {}) => {
+    const params = new URLSearchParams({ page, limit });
+    const response = await api.get(`/recipes/popular?${params}`);
+    return response.data;
+  },
+);
+
