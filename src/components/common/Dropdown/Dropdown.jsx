@@ -2,7 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./Dropdown.module.css";
 import { FiChevronDown } from "react-icons/fi";
 
-const Dropdown = ({ label, options, value, onChange, placeholder }) => {
+const Dropdown = ({
+  label,
+  options,
+  value,
+  onChange,
+  placeholder,
+  className,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -17,7 +24,6 @@ const Dropdown = ({ label, options, value, onChange, placeholder }) => {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -25,7 +31,7 @@ const Dropdown = ({ label, options, value, onChange, placeholder }) => {
   }, []);
 
   return (
-    <div className={styles.dropdown} ref={dropdownRef}>
+    <div className={`${styles.dropdown} ${className || ""}`} ref={dropdownRef}>
       {label && <label className={styles.label}>{label}</label>}
 
       <div

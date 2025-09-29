@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getRecipes } from "./recipesOperations";
+import { getRecipes, addRecipe } from "./recipesOperations";
 
 const initialState = {
   items: [],
@@ -30,7 +30,14 @@ const recipesSlice = createSlice({
     builder
       .addCase(getRecipes.pending, handlePending)
       .addCase(getRecipes.fulfilled, handleFulfilled)
-      .addCase(getRecipes.rejected, handleRejected);
+      .addCase(getRecipes.rejected, handleRejected)
+      .addCase(addRecipe.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items.push(action.payload);
+      })
+      .addCase(addRecipe.pending, handlePending)
+      .addCase(addRecipe.rejected, handleRejected);
   },
 });
 

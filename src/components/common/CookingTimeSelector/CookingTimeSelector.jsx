@@ -1,6 +1,19 @@
 import styles from "./CookingTimeSelector.module.css";
+import { useState } from "react";
 
 const CookingTimeSelector = ({ time, onDecrease, onIncrease, label }) => {
+  const [touched, setTouched] = useState(false);
+
+  const handleDecrease = () => {
+    setTouched(true);
+    onDecrease();
+  };
+
+  const handleIncrease = () => {
+    setTouched(true);
+    onIncrease();
+  };
+
   return (
     <div className={styles.fieldGroup}>
       <label className={styles.fieldLabel}>{label}</label>
@@ -8,15 +21,17 @@ const CookingTimeSelector = ({ time, onDecrease, onIncrease, label }) => {
         <button
           type="button"
           className={styles.roundButton}
-          onClick={onDecrease}
+          onClick={handleDecrease}
         >
           <span>-</span>
         </button>
-        <span className={styles.timeText}>{time} min</span>
+        <span className={`${styles.timeText} ${touched ? styles.active : ""}`}>
+          {time} min
+        </span>
         <button
           type="button"
           className={styles.roundButton}
-          onClick={onIncrease}
+          onClick={handleIncrease}
         >
           <span>+</span>
         </button>

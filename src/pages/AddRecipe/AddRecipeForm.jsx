@@ -1,119 +1,147 @@
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import styles from "./AddRecipeForm.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import Dropdown from "../../components/common/Dropdown/Dropdown";
-import TextInput from "../../components/common/TextInput/TextInput";
-import AddIngredientButton from "../../components/common/AddIngredientButton/AddIngredientButton";
 import CookingTimeSelector from "../../components/common/CookingTimeSelector/CookingTimeSelector";
 import TextareaInput from "../../components/common/TextareaInput/TextareaInput";
-import FormActions from "../../components/common/FormActions/FormActions";
 import PhotoUpload from "../../components/common/PhotoUpload/PhotoUpload";
+import IngredientsSection from "../../components/common/IngredientsSection/IngredientsSection";
+import FormActions from "../../components/common/FormActions/FormActions";
+
+import { getCategories } from "../../redux/slices/categoriesOperations";
+import { selectCategories } from "../../redux/slices/categoriesSlice";
+import { getAreas } from "../../redux/slices/areasOperations";
+import { selectAreas } from "../../redux/slices/areasSlice";
+import { getIngredients } from "../../redux/slices/ingredientsOperations";
+import { selectIngredients } from "../../redux/slices/ingredientsSlice";
+import { addRecipe } from "../../redux/slices/recipesOperations";
+import { showNotification } from "../../redux/slices/notificationsSlice";
 
 const AddRecipeForm = () => {
   const [time, setTime] = useState(10);
+  const [addedIngredients, setAddedIngredients] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const categories = useSelector(selectCategories);
+  const areas = useSelector(selectAreas);
+  const ingredients = useSelector(selectIngredients);
+
+  useEffect(() => {
+    dispatch(getCategories());
+    dispatch(getAreas());
+    dispatch(getIngredients());
+  }, [dispatch]);
 
   const decreaseTime = () => {
     if (time > 1) setTime(time - 1);
   };
-
-  const increaseTime = () => {
-    setTime(time + 1);
-  };
-
-  const categories = [
-    "Beef",
-    "Breakfast",
-    "Desserts",
-    "Lamb",
-    "Miscellaneous",
-    "Pasta",
-    "Pork",
-    "Seafood",
-    "Side",
-    "Starter",
-  ];
-
-  const areas = [
-    "French",
-    "Spanish",
-    "Italian",
-    "English",
-    "Norwegian",
-    "Ukrainian",
-  ];
-
-  const ingredients = [
-    "Cabbage",
-    "Cucumber",
-    "Tomato",
-    "Corn",
-    "Radish",
-    "Parsley",
-  ];
+  const increaseTime = () => setTime(time + 1);
 
   return (
-    <div className={styles.wrapper}>
-      <nav className={styles.breadcrumbs}>
-        <span className={styles.link}>Home</span>
-        <span className={styles.separator}>/</span>
-        <span className={styles.current}>Add Recipe</span>
-      </nav>
-
-      <div className={styles.header}>
-        <h1 className={styles.title}>Add Recipe</h1>
-        <p className={styles.subtitle}>
-          Reveal your culinary art, share your favorite recipe and create
-          gastronomic masterpieces with us.
-        </p>
-      </div>
-
+    <div>
       <Formik
         initialValues={{
           photo: null,
           title: "",
           category: "",
           area: "",
-          ingredient: "",
-          quantity: "",
           preparation: "",
+          ingredients: [],
         }}
         validationSchema={Yup.object({
+          photo: Yup.mixed().required("Photo is required"),
           title: Yup.string().required("Title is required"),
           category: Yup.string().required("Category is required"),
           area: Yup.string().required("Area is required"),
-          ingredient: Yup.string().required("Ingredient is required"),
-          quantity: Yup.string().required("Quantity is required"),
           preparation: Yup.string().required("Preparation is required"),
+          ingredients: Yup.array()
+            .min(1, "Ingredients are required")
+            .required("Ingredients are required"),
         })}
-        onSubmit={(values) => console.log({ ...values, cookingTime: time })}
+        onSubmit={async (values, { resetForm, setSubmitting }) => {
+          try {
+            const formData = new FormData();
+            formData.append("title", values.title);
+            formData.append("category", values.category);
+            formData.append("area", values.area);
+            formData.append("preparation", values.preparation);
+            formData.append("cookingTime", time);
+
+            addedIngredients.forEach((ing, i) => {
+              formData.append(`ingredients[${i}][name]`, ing.name);
+              formData.append(`ingredients[${i}][quantity]`, ing.quantity);
+            });
+
+            if (values.photo) {
+              formData.append("photo", values.photo);
+            }
+
+            const newRecipe = await dispatch(addRecipe(formData)).unwrap();
+
+            resetForm();
+            setTime(10);
+            setAddedIngredients([]);
+
+            dispatch(
+              showNotification({
+                type: "success",
+                message: "Recipe created successfully",
+              })
+            );
+
+            navigate(`/recipe/${newRecipe.id}`);
+          } catch (err) {
+            dispatch(
+              showNotification({
+                type: "error",
+                message: err.message || "Failed to create recipe",
+              })
+            );
+          } finally {
+            setSubmitting(false);
+          }
+        }}
       >
         {({ values, errors, touched, setFieldValue, resetForm }) => (
           <Form className={styles.formContainer}>
             <div className={styles.leftCol}>
-              <Field name="photo" component={PhotoUpload} />
+              <PhotoUpload
+                value={values.photo}
+                onChange={(file) => setFieldValue("photo", file)}
+                onClear={() => setFieldValue("photo", null)}
+              />
+              {errors.photo && touched.photo && (
+                <div className={styles.error}>{errors.photo}</div>
+              )}
             </div>
 
             <div className={styles.rightCol}>
-              <label className={styles.sectionLabel} htmlFor="title">
-                THE NAME OF THE RECIPE
-              </label>
-              <TextareaInput
-                name="title"
-                placeholder="Enter a description of the dish"
-                maxLength={200}
-                value={values.title}
-                className={styles.textInputTitle}
-              />
-              {errors.title && touched.title && (
-                <div className={styles.error}>{errors.title}</div>
-              )}
+              <div className={`${styles.fieldGroup} ${styles.textInputTitle}`}>
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="THE NAME OF THE RECIPE"
+                  value={values.title}
+                  onChange={(e) => setFieldValue("title", e.target.value)}
+                  className={`${styles.inputTitle} ${
+                    errors.title && touched.title ? styles.inputError : ""
+                  }`}
+                />
+                {errors.title && touched.title && (
+                  <div className={styles.error}>{errors.title}</div>
+                )}
+              </div>
 
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>
                   <Dropdown
                     label="CATEGORY"
-                    options={categories}
+                    options={categories.map((c) => c.name)}
                     value={values.category}
                     onChange={(val) => setFieldValue("category", val)}
                     placeholder="Select a category"
@@ -122,7 +150,6 @@ const AddRecipeForm = () => {
                     <div className={styles.error}>{errors.category}</div>
                   )}
                 </div>
-
                 <div className={styles.fieldGroup}>
                   <CookingTimeSelector
                     label="COOKING TIME"
@@ -136,40 +163,29 @@ const AddRecipeForm = () => {
               <div className={styles.fieldGroup}>
                 <Dropdown
                   label="AREA"
-                  options={areas}
+                  options={areas.map((a) => a.name)}
                   value={values.area}
                   onChange={(val) => setFieldValue("area", val)}
                   placeholder="Select an area"
+                  className={styles.dropdownArea}
                 />
                 {errors.area && touched.area && (
                   <div className={styles.error}>{errors.area}</div>
                 )}
               </div>
 
-              <div className={styles.fieldGroup}>
-                <label className={styles.fieldLabel}>INGREDIENTS</label>
-                <div className={styles.ingredientsRow}>
-                  <Dropdown
-                    label=""
-                    options={ingredients}
-                    value={values.ingredient}
-                    onChange={(val) => setFieldValue("ingredient", val)}
-                    placeholder="Add the ingredient"
-                  />
-                  <TextInput
-                    name="quantity"
-                    placeholder="Enter quantity"
-                    showCounter={false}
-                    value={values.quantity}
-                  />
-                </div>
-                <AddIngredientButton
-                  onClick={() => console.log("Add ingredient")}
-                />
-                {errors.ingredient && touched.ingredient && (
-                  <div className={styles.error}>{errors.ingredient}</div>
-                )}
-              </div>
+              <IngredientsSection
+                ingredients={ingredients}
+                values={values}
+                setFieldValue={setFieldValue}
+                errors={errors}
+                touched={touched}
+                addedIngredients={addedIngredients}
+                setAddedIngredients={(list) => {
+                  setAddedIngredients(list);
+                  setFieldValue("ingredients", list);
+                }}
+              />
 
               <div className={`${styles.fieldGroup} ${styles.noMargin}`}>
                 <label className={`${styles.fieldLabel} ${styles.noMargin}`}>
@@ -180,18 +196,19 @@ const AddRecipeForm = () => {
                   placeholder="Enter recipe"
                   maxLength={1000}
                   value={values.preparation}
+                  error={errors.preparation}
+                  touched={touched.preparation}
                 />
-                {errors.preparation && touched.preparation && (
-                  <div className={styles.error}>{errors.preparation}</div>
-                )}
               </div>
 
               <FormActions
                 onDelete={() => {
                   resetForm();
                   setTime(10);
+                  setFieldValue("photo", null);
+                  setAddedIngredients([]);
                 }}
-                onSubmit={() => console.log("Submit clicked")}
+                onSubmit={() => {}}
               />
             </div>
           </Form>

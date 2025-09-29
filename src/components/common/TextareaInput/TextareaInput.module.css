@@ -1,13 +1,14 @@
 .wrapper {
   position: relative;
-  width: 100%;
-  margin-bottom: 60px;
   margin-top: 40px;
+  margin-bottom: 60px;
+  box-sizing: border-box;
+  max-width: 649px;
 }
 
 .textarea {
   width: 100%;
-  min-height: 40px;
+  height: 40px;
   border: none;
   border-bottom: 1px solid var(--color-gray);
   padding: 8px 40px 8px 12px;
@@ -20,19 +21,34 @@
   letter-spacing: var(--letter-spacing-sm);
   color: var(--color-black);
   margin: 0;
+  outline: none;
+  transition: border-color 0.2s, border-width 0.2s;
+}
+
+.textarea:focus {
+  border-bottom: 2px solid var(--color-black);
 }
 
 .textarea::placeholder {
   color: var(--color-gray);
 }
 
+.error {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  margin-top: 16px;
+  margin-left: 10px;
+}
+
 .counter {
   position: absolute;
-  right: var(--spacing-sm);
-  bottom: var(--spacing-sm);
+  right: -50px;
+  bottom: 8px;
   font-family: var(--font-family-base);
   font-size: 14px;
   line-height: 24px;
   font-weight: var(--font-weight-regular);
   color: var(--color-gray);
+  pointer-events: none;
 }

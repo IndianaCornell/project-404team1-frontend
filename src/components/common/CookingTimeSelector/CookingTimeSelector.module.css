@@ -34,16 +34,20 @@
 }
 
 .roundButton span {
-  font-size: var(--icon-size-lg);
-  font-weight: var(--font-weight-medium);
+  font-size: 35px;
   color: var(--color-black);
 }
 
 .timeText {
   font-family: var(--font-family-base);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-regular);
   font-size: var(--font-size-sm);
   line-height: 24px;
   letter-spacing: var(--letter-spacing-sm);
   color: var(--color-gray);
+  transition: color 0.2s ease;
+}
+
+.timeText.active {
+  color: var(--color-black);
 }
