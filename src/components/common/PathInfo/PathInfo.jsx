@@ -1,26 +1,18 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-export default function PathInfo({ title }) {
-  const location = useLocation();
-  const segments = location.pathname.split("/").filter(Boolean);
+import styles from './PathInfo.module.scss';
+import { routes } from '../../constants/routes';
 
+const PathInfo = ({ path }) => {
   return (
-    <nav className="breadcrumbs" aria-label="breadcrumbs">
-      <Link to="/">Home</Link>
-      {segments.map((seg, i) => {
-        const url = "/" + segments.slice(0, i + 1).join("/");
-        const isLast = i === segments.length - 1;
-        return (
-          <span key={url}>
-            <span className="sep">/</span>
-            {isLast ? (
-              <span className="current">{title || seg}</span>
-            ) : (
-              <Link to={url}>{seg}</Link>
-            )}
-          </span>
-        );
-      })}
-    </nav>
+    <div className={styles.wrapper}>
+      <Link to={routes.main} className={`${styles.text} ${styles.link}`}>
+        home
+      </Link>
+      <span className={styles.text}>/</span>
+      <p className={`${styles.text} ${styles.black}`}>{path}</p>
+    </div>
   );
-}
+};
+
+export default PathInfo;
