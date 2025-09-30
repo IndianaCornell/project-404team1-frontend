@@ -1,13 +1,17 @@
-import AppRoutes from "./routes";
-import Notification from "../components/common/Notification/Notification";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
-function App() {
-  return (
-    <>
-      <AppRoutes />
-      <Notification />
-    </>
-  );
-}
+import App from './App.jsx';
+import rootStor from './redux/store';
 
-export default App;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <Provider store={rootStor.store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>
+  </React.StrictMode>
+);

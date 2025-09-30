@@ -1,0 +1,14 @@
+.text {
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.28px;
+}
+
+@media (min-width: 768px) {
+  .text {
+    font-size: 16px;
+    letter-spacing: -0.32px;
+  }
+}
