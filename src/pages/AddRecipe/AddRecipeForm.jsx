@@ -48,6 +48,7 @@ const AddRecipeForm = () => {
         initialValues={{
           photo: null,
           title: "",
+          description: "",
           category: "",
           area: "",
           preparation: "",
@@ -56,6 +57,7 @@ const AddRecipeForm = () => {
         validationSchema={Yup.object({
           photo: Yup.mixed().required("Photo is required"),
           title: Yup.string().required("Title is required"),
+          description: Yup.string().required("Description is required"),
           category: Yup.string().required("Category is required"),
           area: Yup.string().required("Area is required"),
           preparation: Yup.string().required("Preparation is required"),
@@ -67,6 +69,7 @@ const AddRecipeForm = () => {
           try {
             const formData = new FormData();
             formData.append("title", values.title);
+            formData.append("description", values.description);
             formData.append("category", values.category);
             formData.append("area", values.area);
             formData.append("preparation", values.preparation);
@@ -121,7 +124,7 @@ const AddRecipeForm = () => {
             </div>
 
             <div className={styles.rightCol}>
-              <div className={`${styles.fieldGroup} ${styles.textInputTitle}`}>
+              <div className={`${styles.textInputTitle}`}>
                 <input
                   type="text"
                   name="title"
@@ -136,6 +139,15 @@ const AddRecipeForm = () => {
                   <div className={styles.error}>{errors.title}</div>
                 )}
               </div>
+
+              <TextareaInput
+                name="description"
+                placeholder="Enter a description of the dish"
+                maxLength={200}
+                value={values.description}
+                error={errors.description}
+                touched={touched.description}
+              />
 
               <div className={styles.row}>
                 <div className={styles.fieldGroup}>

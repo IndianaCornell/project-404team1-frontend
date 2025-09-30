@@ -1,14 +1,16 @@
 .photoUpload {
-  width: 551px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  width: 100%;
+  max-width: 343px;
 }
 
 .photoLabel {
-  width: 551px;
-  height: 400px;
+  width: 100%;
+  max-width: 343px;
+  height: 318px;
   border: 1px dashed var(--color-gray);
   border-radius: var(--radius-lg);
   display: flex;
@@ -24,8 +26,9 @@
 }
 
 .previewImage {
-  width: 551px;
-  height: 400px;
+  width: 100%;
+  max-width: 343px;
+  height: 318px;
   object-fit: cover;
   border-radius: var(--radius-lg);
 }
@@ -48,4 +51,38 @@
   color: var(--color-black);
   text-decoration: underline;
   cursor: pointer;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .photoUpload {
+    max-width: 704px;
+  }
+
+  .photoLabel {
+    max-width: 704px;
+    height: 400px;
+  }
+
+  .previewImage {
+    max-width: 704px;
+    height: 400px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1440px) {
+  .photoUpload {
+    max-width: 551px;
+  }
+
+  .photoLabel {
+    max-width: 551px;
+    height: 400px;
+  }
+
+  .previewImage {
+    max-width: 551px;
+    height: 400px;
+  }
 }

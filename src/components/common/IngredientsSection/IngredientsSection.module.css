@@ -18,9 +18,18 @@
 
 .ingredientsRow {
   display: flex;
+  flex-direction: column;
   gap: 20px;
   width: 100%;
   margin-bottom: 40px;
+}
+
+@media (min-width: 768px) {
+  .ingredientsRow {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 20px;
+  }
 }
 
 .withError {
