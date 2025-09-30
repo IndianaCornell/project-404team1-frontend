@@ -43,7 +43,7 @@
 
 .counter {
   position: absolute;
-  right: -50px;
+  right: 0px;
   bottom: 8px;
   font-family: var(--font-family-base);
   font-size: 14px;

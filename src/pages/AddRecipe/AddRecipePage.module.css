@@ -1,11 +1,38 @@
 .wrapper {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
 }
 
 .header {
   display: flex;
   flex-direction: column;
-  max-width: 443px;
+  max-width: 343px;
+}
+
+
+@media (min-width: 768px) {
+  .wrapper {
+    max-width: 704px;
+  }
+
+  .header {
+    max-width: 443px;
+    gap: 20px;
+  }
+}
+
+
+@media (min-width: 1440px) {
+  .wrapper {
+    max-width: 1200px;
+  }
+
+  .header {
+    gap: 40px;
+  }
+}
+
+@media (max-width: 376px) {
+  .wrapper {
+    max-width: 343px;
+  }
 }

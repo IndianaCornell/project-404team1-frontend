@@ -1,21 +1,71 @@
 .formContainer {
   display: flex;
-  gap: 40px;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 32px;
   width: 100%;
-  box-sizing: border-box;
 }
 
 .leftCol {
-  flex: 1;
+  width: 100%;
 }
 
 .rightCol {
-  flex: 1;
-  max-width: 649px;
   width: 100%;
-  box-sizing: border-box;
 }
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+@media (min-width: 769px) {
+  .formContainer {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .leftCol {
+    flex: 1;
+    max-width: 551px;
+  }
+
+  .rightCol {
+    flex: 1;
+    max-width: 649px;
+  }
+
+  .row {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 768px) {
+  .formContainer {
+    gap: 80px;
+  }
+
+  .row {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 40px;
+    align-items: flex-end;
+  }
+
+  .dropdownCategory {
+    width: 315px;
+    flex: none;
+  }
+}
+
+@media (min-width: 1440px) {
+  .row {
+    gap: 60px;
+  }
+}
+
 
 .form {
   display: flex;
@@ -51,15 +101,6 @@
   margin-left: 10px;
 }
 
-
-.row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  width: 100%;
-}
-
 .fieldGroup {
   display: flex;
   flex-direction: column;
@@ -67,12 +108,20 @@
   margin-bottom: 60px;
 }
 
+@media (max-width: 376px) {
+  .fieldGroup {
+  margin-bottom: 20px;
+}
+}
+
 .dropdownArea {
   max-width: 330px;
 }
 
 .textInputTitle {
-  margin-bottom: 60px;
+  margin-bottom: 0px;
+  width: 100%;
+  max-width: 649px;
 }
 
 .noMargin {
@@ -86,14 +135,17 @@
   line-height: var(--line-height-md);
   letter-spacing: var(--letter-spacing-sm);
   text-transform: uppercase;
-
   color: var(--color-gray);
   border: none;
-  /* border-bottom: 1px solid var(--color-gray); */
   padding: 8px 4px;
   outline: none;
   transition: border-color 0.2s, color 0.2s;
   background: transparent;
+  margin: 0;
+  width: 100%;
+  min-width: unset;
+  max-width: 100%;
+  display: block;
 }
 
 .inputTitle:focus {
