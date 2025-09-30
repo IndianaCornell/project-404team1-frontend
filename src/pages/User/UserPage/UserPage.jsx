@@ -1,74 +1,49 @@
-import styles from './User.module.scss';
+import { useState } from 'react';
+
+import User from '../../../components/common/User';
 import {
-  Container,
-  PathInfo,
-  MainTitle,
-  Subtitle,
-  Button,
-  PageLoader,
-} from '../../ui-kit';
-import UserInfo from '../UserInfo';
-import TabsList from '../TabsList';
-import LogOutModal from '../LogOutModal';
+  useFollow,
+  useOwner,
+  useUpdateAvatar,
+  useUserProfile,
+} from '../../../hooks/user';
+import { useLogout } from '../../../hooks/auth';
 
-const User = ({
-  isOwner,
-  user,
-  userImg,
-  isFollow,
-  isLoading,
-  onFollowClick,
-  onUpdateAvatar,
-  onLogout,
-  isLogoutModal,
-  onOpenLogoutModal,
-  onCloseLogoutModal,
-}) => {
-  const textButton = isOwner ? 'log out' : isFollow ? 'following' : 'follow';
+const UserPage = () => {
+  const owner = useOwner();
+  const { onFollow, onUnfollow } = useFollow();
+  const { onLogout } = useLogout();
+  const { onUpdateAvatar } = useUpdateAvatar();
+  const [isLogoutModal, setIsLogoutModal] = useState(false);
+  const { userProfile, isLoading } = useUserProfile();
 
-  const onButtonClick = () => {
-    if (isOwner) {
-      onOpenLogoutModal();
-    } else {
-      onFollowClick(user?._id);
-    }
+  const onOpenLogoutModal = () => {
+    setIsLogoutModal(true);
   };
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
+  const onCloseLogoutModal = () => {
+    setIsLogoutModal(false);
+  };
 
   return (
-    <section className={styles.page}>
-      <Container>
-        <PathInfo path="profile" />
-        <div className={styles.texts}>
-          <MainTitle text="Profile" />
-          <Subtitle text="Reveal your culinary art, share your favorite recipe and create gastronomic masterpieces with us." />
-        </div>
-        <div className={styles.content}>
-          <div className={styles.info_wrapper}>
-            <UserInfo
-              isOwner={isOwner}
-              user={user}
-              userImg={userImg}
-              onUpdateAvatar={onUpdateAvatar}
-            />
-            <Button onClick={onButtonClick}>{textButton}</Button>
-          </div>
-          <TabsList isOwner={isOwner} />
-        </div>
-      </Container>
-      <LogOutModal
-        isOpen={isLogoutModal}
-        onCancel={onCloseLogoutModal}
-        onSuccess={() => {
-          onLogout();
-          onCloseLogoutModal();
-        }}
-      />
-    </section>
+    <User
+      isOwner={owner?._id === userProfile?._id}
+      user={userProfile}
+      userImg={
+        owner?._id === userProfile?._id ? owner?.avatar : userProfile?.avatar
+      }
+      isFollow={owner?.following.includes(userProfile?._id)}
+      isLoading={isLoading}
+      onFollowClick={
+        owner?.following.includes(userProfile?._id) ? onUnfollow : onFollow
+      }
+      onUpdateAvatar={onUpdateAvatar}
+      onLogout={onLogout}
+      isLogoutModal={isLogoutModal}
+      onOpenLogoutModal={onOpenLogoutModal}
+      onCloseLogoutModal={onCloseLogoutModal}
+    />
   );
 };
 
-export default User;
+export default UserPage;

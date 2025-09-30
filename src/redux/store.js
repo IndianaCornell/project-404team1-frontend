@@ -1,30 +1,30 @@
-import { configureStore, createSlice } from "@reduxjs/toolkit";
-import { api } from "../lib/api";
+import { configureStore } from "@reduxjs/toolkit";
 
-const authSlice = createSlice({
-  name: "auth",
-  initialState: { token: null, user: null }, // user: { id, name, ... }
-  reducers: {
-    setCredentials: (s, a) => {
-      s.token = a.payload.token;
-      s.user = a.payload.user;
-    },
-    logOut: (s) => {
-      s.token = null;
-      s.user = null;
-    },
-  },
-});
-export const { setCredentials, logOut } = authSlice.actions;
+import { authReducer } from "./auth";
+import categoriesReducer from "./categories/categoriesSlice.js";
+import { recipesReducer } from "./recipes/recipesSlice";
 
-export const store = configureStore({
+import testimonialsReducer from "./testimonials/testimonialsSlice.js";
+
+import areasReducer from "./areas/areaSlice.js";
+import ingredientsReducer from "./ingredients/ingredientsSlice.js";
+
+import modalReducer from "./modal/modalSlice.js";
+import favoritesReducer from "./favorites/favoritesSlice.js";
+
+const store = configureStore({
   reducer: {
-    [api.reducerPath]: api.reducer,
-    auth: authSlice.reducer,
+    auth: authReducer.auth,
+    categories: categoriesReducer,
+    testimonials: testimonialsReducer,
+    recipes: recipesReducer,
+    areas: areasReducer,
+    ingredients: ingredientsReducer,
+    modal: modalReducer,
+    favorites: favoritesReducer,
   },
-  middleware: (getDefault) => getDefault().concat(api.middleware),
 });
 
-// ✅ селекторы
-export const selectToken = (s) => s.auth.token;
-export const selectMe = (s) => s.auth.user;
+const rootStore = { store };
+
+export default rootStore;

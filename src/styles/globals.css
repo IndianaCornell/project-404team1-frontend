@@ -1,33 +1,6 @@
-/* GLOBALS */
-@import "modern-normalize/modern-normalize.css";
-@import "./fonts.css";
-@import "./variables.css";   /* см. подсказки ниже */
-@import "./buttons.css";
 
-/* ===== CSS vars (по умолчанию, если нет в variables.css) ===== */
-:root {
-  --font-sans: "Mulish", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-
-  /* Цвета по макету */
-  --color-black: #111111;
-  --color-muted: #6B7280;
-  --color-muted-2: #BFBEBE;
-  --color-line: #EAEAEA;
-  --color-white: #ffffff;
-
-  /* Контейнер и отступы */
-  --container: 1180px;   /* контентная ширина из Figma (внутри 1440) */
-  --gutter-x: 20px;      /* боковые поля */
-  --gutter-y: 24px;
-}
-
-/* ===== База ===== */
 html {
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
+  box-sizing: border-box;
 }
 
 *,
@@ -36,106 +9,75 @@ html {
   box-sizing: border-box;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html,
 body {
-  margin: 0;
-  background: var(--color-white);
-  color: var(--color-black);
-  line-height: 1.5;
-  font-weight: 400;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-mulish);
   font-size: 16px;
+  font-weight: 500;
+  color: var(--color-main);
+  line-height: 1.5;
 }
 
-/* Медиа */
-img, picture, video, canvas, svg {
-  display: block;
-  max-width: 100%;
+ul,
+li {
+  list-style: none;
 }
 
-/* Формы */
-input, button, textarea, select {
-  font: inherit;
-  color: inherit;
-}
-
-/* Чекбокс без нативного стиля (по проекту) */
-input[type="checkbox"]{
-  appearance: none;
-  -webkit-appearance: none;
-  margin: 0;
-  cursor: pointer;
-}
-
-/* Ссылки */
 a {
   color: inherit;
   text-decoration: none;
 }
-a:focus-visible,
-button:focus-visible,
-[role="button"]:focus-visible {
-  outline: 2px solid #111;
-  outline-offset: 2px;
-  border-radius: 6px;
+
+a:focus {
+  outline: none;
 }
 
-/* Текстовое выделение (приятный серый) */
-::selection {
-  background: #f1f1f1;
-  color: #111;
-}
-
-/* ===== Контейнер ===== */
-.container {
-  width: 100%;
-  max-width: calc(var(--container) + var(--gutter-x) * 2);
-  margin: 0 auto;
-  padding: var(--gutter-y) var(--gutter-x);
-}
-
-/* Брейкпоинты как в макетах */
-@media (max-width: 1024px) {
-  :root { --gutter-x: 16px; --gutter-y: 20px; }
-}
-@media (max-width: 768px) {
-  :root { --gutter-x: 12px; --gutter-y: 16px; }
-}
-
-/* ===== Типографика по Figma ===== */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 800;
-  line-height: 1.2;
-  margin: 0 0 .5em;
-}
-
-h1 { font-size: 32px; letter-spacing: .2px; }         /* PROFILE */
-h2 { font-size: 24px; }
-h3 { font-size: 20px; }
-p  { margin: 0 0 1em; color: inherit; }
-
-.muted { color: var(--color-muted); }
-
-/* ===== Утилиты ===== */
-.hidden { display: none !important; }
-.visually-hidden {
-  position: absolute !important;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0 0 0 0);
-  white-space: nowrap; border: 0;
-}
-
-/* ===== Горизонтальные линии, границы ===== */
-.hr {
-  height: 1px; background: var(--color-line);
-  border: 0; margin: 16px 0;
-}
-
-/* ===== Кнопки по умолчанию (резет + курсор) ===== */
 button {
-  cursor: pointer;
-  background: none;
+  color: inherit;
+  background-color: inherit;
+  outline: none;
   border: none;
+  font-family: inherit;
+  cursor: pointer;
 }
 
-/* ===== Таблицы/списки по умолчанию (без внешних отступов) ===== */
-ul, ol { margin: 0; padding-left: 1.2em; }
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.modal-open {
+  overflow-y: hidden;
+  touch-action: none;
+}

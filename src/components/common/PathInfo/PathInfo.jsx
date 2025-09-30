@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
-import styles from './PathInfo.module.scss';
-import { routes } from '../../constants/routes';
+import styles from './PathInfo.module.css';
+import { routes } from '../../../constants/routes';
 
 const PathInfo = ({ path }) => {
   return (
