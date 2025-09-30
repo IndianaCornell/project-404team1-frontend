@@ -14,9 +14,11 @@ function CategoryCard({ category }) {
   };
 
   const handleCategoryClick = () => {
-    dispatch(
-      getRecipesByCategory({ category: category.name, page: 1, limit: 12 }),
-    );
+    console.log("CLICK", category.name);
+  dispatch(getRecipesByCategory({ category: category.name, page: 1, limit: 12 }))
+    .unwrap()
+    .then(() => console.log("FULFILLED"))
+    .catch((e) => console.error("REJECTED", e));
   };
 
   return (

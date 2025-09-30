@@ -1,6 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "@lib/api.js";
 
+const delay = (milliseconds) =>
+  new Promise((resolve) => setTimeout(resolve, milliseconds));
+
 export const getRecipes = createAsyncThunk(
   "recipes/getAll",
   async ({ page = 1, limit = 12, ...filters } = {}) => {
@@ -14,8 +17,18 @@ export const getRecipesByCategory = createAsyncThunk(
   "recipes/getByCategory",
   async ({ category, page = 1, limit = 12, ...filters } = {}) => {
     const params = new URLSearchParams({ category, page, limit, ...filters });
-    const recipesResponse = await api.get(`/recipes?${params}`);
-    return { recipes: recipesResponse.data, category };
+    const { data } = await api.get(`/recipes?${params.toString()}`);
+
+    const items  = Array.isArray(data) ? data : (data.items ?? data.data ?? []);
+    const total  = data.total ?? items.length ?? 0;
+    const pageN  = Number(data?.page  ?? page);
+    const limitN = Number(data?.limit ?? limit);
+
+    // ⬇️ саме та форма, яку парсить handleCategoryFulfilled
+    return {
+      recipes: { items, total, page: pageN, limit: limitN },
+      category,
+    };
   }
 );
 
