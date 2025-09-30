@@ -1,0 +1,152 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  padding: 194px 16px 100px 16px;
+
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  margin-bottom: 64px;
+}
+
+.title {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  max-width: 327px;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-weight: 500;
+  max-width: 326px;
+  font-size: 14px;
+  color: var(--color-white);
+  margin-bottom: 20px;
+}
+
+.btn {
+  padding: 12px 24px;
+  font-size: 14px;
+  border-radius: 30px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 30px;
+}
+
+.btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.images {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.img1 {
+  width: 77px;
+  height: 70px;
+  margin-top: 122px;
+  border-radius: 15px;
+  transform: rotate(-5deg);
+}
+
+.img2 {
+  width: 190px;
+  height: 172px;
+  border-radius: 30px;
+  transform: rotate(-5deg);
+}
+
+@media (min-width: 768px) {
+  .hero {
+    border-radius: 30px;
+    margin-bottom: 100px;
+    padding: 217px 29px 90px 29px;
+  }
+
+  .title {
+    font-size: 65px;
+    margin-bottom: 40px;
+    min-width: 678px;
+  }
+
+  .subtitle {
+    max-width: 577px;
+    font-size: 16px;
+    margin-bottom: 40px;
+  }
+
+  .btn {
+    padding: 14px 32px;
+    font-size: 16px;
+  }
+
+  .img1 {
+    width: 128px;
+    height: 116px;
+    margin-top: 110px;
+    border-radius: 15px;
+  }
+
+  .img2 {
+    width: 260px;
+    height: 230px;
+    border-radius: 24px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .hero {
+    border-radius: 24px;
+    max-width: 1400px;
+    padding: 154px 268px 81px 268px;
+  }
+
+  .title {
+    font-size: 90px;
+    line-height: 1;
+    max-width: 875px;
+    margin-bottom: 40px;
+  }
+
+  .subtitle {
+    max-width: 577px;
+    font-size: 16px;
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+
+  .btn {
+    padding: 16px 32px;
+    font-size: 16px;
+    border-radius: 30px;
+    margin-bottom: 40px;
+  }
+
+  .img1 {
+    width: 128px;
+    height: 116px;
+    margin-top: 138px;
+    border-radius: 15px;
+  }
+
+  .img2 {
+    width: 302px;
+    height: 273px;
+    border-radius: 30px;
+  }
+}

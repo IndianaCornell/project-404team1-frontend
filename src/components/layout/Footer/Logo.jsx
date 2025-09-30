@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const Logo = () => {
-  return (
-    <div>Logo</div>
-  )
-}
+  return <span className="footer__logo-text">foodies</span>;
+};
 
-export default Logo
+export default Logo;

@@ -1,30 +1,22 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import { authReducer } from "./auth";
-import categoriesReducer from "./categories/categoriesSlice.js";
-import { recipesReducer } from "./recipes/recipesSlice";
+import areasReducer from "./slices/areasSlice";
+import categoriesReducer from "./slices/categoriesSlice";
+import ingredientsReducer from "./slices/ingredientsSlice";
 
-import testimonialsReducer from "./testimonials/testimonialsSlice.js";
+import recipesReducer from "./slices/recipesSlice";
+import usersReducer from "./slices/usersSlice";
+import testimonialsReducer from "./slices/testimonialsSlice";
+import notificationsReducer from "./slices/notificationsSlice";
 
-import areasReducer from "./areas/areaSlice.js";
-import ingredientsReducer from "./ingredients/ingredientsSlice.js";
-
-import modalReducer from "./modal/modalSlice.js";
-import favoritesReducer from "./favorites/favoritesSlice.js";
-
-const store = configureStore({
+export const store = configureStore({
   reducer: {
-    auth: authReducer.auth,
-    categories: categoriesReducer,
-    testimonials: testimonialsReducer,
-    recipes: recipesReducer,
     areas: areasReducer,
+    categories: categoriesReducer,
     ingredients: ingredientsReducer,
-    modal: modalReducer,
-    favorites: favoritesReducer,
+    recipes: recipesReducer,
+    users: usersReducer,
+    testimonials: testimonialsReducer,
+    notifications: notificationsReducer,
   },
 });
-
-const rootStore = { store };
-
-export default rootStore;

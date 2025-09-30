@@ -12,8 +12,8 @@ const AppRoutes = () => {
       <Route path="/" element={<SharedLayout />}>
         <Route index element={<HomePage />} />
         <Route path="recipe/:id" element={<RecipePage />} />
-        <Route path="add" element={<AddRecipePage />} />
-        <Route path="users/:id" element={<UserPage />} />
+        <Route path="/recipe/add" element={<AddRecipePage />} />
+        <Route path="user/:id" element={<UserPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

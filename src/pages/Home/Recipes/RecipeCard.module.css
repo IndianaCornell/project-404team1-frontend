@@ -1,0 +1,18 @@
+/* src/pages/CategoryRecipesPage/RecipeCard.module.css */
+.card { border:1px solid #eee; border-radius:18px; overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+.thumb { position:relative; padding-top:65%; overflow:hidden; }
+.thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+
+.body { padding:12px; display:flex; flex-direction:column; gap:8px; }
+.title { font-size:16px; line-height:1.2; text-transform:uppercase; letter-spacing:.02em; }
+.snippet { font-size:13px; color:#666; line-height:1.4; height:2.8em; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+
+.meta { display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
+.author { display:flex; align-items:center; gap:8px; }
+.avatar { width:24px; height:24px; border-radius:50%; object-fit:cover; }
+.authorName { font-size:13px; color:#333; }
+
+.actions { display:flex; align-items:center; gap:10px; }
+.iconBtn { border:1px solid #ddd; background:#fff; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; }
+.counter { display:flex; align-items:center; gap:6px; font-size:13px; color:#333; }
+.counter svg { width:16px; height:16px; }

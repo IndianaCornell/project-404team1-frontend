@@ -1,0 +1,160 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+}
+
+.leftCol {
+  width: 100%;
+}
+
+.rightCol {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+@media (min-width: 769px) {
+  .formContainer {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .leftCol {
+    flex: 1;
+    max-width: 551px;
+  }
+
+  .rightCol {
+    flex: 1;
+    max-width: 649px;
+  }
+
+  .row {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 768px) {
+  .formContainer {
+    gap: 80px;
+  }
+
+  .row {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 40px;
+    align-items: flex-end;
+  }
+
+  .dropdownCategory {
+    width: 315px;
+    flex: none;
+  }
+}
+
+@media (min-width: 1440px) {
+  .row {
+    gap: 60px;
+  }
+}
+
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionLabel {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-lg);
+  line-height: 28px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-gray);
+}
+
+.fieldLabel {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-md);
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-black);
+  margin-bottom: 16px;
+}
+
+.error {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  margin-top: 16px;
+  margin-left: 10px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 60px;
+}
+
+@media (max-width: 376px) {
+  .fieldGroup {
+  margin-bottom: 20px;
+}
+}
+
+.dropdownArea {
+  max-width: 330px;
+}
+
+.textInputTitle {
+  margin-bottom: 0px;
+  width: 100%;
+  max-width: 649px;
+}
+
+.noMargin {
+  margin-bottom: 0;
+}
+
+.inputTitle {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-extrabold);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-md);
+  letter-spacing: var(--letter-spacing-sm);
+  text-transform: uppercase;
+  color: var(--color-gray);
+  border: none;
+  padding: 8px 4px;
+  outline: none;
+  transition: border-color 0.2s, color 0.2s;
+  background: transparent;
+  margin: 0;
+  width: 100%;
+  min-width: unset;
+  max-width: 100%;
+  display: block;
+}
+
+.inputTitle:focus {
+  border-bottom: 1px solid var(--color-black);
+  color: var(--color-black);
+}
+
+.inputTitle:not(:placeholder-shown) {
+  color: var(--color-black);
+}
+
+

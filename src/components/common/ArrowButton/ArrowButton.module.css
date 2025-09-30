@@ -1,0 +1,35 @@
+.arrowButtonWhite{
+    width: 44px;
+    height: 44px;
+    gap: 10px;
+    opacity: 1;
+    border-radius: 30px;
+    border: 1px solid oklch(from var(--color-white) l c h / 0.2);
+    background: transparent;
+    cursor: pointer;
+    &:hover {
+        border: 1px solid oklch(from var(--color-white) l c h / 0.8);
+    }
+    & path {
+        width: 18px;
+        height: 18px;
+        stroke: var(--color-white);
+    }
+}
+.arrowButtonBlack{
+    width: 44px;
+    height: 44px;
+    gap: 10px;
+    opacity: 1;
+    border-radius: 30px;
+    border: 1px solid oklch(from var(--color-black) l c h / 0.2);
+    cursor: pointer;
+    &:hover {
+        border: 1px solid oklch(from var(--color-black) l c h / 0.8);
+    }
+    & path{
+        width: 18px;
+        height: 18px;
+        stroke: var(--color-black);
+    }
+}
