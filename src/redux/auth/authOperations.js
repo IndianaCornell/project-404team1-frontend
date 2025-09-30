@@ -21,7 +21,7 @@ export const getMe = createAsyncThunk(
     try {
       const { data } = await authApi.getMe();
       return data;
-    } catch (error) {
+    } catch {
       setToken();
       return rejectWithValue();
     }
