@@ -9,7 +9,7 @@
   padding: 194px 16px 100px 16px;
 
   width: 100%;
-  margin: 0;
+  margin: 0 auto;
   overflow: hidden;
 
   border-radius: 20px;
@@ -127,7 +127,7 @@
     max-width: 577px;
     font-size: 16px;
     margin-bottom: 40px;
-    line-height: 0.66;
+    line-height: 1.5;
   }
 
   .btn {
