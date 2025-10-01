@@ -3,7 +3,7 @@ import SharedLayout from "@components/layout/SharedLayout";
 import HomePage from "@pages/Home/HomePage";
 // import RecipePage from "@pages/Recipe/RecipePage";
 import AddRecipePage from "@pages/AddRecipe/AddRecipePage";
-import UserPage from "@/components/common/User";
+import UserPage from "@pages/User/UserPage";
 import NotFoundPage from "@pages/NotFound/NotFoundPage";
 import TestRecipePage from "@pages/Recipe/TestRecipePage";
 
