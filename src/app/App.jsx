@@ -1,10 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
 
-import App from './App.jsx';
-import rootStor from './redux/store';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { refreshUser } from "@redux/slices/authOperations";
+import { selectIsRefreshing } from "@redux/slices/authSlice";
+
+import AppRoutes from "./routes";
+import Notification from "../components/common/Notification/Notification";
+
+function App() {
+  const dispatch = useDispatch();
+  const isRefreshing = useSelector(selectIsRefreshing);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      dispatch(refreshUser());
+    }
+  }, [dispatch]);
+
+  if (isRefreshing) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <>
+      <AppRoutes />
+      <Notification />
+    </>
+  );
+}
+
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

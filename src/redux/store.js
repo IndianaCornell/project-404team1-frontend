@@ -8,9 +8,11 @@ import recipesReducer from "./slices/recipesSlice";
 import usersReducer from "./slices/usersSlice";
 import testimonialsReducer from "./slices/testimonialsSlice";
 import notificationsReducer from "./slices/notificationsSlice";
+import authReducer from "./slices/authSlice";
 
 export const store = configureStore({
   reducer: {
+    auth: authReducer,
     areas: areasReducer,
     categories: categoriesReducer,
     ingredients: ingredientsReducer,
