@@ -5,6 +5,7 @@ import { selectIsRefreshing } from "@redux/slices/authSlice";
 
 import AppRoutes from "./routes";
 import Notification from "../components/common/Notification/Notification";
+ 
 
 function App() {
   const dispatch = useDispatch();

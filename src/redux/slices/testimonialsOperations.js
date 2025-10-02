@@ -1,12 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import testimonialsJson from "@/mocks/testimonials.json";
-
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export const getTestimonials = createAsyncThunk(
   "testimonials/getAll",
-  async () => {
-    await delay(100);
-    return testimonialsJson;
+  async (_, thunkAPI) => {
+    try {
+      const res = await fetch("http://localhost:3000/api/testimonials");
+      if (!res.ok) throw new Error(`Failed: ${res.status}`);
+      const data = await res.json();
+      return data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
   }
 );
