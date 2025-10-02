@@ -10,7 +10,12 @@
       "@hooks/*": ["src/hooks/*"],
       "@lib/*": ["src/lib/*"],
       "@assets/*": ["src/assets/*"],
-      "@redux/*": ["src/redux/*"]
+      "@redux/*": ["src/redux/*"],
+      "@constants/*": ["src/constants/*"],
+      "@utils/*": ["src/utils/*"],
+      "@ui/*": ["src/components/ui/*"],
+      "@services/*": ["src/services/*"],
+      "@helpers/*": ["src/helpers/*"]
     }
   }
 }

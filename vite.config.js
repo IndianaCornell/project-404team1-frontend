@@ -23,6 +23,11 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "./src/assets"),
       "@app": path.resolve(__dirname, "./src/app"),
       "@lib": path.resolve(__dirname, "./src/lib"),
+      "@constants": path.resolve(__dirname, "./src/constants"),
+      "@utils": path.resolve(__dirname, "./src/utils"),
+      "@ui": path.resolve(__dirname, "./src/components/ui"),
+      "@services": path.resolve(__dirname, "./src/services"),
+      "@helpers": path.resolve(__dirname, "./src/helpers"),
     },
   },
 });
