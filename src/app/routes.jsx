@@ -6,7 +6,11 @@ import AddRecipePage from "@pages/AddRecipe/AddRecipePage";
 import UserPage from "@pages/User/UserPage";
 import NotFoundPage from "@pages/NotFound/NotFoundPage";
 import TestRecipePage from "@pages/Recipe/TestRecipePage";
-
+import PrivateRoute from "./PrivateRoute";
+import FavoritesPage from "@pages/User/Favorites";
+import FollowersPage from "@pages/User/Followers";
+import FollowingPage from "@pages/User/Following";
+import RecipesPage from "@pages/User/Recipes";
 
 const AppRoutes = () => {
   return (
@@ -15,7 +19,12 @@ const AppRoutes = () => {
         <Route index element={<HomePage />} />
         {/* <Route path="recipe/:id" element={<RecipePage />} /> */}
         <Route path="/recipe/add" element={<AddRecipePage />} />
-        <Route path="user/:id" element={<UserPage />} />
+        <Route path="user/:id" element={<PrivateRoute><UserPage /></PrivateRoute>}>
+          <Route path="recipes" element={<RecipesPage />} />
+          <Route path="favorites" element={<FavoritesPage />} />
+          <Route path="followers" element={<FollowersPage />} />
+          <Route path="following" element={<FollowingPage />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
         <Route path="/recipe/:id" element={<TestRecipePage />} />
       </Route>

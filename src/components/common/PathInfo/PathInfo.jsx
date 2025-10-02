@@ -1,9 +1,18 @@
-import React from 'react'
+import { Link } from 'react-router-dom';
 
-const PathInfo = () => {
+import styles from './PathInfo.module.css';
+import { routes } from '@constants/routes';
+
+const PathInfo = ({ path }) => {
   return (
-    <div>PathInfo</div>
-  )
-}
+    <div className={styles.wrapper}>
+      <Link to={routes.main} className={`${styles.text} ${styles.link}`}>
+        home
+      </Link>
+      <span className={styles.text}>/</span>
+      <p className={`${styles.text} ${styles.black}`}>{path}</p>
+    </div>
+  );
+};
 
-export default PathInfo
+export default PathInfo;

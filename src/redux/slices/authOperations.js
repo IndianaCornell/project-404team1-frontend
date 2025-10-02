@@ -2,11 +2,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "@/lib/api.js";
 
 // --- Helpers ---
-const setAuthHeader = (token) => {
+export const setAuthHeader = (token) => {
   api.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
 
-const clearAuthHeader = () => {
+export const clearAuthHeader = () => {
   api.defaults.headers.common.Authorization = "";
 };
 
@@ -62,7 +62,7 @@ export const logoutUser = createAsyncThunk("auth/logout", async () => {
   }
 });
 
-// --- Refresh ---
+// --- Refresh current user ---
 export const refreshUser = createAsyncThunk(
   "auth/refresh",
   async (_, thunkAPI) => {
@@ -85,4 +85,19 @@ export const refreshUser = createAsyncThunk(
   }
 );
 
-export { api, setAuthHeader, clearAuthHeader };
+// --- Get another user's profile ---
+export const getUserProfile = createAsyncThunk(
+  "auth/getUserProfile",
+  async (id, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get(`/users/${id}`);
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data || {
+          message: error.message || "Get profile failed",
+        }
+      );
+    }
+  }
+);
