@@ -5,7 +5,6 @@ import {
   getRecipesByCategory,
 } from "./recipesOperations";
 
-
 const initialState = {
   items: [],
   isLoading: false,
@@ -16,6 +15,8 @@ const initialState = {
   currentPage: 1,
   totalPages: 0,
   itemsPerPage: 12,
+  selectedIngredient: null,
+  selectedArea: null,
 };
 
 const handlePending = (state) => {
@@ -76,6 +77,31 @@ const recipesSlice = createSlice({
       state.totalItems = 0;
       state.currentPage = 1;
       state.totalPages = 0;
+      state.selectedIngredient = null;
+      state.selectedArea = null;
+    },
+
+    // ====== Фільтри та пагінація ======
+
+    setIngredientFilter: (state, { payload }) => {
+      state.selectedIngredient = payload || null;
+      state.currentPage = 1;
+    },
+    setAreaFilter: (state, { payload }) => {
+      state.selectedArea = payload || null;
+      state.currentPage = 1;
+    },
+    clearFilters: (state) => {
+      state.selectedIngredient = null;
+      state.selectedArea = null;
+      state.currentPage = 1;
+    },
+    setCurrentPage: (state, { payload }) => {
+      state.currentPage = payload || 1;
+    },
+    setItemsPerPage: (state, { payload }) => {
+      state.itemsPerPage = payload || 12;
+      state.currentPage = 1;
     },
   },
   extraReducers: (builder) => {
@@ -92,7 +118,16 @@ const recipesSlice = createSlice({
   },
 });
 
-export const { resetToCategories } = recipesSlice.actions;
+export const {
+  resetToCategories,
+  // експорт нових екшенів:
+  setIngredientFilter,
+  setAreaFilter,
+  clearFilters,
+  setCurrentPage,
+  setItemsPerPage,
+} = recipesSlice.actions;
+
 export default recipesSlice.reducer;
 
 export const selectRecipes = (state) => state.recipes.items;
@@ -104,3 +139,8 @@ export const selectTotalItems = (state) => state.recipes.totalItems;
 export const selectCurrentPage = (state) => state.recipes.currentPage;
 export const selectTotalPages = (state) => state.recipes.totalPages;
 export const selectItemsPerPage = (state) => state.recipes.itemsPerPage;
+
+// ====== Селектори фільтрів ======
+export const selectSelectedIngredient = (state) =>
+  state.recipes.selectedIngredient;
+export const selectSelectedArea = (state) => state.recipes.selectedArea;
