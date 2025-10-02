@@ -6,15 +6,17 @@ import {
   refreshUser,
 } from "./authOperations";
 
+// --- Initial State ---
 const initialState = {
   user: null,
-  token: null,
+  token: localStorage.getItem("token") || null,
   isLoggedIn: false,
   isRefreshing: false,
   isLoading: false,
   error: null,
 };
 
+// --- Helpers ---
 const handlePending = (state) => {
   state.isLoading = true;
   state.error = null;
@@ -26,6 +28,7 @@ const handleRejected = (state, action) => {
     action.payload ?? action.error?.message ?? "Something went wrong";
 };
 
+// --- Slice ---
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -50,6 +53,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // --- Register ---
       .addCase(registerUser.pending, handlePending)
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -60,6 +64,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, handleRejected)
 
+      // --- Login ---
       .addCase(loginUser.pending, handlePending)
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -70,6 +75,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, handleRejected)
 
+      // --- Logout ---
       .addCase(logoutUser.pending, handlePending)
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
@@ -80,6 +86,7 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.rejected, handleRejected)
 
+      // --- Refresh ---
       .addCase(refreshUser.pending, (state) => {
         state.isRefreshing = true;
       })
@@ -88,15 +95,18 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isLoggedIn = true;
       })
-      .addCase(refreshUser.rejected, (state) => {
+      .addCase(refreshUser.rejected, (state, action) => {
         state.isRefreshing = false;
         state.user = null;
         state.token = null;
         state.isLoggedIn = false;
+        state.error =
+          action.payload ?? action.error?.message ?? "Refresh failed";
       });
   },
 });
 
+// --- Exports ---
 export const { clearError, setTestUser, clearTestUser } = authSlice.actions;
 export default authSlice.reducer;
 

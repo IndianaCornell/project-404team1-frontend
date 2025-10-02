@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "@redux/slices/authSlice";
 
-export default function UserBar() {
+export default function UserBar({ openModal }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const user = useSelector(selectUser);
@@ -20,9 +20,8 @@ export default function UserBar() {
   }, []);
 
   const handleLogout = () => {
-    // Here will be the logic to open LogOut modal
     setIsOpen(false);
-    console.log("Open LogOut Modal");
+    openModal("logout");
   };
 
   const getFirstLetter = () => {

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "@lib/api.js";
+import { api } from "@/lib/api.js";
 
+// --- Helpers ---
 const setAuthHeader = (token) => {
   api.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
@@ -9,36 +10,59 @@ const clearAuthHeader = () => {
   api.defaults.headers.common.Authorization = "";
 };
 
+// --- Register ---
 export const registerUser = createAsyncThunk(
   "auth/register",
-  async (credentials) => {
-    const response = await api.post("/auth/register", credentials);
-    const { token } = response.data;
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/register", credentials);
+      const { token } = response.data;
 
-    localStorage.setItem("token", token);
-    setAuthHeader(token);
+      localStorage.setItem("token", token);
+      setAuthHeader(token);
 
-    return response.data;
+      return response.data; // { token, user }
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || error?.message || "Signup failed"
+      );
+    }
   }
 );
 
-export const loginUser = createAsyncThunk("auth/login", async (credentials) => {
-  const response = await api.post("/auth/login", credentials);
-  const { token } = response.data;
+// --- Login ---
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/auth/login", credentials);
+      const { token } = response.data;
 
-  localStorage.setItem("token", token);
-  setAuthHeader(token);
+      localStorage.setItem("token", token);
+      setAuthHeader(token);
 
-  return response.data;
-});
+      return response.data; // { token, user }
+    } catch (error) {
+      return rejectWithValue(
+        error?.response?.data?.message || error?.message || "Login failed"
+      );
+    }
+  }
+);
 
+// --- Logout ---
 export const logoutUser = createAsyncThunk("auth/logout", async () => {
-  await api.post("/auth/logout");
-
-  localStorage.removeItem("token");
-  clearAuthHeader();
+  try {
+    await api.post("/auth/logout");
+  } catch (error) {
+    console.warn("Logout request failed:", error?.message);
+  } finally {
+    localStorage.removeItem("token");
+    clearAuthHeader();
+  }
 });
 
+// --- Refresh ---
 export const refreshUser = createAsyncThunk(
   "auth/refresh",
   async (_, thunkAPI) => {
@@ -49,9 +73,15 @@ export const refreshUser = createAsyncThunk(
       return thunkAPI.rejectWithValue("No token found");
     }
 
-    setAuthHeader(persistedToken);
-    const response = await api.get("/users/me");
-    return response.data;
+    try {
+      setAuthHeader(persistedToken);
+      const response = await api.get("/users/me");
+      return response.data; // user
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || error?.message || "Refresh failed"
+      );
+    }
   }
 );
 

@@ -1,0 +1,73 @@
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: var(--font-size-sm); /* 16px */
+  font-weight: var(--font-weight-regular);
+  color: var(--color-dark);
+  gap: var(--spacing-sm);
+}
+
+.auth-form input {
+  height: 52px;
+  padding: 0 var(--spacing-md);
+  border-radius: var(--radius-sm); /* 12px */
+  border: 1px solid var(--color-gray);
+  background: var(--color-white);
+  font-size: var(--font-size-sm);
+  color: var(--color-dark);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.auth-form input:focus {
+  border-color: var(--color-dark);
+  box-shadow: 0 0 0 2px rgba(26, 26, 26, 0.1);
+}
+
+.auth-form input::placeholder {
+  color: var(--color-gray);
+}
+
+.auth-form .error {
+  font-size: var(--font-size-xs); /* 12px */
+  line-height: var(--line-height-xs);
+  color: var(--color-error);
+  margin-top: 4px;
+}
+
+.auth-form button[type="submit"] {
+  margin-top: var(--spacing-md);
+  width: 100%;
+  justify-content: center;
+}
+
+.auth-form .password-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.auth-form .password-wrapper input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.auth-form .toggle-password {
+  position: absolute;
+  right: var(--spacing-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

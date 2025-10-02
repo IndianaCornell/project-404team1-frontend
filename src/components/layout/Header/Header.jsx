@@ -8,7 +8,7 @@ import Nav from "./Nav";
 import AuthBar from "./AuthBar";
 import UserBar from "./UserBar";
 
-export default function Header() {
+export default function Header({ openModal }) {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -18,8 +18,14 @@ export default function Header() {
     <header className={headerClass}>
       <div className="header__container">
         <Logo />
-        <Nav />
-        {isLoggedIn ? <UserBar /> : <AuthBar />}
+        {isLoggedIn ? (
+          <>
+            <Nav openModal={openModal} />
+            <UserBar openModal={openModal} />
+          </>
+        ) : (
+          <AuthBar openModal={openModal} />
+        )}
       </div>
     </header>
   );
