@@ -2,14 +2,13 @@ import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectIsLoggedIn } from "@redux/slices/authSlice";
 
-export default function Nav() {
+export default function Nav({ openModal }) {
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const handleAddRecipeClick = (e) => {
     if (!isLoggedIn) {
       e.preventDefault();
-      // Here will be the logic to open login modal
-      console.log("Open Login Modal - need to login first");
+      openModal("signin");
     }
   };
 

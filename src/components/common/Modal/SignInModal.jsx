@@ -1,9 +1,17 @@
-import React from 'react'
+import Modal from "./Modal";
+import SignInForm from "./SignInForm";
 
-const SignInModal = () => {
+export default function SignInModal({ onClose, onSwitch }) {
   return (
-    <div>SignInModal</div>
-  )
+    <Modal title="Sign In" onClose={onClose}>
+      <SignInForm onSuccess={onClose} />
+      <button
+        type="button"
+        className="btn btn--ghost btn--md"
+        onClick={onSwitch}
+      >
+        Create an account
+      </button>
+    </Modal>
+  );
 }
-
-export default SignInModal

@@ -1,39 +1,17 @@
-import { useState } from "react";
-
-export default function AuthBar() {
-  const [activeButton, setActiveButton] = useState("signin"); // 'signin' or 'signup'
-
-  const handleSignIn = () => {
-    console.log("Open SignIn Modal");
-  };
-
-  const handleSignUp = () => {
-    console.log("Open SignUp Modal");
-  };
-
-  const handleMouseEnter = (buttonType) => {
-    setActiveButton(buttonType);
-  };
-
+export default function AuthBar({ openModal }) {
   return (
     <div className="auth-bar">
       <div className="auth-bar__container">
         <button
-          className={`auth-bar__btn auth-bar__btn--signin ${
-            activeButton === "signup" ? "active" : ""
-          }`}
-          onClick={handleSignIn}
-          onMouseEnter={() => handleMouseEnter("signin")}
+          className="btn btn--ghost btn--md"
+          onClick={() => openModal("signin")}
           type="button"
         >
           SIGN IN
         </button>
         <button
-          className={`auth-bar__btn auth-bar__btn--signup ${
-            activeButton === "signup" ? "active" : ""
-          }`}
-          onClick={handleSignUp}
-          onMouseEnter={() => handleMouseEnter("signup")}
+          className="btn btn--primary btn--md"
+          onClick={() => openModal("signup")}
           type="button"
         >
           SIGN UP

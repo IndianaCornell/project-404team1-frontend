@@ -21,3 +21,43 @@ Use npm only:
 npm install
 npm run dev
 Do not use Yarn. yarn.lock is ignored.
+
+## Redux Root Reducer & Reset на Logout
+
+У проєкті використовується глобальний rootReducer, який скидає весь Redux state при виході користувача.
+
+## Як це працює
+
+appReducer — це звичайний combineReducers, який об’єднує всі слайси (auth, recipes, users, notifications, тощо).
+
+rootReducer — обгортка над appReducer, що перевіряє action.type.
+
+Якщо спрацьовує logoutUser.fulfilled або logoutUser.rejected → Redux state обнуляється (state = undefined), і всі ред’юсери повертаються у свій initialState.
+
+## Код (спрощено)
+
+const appReducer = combineReducers({
+auth: authReducer,
+recipes: recipesReducer,
+users: usersReducer,
+notifications: notificationsReducer,
+// інші слайси...
+});
+
+const rootReducer = (state, action) => {
+if (
+action.type === logoutUser.fulfilled.type ||
+action.type === logoutUser.rejected.type
+) {
+state = undefined; // ❗ повний reset Redux state
+}
+return appReducer(state, action);
+};
+
+## Навіщо це потрібно?
+
+Безпека: при logout гарантовано зносяться всі чутливі дані (user, token, кешовані дані).
+
+Стабільність: новий користувач завжди бачить "чистий" стан додатку.
+
+Простота: не треба вручну писати reset для кожного слайсу.
