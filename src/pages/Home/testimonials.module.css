@@ -1,0 +1,265 @@
+.testimonialsWrapper {
+  max-width: 980px;
+  margin: 0 auto;
+  text-align: center;
+  margin: 64px 0 80px 0;
+  border-radius: 12px;
+}
+
+.sectionEyebrow {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.42;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1.14;
+  margin-bottom: 12px;
+}
+
+.quotationIcon {
+  width: 40px;
+  height: 32px;
+  margin-bottom: 20px;
+  margin-left: 8px;
+}
+
+.testimonialCard {
+  position: relative;
+}
+
+.testimonialText {
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.33;
+  margin-bottom: 80px;
+}
+
+.testimonialAuthor {
+  font-weight: 800;
+  font-size: 16px;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.paginationDots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.paginationDot {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.paginationDot:hover {
+  transform: scale(1.1);
+}
+
+.paginationDotActive {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.loadingStatus {
+  margin: 24px 0;
+  opacity: 0.8;
+}
+
+.errorMessage {
+  margin: 16px 0;
+  color: #c62828;
+}
+
+.embla {
+  overflow: hidden;
+}
+.emblaContainer {
+  display: flex;
+}
+.emblaSlide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .testimonialsWrapper {
+    width: 704px;
+    text-align: center;
+    margin: 100px auto;
+    border-radius: 12px;
+  }
+
+  .sectionEyebrow {
+    line-height: 1.5;
+  }
+
+  .sectionTitle {
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .quotationIcon {
+    width: 58px;
+    height: 48px;
+    margin-bottom: 40px;
+    margin-left: 40px;
+  }
+
+  .testimonialCard {
+    position: relative;
+  }
+
+  .testimonialText {
+    font-size: 24px;
+    line-height: 1.5;
+    margin-bottom: 80px;
+  }
+
+  .testimonialAuthor {
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .paginationDots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .paginationDot {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+  }
+
+  .paginationDot:hover {
+    transform: scale(1.1);
+  }
+
+  .paginationDotActive {
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  .loadingStatus {
+    margin: 24px 0;
+    opacity: 0.8;
+  }
+
+  .errorMessage {
+    margin: 16px 0;
+    color: #c62828;
+  }
+
+  .embla {
+    overflow: hidden;
+  }
+  .emblaContainer {
+    display: flex;
+  }
+  .emblaSlide {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+}
+
+@media (min-width: 1440px) {
+  .testimonialsWrapper {
+    max-width: 822px;
+    margin: 0 auto;
+    margin: 120px auto;
+  }
+
+  .sectionEyebrow {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .sectionTitle {
+    font-size: 40px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .quotationIcon {
+    width: 40px;
+    height: 32px;
+    margin-bottom: 40px;
+    margin-left: 40px;
+  }
+
+  .testimonialCard {
+    position: relative;
+  }
+
+  .testimonialText {
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.1;
+  }
+
+  .testimonialAuthor {
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .paginationDots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .paginationDot {
+    border: none;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+  }
+
+  .paginationDot:hover {
+    transform: scale(1.1);
+  }
+
+  .paginationDotActive {
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  .loadingStatus {
+    margin: 24px 0;
+    opacity: 0.8;
+  }
+
+  .errorMessage {
+    margin: 16px 0;
+    color: #c62828;
+  }
+
+  .embla {
+    overflow: hidden;
+  }
+  .emblaContainer {
+    display: flex;
+  }
+  .emblaSlide {
+    flex: 0 0 100%;
+    min-width: 0;
+  }
+}

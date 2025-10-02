@@ -4,6 +4,7 @@ import Categories from "@pages/Home/Categories/Categories/Categories.jsx";
 import Recipes from "@pages/Home/Recipes/Recipes.jsx";
 import { selectShowRecipes } from "@redux/slices/recipesSlice.js";
 import Hero from "./Hero";
+import Testimonials from "./Testimonials";
 
 const HomePage = () => {
   const showRecipes = useSelector(selectShowRecipes);
@@ -12,6 +13,7 @@ const HomePage = () => {
     <div>
       <Hero></Hero>
       {showRecipes ? <Recipes /> : <Categories />}
+      <Testimonials></Testimonials>
     </div>
   );
 };
