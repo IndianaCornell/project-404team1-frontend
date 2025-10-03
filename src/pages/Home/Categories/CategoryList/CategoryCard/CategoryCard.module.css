@@ -5,13 +5,13 @@
     overflow: hidden;
     position: relative;
     background: var(--color-black);
-    @media (min-width: 768px) and (max-width: 1440px) {
+    @media (min-width: 768px) and (max-width: 1439px) {
         width: 704px;
     }
-    @media (min-width: 375px) and (max-width: 768px) {
+    @media (min-width: 375px) and (max-width: 767px) {
         width: 100%;
     }
-    @media (max-width: 375px) {
+    @media (max-width: 374px) {
         width: 100%;
     }
 }
@@ -23,13 +23,13 @@
     position: relative;
     background: var(--color-black);
 
-    @media (min-width: 768px) and (max-width: 1440px) {
+    @media (min-width: 768px) and (max-width: 1439px) {
         width: 342px;
     }
-    @media (min-width: 375px) and (max-width: 768px) {
+    @media (min-width: 375px) and (max-width: 767px) {
         width: 100%;
     }
-    @media (max-width: 375px) {
+    @media (max-width: 374px) {
         width: 100%;
     }
 }
