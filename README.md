@@ -61,3 +61,57 @@ return appReducer(state, action);
 Стабільність: новий користувач завжди бачить "чистий" стан додатку.
 
 Простота: не треба вручну писати reset для кожного слайсу.
+
+## Modal windows architecture
+
+┌─────────────────────────┐
+│ SharedLayout.jsx │
+│ - зберігає activeModal │
+│ - керує openModal() │
+└───────────┬─────────────┘
+│
+▼
+┌─────────────────┐
+│ Header.jsx │
+│ отримує openModal│
+└───────┬─────────┘
+│
+┌─────────┼─────────────────────────────┐
+│ │ │
+▼ ▼ ▼
+AuthBar UserBar Nav
+(Sign in/ (Log out → openModal("logout"))(Add Recipe →
+Sign up → якщо !isLoggedIn,
+openModal("signin"/"signup")) openModal("signin"))
+
+            │
+            ▼
+
+┌─────────────────┐
+│ HomePage.jsx │
+│ useOutletContext│
+└────────┬────────┘
+│
+▼
+Hero.jsx
+(Add Recipe → openModal("signin")
+якщо неавторизований)
+
+            │
+            ▼
+
+┌───────────────────────────┐
+│ ModalManager.jsx │
+│ малює потрібну модалку: │
+│ - SignInModal │
+│ - SignUpModal │
+│ - LogOutModal │
+└───────────────────────────┘
+
+# Логіка:
+
+Всі кнопки (у Header/AuthBar/UserBar/Nav, а також у Hero) викликають openModal("signin" | "signup" | "logout").
+
+SharedLayout зберігає стан активної модалки.
+
+ModalManager відмальовує потрібну модалку.
