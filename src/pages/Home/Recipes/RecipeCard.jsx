@@ -1,34 +1,59 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser,addFavoriteLocal, removeFavoriteLocal } from "@redux/slices/authSlice";
 import s from "./RecipeCard.module.css";
 import { api } from "@lib/api.js";
 
 export default function RecipeCard({ recipe }) {
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
 
-  // нова структура з бекенду
   const recipeId = recipe.id || recipe._id;
-  const author = recipe.author || {}; // { id, name, avatar }
+  const author = recipe.author || {};
 
-  // обчислюємо ініціал для фолбек-аватара
+  // useEffect(() => {
+  //   console.log("recipeId:", recipeId, typeof recipeId);
+  //   console.log("user.favorites:", user?.favorites);
+  //   const inc = (user?.favorites ?? []).map(String).includes(String(recipeId));
+  //   console.log("includes? =>", inc);
+  // }, [user?.favorites, recipeId]);
+
   const authorInitial = useMemo(
     () => (author.name?.trim()?.[0] || "A").toUpperCase(),
     [author.name]
   );
 
-  // локальний стан (оптимістично)
-  const [isFav, setIsFav] = useState(Boolean(recipe.isFavorite));
+  const favoriteSet = useMemo(() => {
+    const arr = Array.isArray(user?.favorites) ? user.favorites : [];
+    return new Set(arr.map(String));
+  }, [user?.favorites]);
+
+  const derivedIsFav = useMemo(() => {
+    if (!recipeId) return false;
+    return favoriteSet.has(String(recipeId));
+  }, [favoriteSet, recipeId]);
+
+  const [isFav, setIsFav] = useState(derivedIsFav);
   const [favCount, setFavCount] = useState(Number(recipe.favoritesCount ?? 0));
   const [busy, setBusy] = useState(false);
 
+  useEffect(() => setIsFav(derivedIsFav), [derivedIsFav]);
+  useEffect(() => setFavCount(Number(recipe.favoritesCount ?? 0)), [recipe.favoritesCount]);
+
   const openRecipe = () => {
-    if (!recipeId) return;
-    navigate(`/recipe/${recipeId}`);
+    if (recipeId) navigate(`/recipe/${recipeId}`);
   };
 
   const toggleFavorite = async (e) => {
     e.stopPropagation?.();
     if (busy || !recipeId) return;
+
+    if (!user) {
+      alert("Увійдіть, щоб додати до улюблених.");
+      return;
+    }
 
     const next = !isFav;
     const prevCount = favCount;
@@ -40,34 +65,40 @@ export default function RecipeCard({ recipe }) {
     try {
       if (next) {
         await api.post(`/recipes/${recipeId}/favorite`);
+          dispatch(addFavoriteLocal(recipeId));
       } else {
         await api.delete(`/recipes/${recipeId}/favorite`);
+        dispatch(removeFavoriteLocal(recipeId));
       }
-      // Якщо бек тепер повертає актуальні поля, можна зняти оптимізм:
-      // const { data } = await ...
-      // setIsFav(Boolean(data.isFavorite));
-      // setFavCount(Number(data.favoritesCount ?? 0));
+      // dispatch(refreshUser());
     } catch (err) {
       console.error(err);
-      // відкат
       setIsFav(!next);
       setFavCount(prevCount);
 
-      const status = err.response?.status;
-      if (status === 401) {
-        alert("Ви не авторизовані. Увійдіть, щоб додати до улюблених.");
-      } else if (status === 403) {
-        alert("Доступ заборонений.");
-      } else {
-        alert("Не вдалося оновити улюблені. Спробуйте пізніше.");
-      }
+      const status = err?.response?.status;
+      if (status === 401) alert("Сесія недійсна. Увійдіть знову.");
+      else alert("Не вдалося оновити улюблені. Спробуйте пізніше.");
     } finally {
       setBusy(false);
     }
   };
 
+  const onKey = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openRecipe();
+    }
+  };
+
   return (
-    <article className={s.card} onClick={openRecipe} role="button" tabIndex={0}>
+    <article
+      className={s.card}
+      onClick={openRecipe}
+      onKeyDown={onKey}
+      role="button"
+      tabIndex={0}
+    >
       <div className={s.thumb}>
         <img
           src={recipe.thumb || "/img/recipe-placeholder.jpg"}
@@ -78,6 +109,7 @@ export default function RecipeCard({ recipe }) {
 
       <div className={s.body}>
         <h3 className={s.title}>{recipe.title || "Untitled recipe"}</h3>
+
         {recipe.description ? (
           <p className={s.snippet}>{recipe.description}</p>
         ) : null}
