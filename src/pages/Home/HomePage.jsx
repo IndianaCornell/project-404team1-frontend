@@ -1,4 +1,5 @@
 import React from "react";
+import { useOutletContext } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Categories from "@pages/Home/Categories/Categories/Categories.jsx";
 import Recipes from "@pages/Home/Recipes/Recipes.jsx";
@@ -8,10 +9,11 @@ import Testimonials from "./Testimonials";
 
 const HomePage = () => {
   const showRecipes = useSelector(selectShowRecipes);
+  const { openModal } = useOutletContext();
 
   return (
     <div>
-      <Hero></Hero>
+      <Hero openModal={openModal}></Hero>
       {showRecipes ? <Recipes /> : <Categories />}
       <Testimonials></Testimonials>
     </div>
