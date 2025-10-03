@@ -16,7 +16,7 @@ export default function SharedLayout() {
       <Sprite />
       <Header openModal={openModal} />
       <main className="app__main">
-        <Outlet />
+        <Outlet context={{ openModal, closeModal, activeModal }} />
       </main>
       <Footer />
 
