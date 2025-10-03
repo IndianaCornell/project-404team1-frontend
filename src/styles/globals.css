@@ -4,8 +4,9 @@
 @import "./buttons.css";
 
 :root {
-  --font-sans: "Mulish", system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-sans:
+    "Mulish", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji";
 }
 html {
   font-family: var(--font-sans);
@@ -73,9 +74,6 @@ a {
   }
 }
 
-/* ===== sticky footer layout =====
-   .app обгортає весь лейаут (див. SharedLayout.jsx)
-   .app__main — середня колонка, що росте й штовхає футер донизу */
 html,
 body,
 #root {
@@ -90,4 +88,12 @@ body,
 
 .app__main {
   flex: 1 1 auto;
+}
+
+@font-face {
+  font-family: "MulishVar";
+  src: url("../assets/fonts/Mulish-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
 }
