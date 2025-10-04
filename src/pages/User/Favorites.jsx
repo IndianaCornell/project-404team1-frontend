@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import ListItems from "@pages/User/ListItems.jsx";
+import ListItems from "@/pages/User/ListItems/ListItems.jsx";
 import { TYPE_TABS, EMPTY_TEXT } from "@constants/common";
 import { recipeApi } from "@services/Api";
 

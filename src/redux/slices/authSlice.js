@@ -1,5 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerUser, loginUser, logoutUser, refreshUser } from "./authOperations";
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshUser,
+  getUserProfile,
+} from "./authOperations";
 
 // --- Initial State ---
 const initialState = {
@@ -19,7 +25,8 @@ const handlePending = (state) => {
 
 const handleRejected = (state, action) => {
   state.isLoading = false;
-  state.error = action.payload ?? action.error?.message ?? "Something went wrong";
+  state.error =
+    action.payload ?? action.error?.message ?? "Something went wrong";
 };
 
 const sanitizeUser = (u) => {
@@ -114,8 +121,17 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         state.isLoggedIn = false;
-        state.error = action.payload ?? action.error?.message ?? "Refresh failed";
-      });
+        state.error =
+          action.payload ?? action.error?.message ?? "Refresh failed";
+      })
+      // --- Get another user's profile ---
+      .addCase(getUserProfile.pending, handlePending)
+      .addCase(getUserProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.userProfile = action.payload; // <-- сохраняем профиль
+      })
+      .addCase(getUserProfile.rejected, handleRejected);
   },
 });
 

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 
 import styles from './UserCard.module.css';
 import Button  from '@ui/Button.jsx';
-import Back  from '@ui/Back.jsx';
+import Back  from '@/components/ui/Back/Back.jsx';
 import { routes } from '@constants/routes';
 import { getPathWithId } from '@helpers/getPathWithId';
 import { getImagePath, TYPE_IMG } from '@helpers/getImagePath';
