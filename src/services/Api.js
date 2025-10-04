@@ -76,14 +76,14 @@ export const recipeApi = {
     // Просто используйте строку, не преобразуйте в число!
     return apiInstance.get(`/api/recipes/${userId}`, { params });
   },
-
+  getMyRecipes: (params) => apiInstance.get(`/api/recipes/my`, { params }),
   deleteRecipe: (id) => apiInstance.delete(`/api/recipes/${id}`),
 
   getFavoriteRecipes: (params) =>
     apiInstance.get("/api/recipes/favorites/all", { params }),
-  addToFavorites: (id) => apiInstance.post(`/api/recipes/favorites/${id}`),
+   addToFavorites: (id) => apiInstance.post(`/api/recipes/${id}/favorite`),
   removeFromFavorites: (id) =>
-    apiInstance.delete(`/api/recipes/favorites/${id}`),
+    apiInstance.delete(`/api/recipes/${id}/favorite`),
 
   createRecipe: (formData) => apiInstanceImages.post("/api/recipes", formData),
 };
