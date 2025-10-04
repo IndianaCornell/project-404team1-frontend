@@ -27,10 +27,10 @@ export const token = {
 };
 
 export const authApi = {
-  register: data => apiInstance.post('/api/users/signup', data),
-  login: data => apiInstance.post('/api/users/signin', data),
-  getMe: () => apiInstance.get('/api/users/current'),
-  logout: () => apiInstance.post('/api/users/logout'),
+  register: data => apiInstance.post('/api/auth/register', data),
+  login: data => apiInstance.post('/api/auth/login', data),
+  refresh: () => apiInstance.get('/api/auth/refresh'),
+  logout: () => apiInstance.post('/api/auth/logout'),
 };
 
 export const userApi = {
@@ -48,8 +48,8 @@ export const recipeApi = {
   deleteRecipe: id => apiInstance.delete(`/api/recipes/${id}`),
   getFavoriteRecipes: params =>
     apiInstance.get('/api/recipes/favorites/all', { params }),
-  addToFavorites: id => apiInstance.post(`/api/recipes/favorites/${id}`),
-  removeFromFavorites: id => apiInstance.delete(`/api/recipes/favorites/${id}`),
+  addToFavorites: id => apiInstance.post(`/api/recipes/${id}/favorite`),
+  removeFromFavorites: id => apiInstance.delete(`/api/recipes/${id}/favorite`),
   createRecipe: formData => apiInstanceImages.post('/api/recipes/', formData),
 };
 
