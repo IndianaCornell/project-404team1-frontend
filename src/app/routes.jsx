@@ -18,9 +18,23 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<SharedLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="recipe/:id" element={<RecipePage />} />
-        <Route path="/recipe/add" element={<AddRecipePage />} />
-        <Route path="user/:id" element={<PrivateRoute><UserPage /></PrivateRoute>}>
+        {/* <Route path="recipe/:id" element={<RecipePage />} /> */}
+        <Route
+          path="/recipe/add"
+          element={
+            <PrivateRoute>
+              <AddRecipePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="user/:id"
+          element={
+            <PrivateRoute>
+              <UserPage />
+            </PrivateRoute>
+          }
+        >
           <Route path="recipes" element={<RecipesPage />} />
           <Route path="favorites" element={<FavoritesPage />} />
           <Route path="followers" element={<FollowersPage />} />

@@ -1,10 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  registerUser,
-  loginUser,
-  logoutUser,
-  refreshUser,
-} from "./authOperations";
+import { registerUser, loginUser, logoutUser, refreshUser } from "./authOperations";
 
 // --- Initial State ---
 const initialState = {
@@ -24,8 +19,13 @@ const handlePending = (state) => {
 
 const handleRejected = (state, action) => {
   state.isLoading = false;
-  state.error =
-    action.payload ?? action.error?.message ?? "Something went wrong";
+  state.error = action.payload ?? action.error?.message ?? "Something went wrong";
+};
+
+const sanitizeUser = (u) => {
+  if (!u) return null;
+  const favorites = Array.isArray(u.favorites) ? u.favorites.map(String) : [];
+  return { ...u, favorites };
 };
 
 // --- Slice ---
@@ -36,19 +36,31 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    // Test reducer for manual login
     setTestUser: (state, action) => {
-      state.user = action.payload.user;
+      state.user = sanitizeUser(action.payload.user);
       state.token = action.payload.token;
       state.isLoggedIn = true;
       state.error = null;
       state.isLoading = false;
     },
-    // Test reducer for manual logout
     clearTestUser: (state) => {
       state.user = null;
       state.token = null;
       state.isLoggedIn = false;
+    },
+    addFavoriteLocal: (state, action) => {
+      if (!state.user) return;
+      const id = String(action.payload);
+      const set = new Set((state.user.favorites ?? []).map(String));
+      set.add(id);
+      state.user.favorites = Array.from(set);
+    },
+    removeFavoriteLocal: (state, action) => {
+      if (!state.user) return;
+      const id = String(action.payload);
+      state.user.favorites = (state.user.favorites ?? [])
+        .map(String)
+        .filter((x) => x !== id);
     },
   },
   extraReducers: (builder) => {
@@ -58,7 +70,7 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.user = action.payload.user;
+        state.user = sanitizeUser(action.payload.user);
         state.token = action.payload.token;
         state.isLoggedIn = true;
       })
@@ -69,7 +81,7 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.user = action.payload.user;
+        state.user = sanitizeUser(action.payload.user);
         state.token = action.payload.token;
         state.isLoggedIn = true;
       })
@@ -92,7 +104,9 @@ const authSlice = createSlice({
       })
       .addCase(refreshUser.fulfilled, (state, action) => {
         state.isRefreshing = false;
-        state.user = action.payload;
+        // приймаємо і { user }, і просто user
+        const incomingUser = action.payload?.user ?? action.payload;
+        state.user = sanitizeUser(incomingUser);
         state.isLoggedIn = true;
       })
       .addCase(refreshUser.rejected, (state, action) => {
@@ -100,20 +114,27 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         state.isLoggedIn = false;
-        state.error =
-          action.payload ?? action.error?.message ?? "Refresh failed";
+        state.error = action.payload ?? action.error?.message ?? "Refresh failed";
       });
   },
 });
 
 // --- Exports ---
-export const { clearError, setTestUser, clearTestUser } = authSlice.actions;
+export const {
+  clearError,
+  setTestUser,
+  clearTestUser,
+  addFavoriteLocal,
+  removeFavoriteLocal,
+} = authSlice.actions;
+
 export default authSlice.reducer;
 
-// Selectors
+// --- Selectors ---
 export const selectUser = (state) => state.auth.user;
 export const selectToken = (state) => state.auth.token;
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
 export const selectIsRefreshing = (state) => state.auth.isRefreshing;
 export const selectIsLoading = (state) => state.auth.isLoading;
 export const selectAuthError = (state) => state.auth.error;
+export const selectFavorites = (state) => state.auth.user?.favorites ?? [];

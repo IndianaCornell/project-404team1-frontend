@@ -41,7 +41,9 @@
   align-items: center;
   justify-content: center;
   color: var(--color-dark, #050505);
-  transition: background-color 0.2s ease, color 0.2s ease,
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
     border-color 0.2s ease;
 }
 .footer__icon-btn:hover,

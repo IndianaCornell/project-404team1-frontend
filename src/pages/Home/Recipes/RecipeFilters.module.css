@@ -1,0 +1,44 @@
+.wrap {
+  display: grid;
+  gap: 12px;
+}
+
+.select {
+  height: 60px;
+  width: 100%;
+  padding: 0 44px 0 18px;
+  border: 1px solid #e6e6e6;
+  border-radius: 30px;
+  background: #fff;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  position: relative;
+}
+
+.selectWrapper {
+  position: relative;
+}
+
+.selectWrapper::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  background-image: url("/src/assets/icons/arrowFilter.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .selectWrapper::after {
+    width: 14px;
+    height: 14px;
+    right: 14px;
+  }
+}

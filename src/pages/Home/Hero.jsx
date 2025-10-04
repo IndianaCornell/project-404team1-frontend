@@ -1,10 +1,26 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { selectIsLoggedIn } from "@redux/slices/authSlice";
 import styles from "./Hero.module.css";
 
 import DrinkImg from "../../assets/images/HeroDrinkImage.png";
 import FoodImg from "../../assets/images/HeroFoodImage.png";
 
-const Hero = () => {
+const Hero = ({ openModal }) => {
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+
+  const handleAddRecipe = () => {
+    if (!isLoggedIn) {
+      // користувач не авторизований → відкриваємо SignIn модалку
+      openModal("signin");
+    } else {
+      // авторизований → переходимо на сторінку додавання рецепта
+      navigate("/recipe/add");
+    }
+  };
+
   return (
     <section className={styles.hero}>
       <h1 className={styles.title}>IMPROVE YOUR CULINARY TALENTS</h1>
@@ -13,7 +29,9 @@ const Hero = () => {
         the aromas and tastes of various cuisines.
       </p>
 
-      <button className={styles.btn}>ADD RECIPE</button>
+      <button className={styles.btn} onClick={handleAddRecipe}>
+        ADD RECIPE
+      </button>
 
       <div className={styles.images}>
         <img src={DrinkImg} alt="Drink" className={styles.img1} />

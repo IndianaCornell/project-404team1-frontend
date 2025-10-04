@@ -7,7 +7,9 @@ export default function TestRecipePage() {
   return (
     <div style={{ padding: "20px" }}>
       <h1>Test Recipe Page</h1>
-      <p>Recipe ID: <strong>{id}</strong></p>
+      <p>
+        Recipe ID: <strong>{id}</strong>
+      </p>
       <p>Тут буде контент рецепта 🚀</p>
     </div>
   );
