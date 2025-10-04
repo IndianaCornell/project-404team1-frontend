@@ -19,10 +19,8 @@ const RecipePage = () => {
         setError(null);
 
         const response = await recipeApi.getRecipes(id);
-       ;
         setRecipe(response.data);
       } catch (err) {
-        
         setError(err.response?.data?.message || "Failed to load recipe");
       } finally {
         setLoading(false);
@@ -35,7 +33,6 @@ const RecipePage = () => {
   }, [id]);
 
   const author = recipe?.user || recipe?.author || null;
- 
 
   const navigate = useNavigate();
 
@@ -52,11 +49,8 @@ const RecipePage = () => {
 
   const getFullMappedIngredients = () => {
     if (!recipe?.ingredients || recipe.ingredients.length === 0) {
-      
       return [];
     }
-
-    
 
     return recipe.ingredients
       .map((item) => {
@@ -75,7 +69,6 @@ const RecipePage = () => {
           ingredientMap[parsedItem.id] || ingredientMap[parsedItem._id];
 
         if (!ingredientDetails) {
-        
           return null;
         }
 
