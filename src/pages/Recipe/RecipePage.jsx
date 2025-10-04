@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ingredientsDB from "@/mocks/ingredients.json";
 import { useNavigate, useParams } from "react-router-dom";
 import { recipeApi } from "@services/Api";
+import PopularRecipes from "./PopularRecipes";
 
 const RecipePage = () => {
   const { id } = useParams();
@@ -157,6 +158,7 @@ const RecipePage = () => {
           <FavoriteButton recipeId={recipe.id} />
         </div>
       </div>
+      <PopularRecipes />
     </>
   );
 };
