@@ -3,7 +3,7 @@ import PathInfo  from '../PathInfo/PathInfo';
 import MainTitle  from '@components/common/Typography/MainTitle';
 import Subtitle from '@components/common/Typography/Subtitle';
 import Button from '@ui/Button';
-import Container  from '@ui/Container';
+import Container  from '@/components/ui/Container/Container';
 import Loader from '@components/common/Loader/Loader';
 
 import UserInfo from '@pages/User/UserInfo';

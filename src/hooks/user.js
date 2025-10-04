@@ -64,14 +64,15 @@ export const useUpdateAvatar = () => {
 export const useUserProfile = () => {
   const { id: paramId } = useParams();
   const dispatch = useDispatch();
+
   const userProfile = useSelector(authSelectors.getUserProfile);
   const isLoading = useSelector(authSelectors.getLoading);
   const owner = useOwner();
 
   const id =
-    +paramId ||
-    +owner?.id ||
-    +(owner?._id?.$oid
+    paramId ||
+    owner?.id ||
+    (owner?._id?.$oid
       ? String(owner._id.$oid)
       : owner?._id
         ? String(owner._id)
@@ -79,12 +80,8 @@ export const useUserProfile = () => {
 
   useEffect(() => {
     if (!id) return;
-
     dispatch(authOperations.getUserProfile(id));
   }, [dispatch, id]);
 
-  return {
-    userProfile,
-    isLoading,
-  };
+  return { userProfile, isLoading };
 };

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import styles from './RecipePreview.module.css';
-import Back  from '@ui/Back';
+import Back  from '@/components/ui/Back/Back';
 import { routes } from '@constants/routes';
 import { getPathWithId } from '@helpers/getPathWithId';
 import { getImagePath, TYPE_IMG } from '@helpers/getImagePath';

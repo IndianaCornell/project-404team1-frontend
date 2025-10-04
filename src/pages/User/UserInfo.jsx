@@ -1,5 +1,5 @@
 import styles from './UserInfo.module.css';
-import UploadButton  from '@ui/UploadButton';
+import UploadButton  from '@/components/ui/UploadButton/UploadButton';
 import { getImagePath, TYPE_IMG } from '@helpers/getImagePath';
 
 const UserInfo = ({ isOwner, user, userImg, onUpdateAvatar }) => {
