@@ -7,8 +7,8 @@ import NotFoundPage from "@pages/NotFound/NotFoundPage";
 import RecipePage from "@pages/Recipe/RecipePage";
 import PrivateRoute from "./PrivateRoute";
 import FavoritesPage from "@pages/User/Favorites";
-import FollowersPage from "@pages/User/Followers";
-import FollowingPage from "@pages/User/Following";
+import FollowersPage from "@/pages/User/Followers";
+import FollowingPage from "@/pages/User/Following";
 import RecipesPage from "@pages/User/Recipes";
 
 const AppRoutes = () => {

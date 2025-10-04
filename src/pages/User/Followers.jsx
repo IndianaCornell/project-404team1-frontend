@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import ListItems from '@pages/User/ListItems.jsx';
+import ListItems from '@/pages/User/ListItems/ListItems.jsx';
 import { TYPE_TABS, EMPTY_TEXT } from '@constants/common';
 import { userApi } from '@services/Api';
 import { useFollow, useOwner } from '@hooks/user';
@@ -20,18 +20,19 @@ const FollowersPage = () => {
   };
 
   const getUsers = async () => {
-    try {
-      const { data } = await userApi.getFollowers(id, {
-        page,
-        limit: itemsPerPage,
-      });
-      setUsers(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  try {
+    const { data } = await userApi.getFollowers({
+      userId: id, // если сервер требует userId
+      page,
+      limit: itemsPerPage,
+    });
+    setUsers(data);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   useEffect(() => {
     if (!id) return;

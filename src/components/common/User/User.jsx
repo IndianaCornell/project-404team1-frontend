@@ -3,11 +3,11 @@ import PathInfo  from '../PathInfo/PathInfo';
 import MainTitle  from '@components/common/Typography/MainTitle';
 import Subtitle from '@components/common/Typography/Subtitle';
 import Button from '@ui/Button';
-import Container  from '@ui/Container';
+import Container  from '@/components/ui/Container/Container';
 import Loader from '@components/common/Loader/Loader';
 
-import UserInfo from '@pages/User/UserInfo';
-import TabsList from '@pages/User/TabsList';
+import UserInfo from '@/pages/User/UserInfo/UserInfo';
+import TabsList from '@/pages/User/TabList/TabsList';
 import LogOutModal from '@components/common/Modal/LogOutModal';
 
 const User = ({
