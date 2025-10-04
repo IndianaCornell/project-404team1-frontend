@@ -27,30 +27,31 @@ export const token = {
 };
 
 export const authApi = {
-  register: data => apiInstance.post('/api/users/signup', data),
-  login: data => apiInstance.post('/api/users/signin', data),
-  getMe: () => apiInstance.get('/api/users/current'),
-  logout: () => apiInstance.post('/api/users/logout'),
+  register: data => apiInstance.post('/api/auth/register', data),
+  login: data => apiInstance.post('/api/auth/login', data),
+  getMe: () => apiInstance.get('/api/users/me'),
+  logout: () => apiInstance.post('/api/auth/logout'),
 };
 
 export const userApi = {
-  getProfile: id => apiInstance.get(`/api/users/profile/${id}`),
+  getProfile: id => apiInstance.get(`/api/users/${id}`),
   followUser: id => apiInstance.post(`/api/users/follow/${id}`),
   unfollowUser: id => apiInstance.delete(`/api/users/follow/${id}`),
   getFollowers: (id, params) =>
-    apiInstance.get(`/api/users/followers/${id}`, { params }),
+    apiInstance.get(`/api/users/followers/`, { params }),
   getFollowing: params => apiInstance.get(`/api/users/following`, { params }),
-  updateAvatar: data => apiInstanceImages.patch('/api/users/avatars', data),
+  updateAvatar: data => apiInstanceImages.patch('/api/users/avatar', data),
 };
 
 export const recipeApi = {
   getRecipes: (id, params) => apiInstance.get(`/api/recipes/${id}`, { params }),
-  deleteRecipe: id => apiInstance.delete(`/api/recipes/${id}`),
-  getFavoriteRecipes: params =>
-    apiInstance.get('/api/recipes/favorites/all', { params }),
-  addToFavorites: id => apiInstance.post(`/api/recipes/favorites/${id}`),
-  removeFromFavorites: id => apiInstance.delete(`/api/recipes/favorites/${id}`),
-  createRecipe: formData => apiInstanceImages.post('/api/recipes/', formData),
+  deleteRecipe: (id) => apiInstance.delete(`/api/recipes/${id}`),
+  getFavoriteRecipes: (params) =>
+    apiInstance.get("/api/recipes/favorites/all", { params }),
+  addToFavorites: (id) => apiInstance.post(`/api/recipes/favorites/${id}`),
+  removeFromFavorites: (id) =>
+    apiInstance.delete(`/api/recipes/${id}/favorites`),
+  createRecipe: (formData) => apiInstanceImages.post("/api/recipes/", formData),
 };
 
 export const categoriesApi = {

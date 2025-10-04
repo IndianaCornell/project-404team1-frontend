@@ -68,7 +68,14 @@ export const useUserProfile = () => {
   const isLoading = useSelector(authSelectors.getLoading);
   const owner = useOwner();
 
-  const id = paramId || owner?._id;
+  const id =
+    +paramId ||
+    +owner?.id ||
+    +(owner?._id?.$oid
+      ? String(owner._id.$oid)
+      : owner?._id
+        ? String(owner._id)
+        : undefined);
 
   useEffect(() => {
     if (!id) return;
