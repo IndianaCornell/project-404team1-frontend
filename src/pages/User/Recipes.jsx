@@ -18,9 +18,7 @@ const RecipesPage = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 9;
 
-  const onChangePage = ({ selected }) => {
-    setPage(selected + 1);
-  };
+  const onChangePage = ({ selected }) => setPage(selected + 1);
 
   const getRecipes = async () => {
     setIsLoading(true);
@@ -31,7 +29,6 @@ const RecipesPage = () => {
         page,
         limit: itemsPerPage,
       });
-      setRecipes(data);
     } catch (error) {
       console.error(error);
       setRecipes(null);
@@ -48,7 +45,7 @@ const RecipesPage = () => {
 
   useEffect(() => {
     if (recipes?.result?.length === 0 && page > 1) {
-      setPage(prev => prev - 1);
+      setPage((prev) => prev - 1);
     }
   }, [recipes?.result?.length, page]);
 
@@ -70,10 +67,10 @@ const RecipesPage = () => {
   return (
     <ListItems
       emptyText={EMPTY_TEXT.RECIPES}
-      data={recipes}
+      data={recipes}                         // тепер має { result, total, page, limit }
       type={TYPE_TABS.RECIPE}
       onDeleteRecipe={onDeleteRecipe}
-      isOwner={owner?._id === id}
+      isOwner={String(owner?.id ?? owner?._id) === String(id)}
       isLoading={isLoading}
       page={page}
       onChangePage={onChangePage}

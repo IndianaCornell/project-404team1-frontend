@@ -4,7 +4,6 @@ import { selectIsLoggedIn } from "@redux/slices/authSlice";
 
 export default function Nav({ openModal }) {
   const isLoggedIn = useSelector(selectIsLoggedIn);
-
   const handleAddRecipeClick = (e) => {
     if (!isLoggedIn) {
       e.preventDefault();

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser,addFavoriteLocal, removeFavoriteLocal } from "@redux/slices/authSlice";
 import s from "./RecipeCard.module.css";
-import { api } from "@lib/api.js";
+import { recipeApi } from "@services/Api";
 
 export default function RecipeCard({ recipe }) {
   const navigate = useNavigate();
@@ -64,10 +64,10 @@ export default function RecipeCard({ recipe }) {
 
     try {
       if (next) {
-        await api.post(`/recipes/${recipeId}/favorite`);
+        await recipeApi.addToFavorites(recipeId);
           dispatch(addFavoriteLocal(recipeId));
       } else {
-        await api.delete(`/recipes/${recipeId}/favorite`);
+        await recipeApi.removeFromFavorites(recipeId);
         dispatch(removeFavoriteLocal(recipeId));
       }
       // dispatch(refreshUser());
