@@ -17,6 +17,7 @@ const UserPage = () => {
   const { onUpdateAvatar } = useUpdateAvatar();
   const [isLogoutModal, setIsLogoutModal] = useState(false);
   const { userProfile, isLoading } = useUserProfile();
+  console.log('userProfile:', userProfile);
 
   const onOpenLogoutModal = () => {
     setIsLogoutModal(true);
