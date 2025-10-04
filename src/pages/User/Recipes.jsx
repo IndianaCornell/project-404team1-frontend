@@ -1,11 +1,10 @@
-import { useParams } from 'react-router-dom';
+// src/pages/User/RecipesPage.jsx
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import ListItems from '@/pages/User/ListItems/ListItems.jsx';
 import { TYPE_TABS, EMPTY_TEXT } from '@constants/common';
 import { recipeApi } from '@services/Api';
-import { useOwner } from '@hooks/user';
 import * as authSlice from '@redux/slices/authSlice.js';
 
 const RecipesPage = () => {
@@ -14,7 +13,6 @@ const RecipesPage = () => {
   console.log('ID:', id);
   const [recipes, setRecipes] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const owner = useOwner();
   const [page, setPage] = useState(1);
   const itemsPerPage = 9;
 
@@ -38,14 +36,13 @@ const RecipesPage = () => {
   };
 
   useEffect(() => {
-    if (!id) return;
     getRecipes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, page]);
+  }, [page]);
 
   useEffect(() => {
     if (recipes?.result?.length === 0 && page > 1) {
-      setPage((prev) => prev - 1);
+      setPage(prev => prev - 1);
     }
   }, [recipes?.result?.length, page]);
 
@@ -67,10 +64,10 @@ const RecipesPage = () => {
   return (
     <ListItems
       emptyText={EMPTY_TEXT.RECIPES}
-      data={recipes}                         // тепер має { result, total, page, limit }
+      data={recipes}
       type={TYPE_TABS.RECIPE}
       onDeleteRecipe={onDeleteRecipe}
-      isOwner={String(owner?.id ?? owner?._id) === String(id)}
+      isOwner={true}
       isLoading={isLoading}
       page={page}
       onChangePage={onChangePage}
