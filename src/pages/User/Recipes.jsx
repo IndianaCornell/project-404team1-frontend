@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import ListItems from '@pages/User/ListItems.jsx';
+import ListItems from '@/pages/User/ListItems/ListItems.jsx';
 import { TYPE_TABS, EMPTY_TEXT } from '@constants/common';
 import { recipeApi } from '@services/Api';
 import { useOwner } from '@hooks/user';
@@ -11,6 +11,7 @@ import * as authSlice from '@redux/slices/authSlice.js';
 const RecipesPage = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  console.log('ID:', id);
   const [recipes, setRecipes] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const owner = useOwner();
@@ -22,16 +23,18 @@ const RecipesPage = () => {
   };
 
   const getRecipes = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-
-      const { data } = await recipeApi.getRecipes(id, {
+      // Если id — число, используем число, иначе строку
+      const recipeId = /^\d+$/.test(id) ? Number(id) : id;
+      const { data } = await recipeApi.getRecipes(recipeId, {
         page,
         limit: itemsPerPage,
       });
       setRecipes(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      setRecipes(null);
     } finally {
       setIsLoading(false);
     }
@@ -40,6 +43,7 @@ const RecipesPage = () => {
   useEffect(() => {
     if (!id) return;
     getRecipes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   useEffect(() => {
@@ -48,18 +52,18 @@ const RecipesPage = () => {
     }
   }, [recipes?.result?.length, page]);
 
-  const onDeleteRecipe = async id => {
+  const onDeleteRecipe = async recipeId => {
     try {
-      await recipeApi.deleteRecipe(id);
+      await recipeApi.deleteRecipe(recipeId);
       setRecipes(prev => ({
         ...prev,
-        result: prev.result.filter(recipe => recipe._id !== id),
+        result: prev.result.filter(recipe => recipe._id !== recipeId),
       }));
       await dispatch(
         authSlice.updateUserProfile({ key: 'recipes', value: -1 })
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

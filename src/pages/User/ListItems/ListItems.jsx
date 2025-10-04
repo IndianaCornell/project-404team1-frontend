@@ -1,8 +1,8 @@
 import styles from './ListItems.module.css';
 import { TYPE_TABS } from '@constants/common';
-import RecipePreview from './RecipePreview.jsx';
-import UserCard from './UserCard.jsx';
-import ListPagination from './ListPagination.jsx';
+import RecipePreview from '../RecipePreview/RecipePreview.jsx';
+import UserCard from '../UseCard/UserCard.jsx';
+import ListPagination from '../ListPagination/ListPagination.jsx';
 import Loader from '@components/common/Loader/Loader.jsx';
 
 const ListItems = ({
@@ -39,9 +39,11 @@ const ListItems = ({
     <div className={styles.wrapper}>
       <ul className={styles.list}>
         {data?.result?.map(item => {
+          const key = item.id || item._id;
+
           if (type === TYPE_TABS.RECIPE) {
             return (
-              <li key={item._id} className={styles.item_recipe}>
+              <li key={key} className={styles.item_recipe}>
                 <RecipePreview
                   recipe={item}
                   onDeleteRecipe={onDeleteRecipe}
@@ -53,7 +55,7 @@ const ListItems = ({
 
           if (type === TYPE_TABS.USER) {
             return (
-              <li key={item._id} className={styles.item_user}>
+              <li key={key} className={styles.item_user}>
                 <UserCard
                   user={item}
                   owner={owner}
