@@ -1,0 +1,103 @@
+.logo1 {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 40px;
+}
+
+.left {
+  flex: 1;
+  list-style: none;
+  padding: 0;
+}
+
+.right {
+  flex: 1;
+  list-style: none;
+  padding: 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.homelink {
+  color: #BFBEBE;
+  /* cursor: pointer;
+  text-decoration: underline; */
+}
+
+.homelink:hover {
+  color: #BFBEBE;
+}
+
+.logo2 {
+  /* background: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  margin-right: 10px; */
+   background-color: #ffffff;
+  color: #BFBEBE;
+  border-color: #BFBEBE;
+  border-radius: 25px;
+  margin: 7px;
+  padding: 12px;
+  border: 2px solid
+}
+
+.items {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.items img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.left img {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.loading,
+.error,
+.notFound {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.error button,
+.notFound button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.error button:hover,
+.notFound button:hover {
+  background: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .logo1 {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
