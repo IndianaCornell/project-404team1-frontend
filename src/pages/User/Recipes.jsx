@@ -27,6 +27,7 @@ const RecipesPage = () => {
         page,
         limit: itemsPerPage,
       });
+      setRecipes(data);
     } catch (error) {
       console.error(error);
       setRecipes(null);
