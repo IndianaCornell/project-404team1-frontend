@@ -3,8 +3,10 @@ import ListItems from '@/pages/User/ListItems/ListItems.jsx';
 import { TYPE_TABS, EMPTY_TEXT } from '@constants/common';
 import { userApi } from '@services/Api';
 import { useFollow, useOwner } from '@hooks/user';
+import { useParams } from 'react-router-dom';
 
 const FollowingPage = () => {
+  const { id } = useParams();
   const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const owner = useOwner();
@@ -31,13 +33,17 @@ const FollowingPage = () => {
   };
 
   useEffect(() => {
+    setUsers(null);
+  }, [id]);
+
+  useEffect(() => {
     getUsers();
-  }, [page]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, page]);
 
   return (
     <ListItems
       emptyText={EMPTY_TEXT.FOLLOWING}
-      onCurrentPageChange={onChangePage}
       data={users}
       type={TYPE_TABS.USER}
       isLoading={isLoading}

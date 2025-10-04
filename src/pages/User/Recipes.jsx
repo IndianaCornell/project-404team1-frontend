@@ -1,17 +1,16 @@
-import { useParams } from 'react-router-dom';
+// src/pages/User/RecipesPage.jsx
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-
 import ListItems from '@/pages/User/ListItems/ListItems.jsx';
 import { TYPE_TABS, EMPTY_TEXT } from '@constants/common';
 import { recipeApi } from '@services/Api';
 import { useOwner } from '@hooks/user';
 import * as authSlice from '@redux/slices/authSlice.js';
+import { useParams } from 'react-router-dom';
 
 const RecipesPage = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  console.log('ID:', id);
   const [recipes, setRecipes] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const owner = useOwner();
@@ -23,7 +22,6 @@ const RecipesPage = () => {
   const getRecipes = async () => {
     setIsLoading(true);
     try {
-      // Если id — число, используем число, иначе строку
       const recipeId = /^\d+$/.test(id) ? Number(id) : id;
       const { data } = await recipeApi.getRecipes(recipeId, {
         page,
@@ -36,6 +34,10 @@ const RecipesPage = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    setRecipes(null);
+  }, [id]);
 
   useEffect(() => {
     if (!id) return;

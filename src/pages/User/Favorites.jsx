@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
 import ListItems from "@/pages/User/ListItems/ListItems.jsx";
 import { TYPE_TABS, EMPTY_TEXT } from "@constants/common";
 import { recipeApi } from "@services/Api";
+import * as authSlice from "@redux/slices/authSlice.js";
 
 const FavoritesPage = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [recipes, setRecipes] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const itemsPerPage = 9;
+
+  useEffect(() => {
+    setRecipes(null);
+  }, [id]);
 
   const onChangePage = ({ selected }) => setPage(selected + 1);
 
@@ -69,6 +75,8 @@ const FavoritesPage = () => {
           total: Math.max(0, (prev.total ?? filtered.length) - 1),
         };
       });
+
+      dispatch(authSlice.updateUserProfile({ key: "favorites", value: -1 }));
 
     } catch (error) {
       console.log(error);

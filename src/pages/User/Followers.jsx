@@ -22,7 +22,7 @@ const FollowersPage = () => {
   const getUsers = async () => {
   try {
     const { data } = await userApi.getFollowers({
-      userId: id, // если сервер требует userId
+      userId: id,
       page,
       limit: itemsPerPage,
     });
@@ -35,17 +35,20 @@ const FollowersPage = () => {
 };
 
   useEffect(() => {
+    setUsers(null);
+  }, [id]);
+  
+  useEffect(() => {
     if (!id) return;
 
     getUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   return (
     <ListItems
       type={TYPE_TABS.USER}
       emptyText={EMPTY_TEXT.FOLLOWERS}
-      currentPage={page}
-      onCurrentPageChange={onChangePage}
       data={users}
       isLoading={isLoading}
       owner={owner}
