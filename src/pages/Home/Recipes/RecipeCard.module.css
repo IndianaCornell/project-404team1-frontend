@@ -1,21 +1,31 @@
 .card {
   position: relative;
-  border: 1px solid #eee;
-  border-radius: 18px;
+  border:
+    1px solid,
+    transparent;
+  border-radius: 30px;
   overflow: hidden;
   background: #fff;
   display: flex;
   flex-direction: column;
-  transition: box-shadow .2s ease, transform .2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
-.card:hover { box-shadow: 0 8px 24px rgba(0,0,0,.08); transform: translateY(-2px); }
-.card:focus-within { box-shadow: 0 0 0 3px rgba(0,0,0,.12); }
+.card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+.card:focus-within {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.12);
+}
 
 .thumb {
   position: relative;
-  padding-top: 65%;        /* тримає пропорцію, якщо aspect-ratio не підтримується */
-  aspect-ratio: 4 / 3;     /* сучасний спосіб; обидва можуть бути разом */
+  padding-top: 65%;
+  aspect-ratio: 4 / 4;
   overflow: hidden;
+  border-radius: 30px;
 }
 .thumb img {
   position: absolute;
@@ -24,6 +34,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  border-radius: inherit;
 }
 
 .body {
@@ -32,7 +43,13 @@
   flex-direction: column;
   gap: 8px;
 }
-.title { font-size: 16px; line-height: 1.2; text-transform: uppercase; letter-spacing: .02em; margin: 2px 0 0; }
+.title {
+  font-size: 16px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 2px 0 0;
+}
 .snippet {
   font-size: 13px;
   color: #666;
@@ -44,9 +61,24 @@
   -webkit-box-orient: vertical;
 }
 
-.meta { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
-.author { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+.author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
 .authorName {
   font-size: 13px;
   color: #333;
@@ -67,22 +99,43 @@
   font-weight: bold;
   font-size: 14px;
 }
-.actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .iconBtn {
-  width: 36px; height: 36px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: 1px solid #e6e6e6;
   background: #fff;
-  display: grid; place-items: center;
-  cursor: pointer; flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
   outline: none;
-  transition: background .15s ease, border-color .15s ease, transform .08s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.08s ease;
   position: relative;
 }
-.iconBtn:hover { background: #f7f7f7; }
-.iconBtn:active { transform: scale(.96); }
-.iconBtn:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
-.iconBtn[disabled] { opacity: .55; cursor: default; }
+.iconBtn:hover {
+  background: #f7f7f7;
+}
+.iconBtn:active {
+  transform: scale(0.96);
+}
+.iconBtn:focus-visible {
+  outline: 2px solid #000;
+  outline-offset: 2px;
+}
+.iconBtn[disabled] {
+  opacity: 0.55;
+  cursor: default;
+}
 
 .badge {
   position: absolute;
@@ -99,9 +152,17 @@
   text-align: center;
 }
 
-.favActive { color: #e74c3c; }
-.favActive:hover { background: #fdecec; border-color: #f5c2c7; }
+.favActive {
+  color: #e74c3c;
+}
+.favActive:hover {
+  background: #fdecec;
+  border-color: #f5c2c7;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .card, .iconBtn { transition: none; }
+  .card,
+  .iconBtn {
+    transition: none;
+  }
 }
