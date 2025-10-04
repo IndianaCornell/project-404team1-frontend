@@ -14,7 +14,7 @@ const favoritesSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(addToFavorites.fulfilled, (state, action) => {
-        state.favorites.push({ _id: action.payload });
+        state.favorites.push(action.payload );
       })
       .addCase(removeFromFavorites.fulfilled, (state, action) => {
         state.favorites = state.favorites.filter(

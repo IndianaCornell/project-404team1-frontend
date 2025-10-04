@@ -6,7 +6,9 @@ const UserInfo = ({ isOwner, user, userImg, onUpdateAvatar }) => {
   const name = user?.name || 'No name';
   const email = user?.email || 'No email';
   const recipes = user?.recipes ?? 0;
-  const favorites = user?.favorites ?? 0;
+  const favorites =
+  user?.favoritesCount ??
+  (Array.isArray(user?.favorites) ? user.favorites.length : 0);
   const followers = user?.followers ?? 0;
   const following = user?.following ?? 0;
 
