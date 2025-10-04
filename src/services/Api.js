@@ -44,7 +44,8 @@ export const userApi = {
 };
 
 export const recipeApi = {
-  getRecipes: (params) => apiInstance.get(`/api/recipes/`, { params }),
+  getRecipes: (id,params) => apiInstance.get(`/api/recipes/${id}`, { params }),
+  getMyRecipes: (params) => apiInstance.get(`/api/recipes/my`, { params }),
   deleteRecipe: (id) => apiInstance.delete(`/api/recipes/${id}`),
   getFavoriteRecipes: (params) =>
     apiInstance.get("/api/recipes/favorites/all", { params }),

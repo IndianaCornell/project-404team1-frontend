@@ -1,19 +1,15 @@
-import { useParams } from 'react-router-dom';
+// src/pages/User/RecipesPage.jsx
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-
 import ListItems from '@pages/User/ListItems.jsx';
 import { TYPE_TABS, EMPTY_TEXT } from '@constants/common';
 import { recipeApi } from '@services/Api';
-import { useOwner } from '@hooks/user';
 import * as authSlice from '@redux/slices/authSlice.js';
 
 const RecipesPage = () => {
   const dispatch = useDispatch();
-  const { id } = useParams();
-  const [recipes, setRecipes] = useState(null);   // { result, total, page, limit }
+  const [recipes, setRecipes] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const owner = useOwner();
   const [page, setPage] = useState(1);
   const itemsPerPage = 9;
 
@@ -22,46 +18,44 @@ const RecipesPage = () => {
   const getRecipes = async () => {
     try {
       setIsLoading(true);
-      const { data } = await recipeApi.getRecipes({ page, limit: itemsPerPage});
+      const { data } = await recipeApi.getMyRecipes({ page, limit: itemsPerPage });
 
-      // 🔧 МАПІНГ під формат, який читає ListItems / ефекти
       setRecipes({
         result: data.items ?? [],
+        items: data.items ?? [],   
         total: Number(data.total ?? 0),
         page: Number(data.page ?? page),
         limit: Number(data.limit ?? itemsPerPage),
       });
     } catch (error) {
       console.log(error);
-      setRecipes({ result: [], total: 0, page, limit: itemsPerPage });
+      setRecipes({ result: [], items: [], total: 0, page, limit: itemsPerPage });
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!id) return;
     getRecipes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, page]);
+  }, [page]);
 
   useEffect(() => {
     if (recipes?.result?.length === 0 && page > 1) {
-      setPage((prev) => prev - 1);
+      setPage(prev => prev - 1);
     }
   }, [recipes?.result?.length, page]);
 
   const onDeleteRecipe = async (recipeId) => {
     try {
       await recipeApi.deleteRecipe(recipeId);
-      setRecipes((prev) => {
+      setRecipes(prev => {
         if (!prev) return prev;
-        const filtered = prev.result.filter(
-          (r) => String(r.id ?? r._id) !== String(recipeId)
-        );
+        const filtered = (prev.result ?? []).filter(r => String(r.id ?? r._id) !== String(recipeId));
         return {
           ...prev,
           result: filtered,
+          items: filtered,
           total: Math.max(0, (prev.total ?? 0) - 1),
         };
       });
@@ -74,10 +68,10 @@ const RecipesPage = () => {
   return (
     <ListItems
       emptyText={EMPTY_TEXT.RECIPES}
-      data={recipes}                         // тепер має { result, total, page, limit }
+      data={recipes}
       type={TYPE_TABS.RECIPE}
       onDeleteRecipe={onDeleteRecipe}
-      isOwner={String(owner?.id ?? owner?._id) === String(id)}
+      isOwner={true}
       isLoading={isLoading}
       page={page}
       onChangePage={onChangePage}
