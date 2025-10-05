@@ -34,11 +34,32 @@ if (saved) {
   token.set(parsed);
 }
 
+// подтянуть токен из localStorage при старте
+const savedToken =
+  typeof window !== "undefined" && localStorage.getItem("token");
+if (savedToken) token.set(savedToken);
+
+// необязательный перехватчик для наглядных логов
+apiInstance.interceptors.response.use(
+  (r) => r,
+  (err) => {
+    // eslint-disable-next-line no-console
+    console.error(
+      "API Error:",
+      err?.response?.status,
+      err?.response?.data || err?.message
+    );
+    return Promise.reject(err);
+  }
+);
+
+// --- AUTH ---
 export const authApi = {
   register: (data) => apiInstance.post("/api/auth/register", data),
   login: (data) => apiInstance.post("/api/auth/login", data),
   getMe: () => apiInstance.get("/api/users/me"),
   logout: () => apiInstance.post("/api/auth/logout"),
+  refresh: ()      => apiInstance.get('/api/auth/refresh'),
 };
 
 export const userApi = {
@@ -49,14 +70,15 @@ export const userApi = {
   getFollowing: (params) => apiInstance.get("/api/users/following", { params }),
   updateAvatar: (formData) =>
     apiInstanceImages.patch("/api/users/avatar", formData),
+  getFollowersByUser: (id, params) => apiInstance.get(`/api/users/${id}/followers`, { params }),
+  getFollowingByUser: (id, params) => apiInstance.get(`/api/users/${id}/following`, { params }),
 };
 
 export const recipeApi = {
-  getRecipes: (userId, params) =>
-    apiInstance.get(`/api/recipes/${userId}`, { params }),
-
-  getMyRecipes: (params) => apiInstance.get("/api/recipes/my", { params }),
-
+  getRecipes: (userId, params) => {
+    return apiInstance.get(`/api/recipes/${userId}`, { params });
+  },
+  getMyRecipes: (params) => apiInstance.get(`/api/recipes/my`, { params }),
   deleteRecipe: (id) => apiInstance.delete(`/api/recipes/${id}`),
 
   getFavoriteRecipes: (params) =>
@@ -68,6 +90,8 @@ export const recipeApi = {
     apiInstance.delete(`/api/recipes/${id}/favorite`),
 
   createRecipe: (formData) => apiInstanceImages.post("/api/recipes", formData),
+  getUserRecipes: (ownerId, params) =>
+    apiInstance.get(`/api/recipes/owner/${ownerId}`, { params }),
 };
 
 export const categoriesApi = {

@@ -16,6 +16,7 @@ export default function RecipeCard({ recipe }) {
 
   const recipeId = recipe.id || recipe._id;
   const author = recipe.author || {};
+  const authorId = author.id || author._id || recipe.owner;
 
   // useEffect(() => {
   //   console.log("recipeId:", recipeId, typeof recipeId);
@@ -53,6 +54,12 @@ export default function RecipeCard({ recipe }) {
     if (recipeId) navigate(`/recipe/${recipeId}`);
   };
 
+    const openAuthor = (e) => {
+    e.stopPropagation?.();
+    if (!authorId) return;
+    navigate(`/users/${authorId}`);
+  };
+
   const toggleFavorite = async (e) => {
     e.stopPropagation?.();
     if (busy || !recipeId) return;
@@ -77,7 +84,6 @@ export default function RecipeCard({ recipe }) {
         await recipeApi.removeFromFavorites(recipeId);
         dispatch(removeFavoriteLocal(recipeId));
       }
-      // dispatch(refreshUser());
     } catch (err) {
       console.error(err);
       setIsFav(!next);
@@ -95,6 +101,12 @@ export default function RecipeCard({ recipe }) {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       openRecipe();
+    }
+  };  
+  const onAuthorKey = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      openAuthor(e);
     }
   };
 
@@ -122,7 +134,13 @@ export default function RecipeCard({ recipe }) {
         ) : null}
 
         <div className={s.meta}>
-          <div className={s.author}>
+          <div className={s.author}
+            onClick={openAuthor}
+            onKeyDown={onAuthorKey}
+            role="button"
+            tabIndex={0}
+            aria-label={`Open ${author.name || "author"} profile`}
+            title="Open author profile">
             {author.avatar ? (
               <img
                 className={s.avatar}
