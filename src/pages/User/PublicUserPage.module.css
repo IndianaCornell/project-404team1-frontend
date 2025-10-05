@@ -1,0 +1,42 @@
+.wrap { padding: 24px 0; }
+.h1 { font-size: 28px; margin: 0 0 8px; }
+.lead { color:#666; margin: 0 0 20px; }
+.grid { display:grid; grid-template-columns: 320px 1fr; gap: 32px; }
+.card { border:1px solid #eee; border-radius:16px; padding:20px; }
+.avatar { width:120px; height:120px; border-radius:50%; overflow:hidden; margin: 0 auto 12px; }
+.avatar img { width:100%; height:100%; object-fit:cover; }
+.name { text-align:center; font-weight:600; margin-bottom:8px; }
+.meta { color:#444; display:flex; flex-direction:column; gap:6px; margin: 8px 0 16px; }
+.list { min-width:0; }
+.tabsHeader { font-weight:700; margin-bottom:12px; }
+@media (max-width: 900px){
+  .grid{ grid-template-columns: 1fr; }
+}
+.tabs {
+  display: flex;
+  gap: 18px;
+  margin: 6px 0 14px;
+  border-bottom: 1px solid #eee;
+}
+.tab {
+  padding: 8px 0;
+  font-weight: 600;
+  letter-spacing: .02em;
+  color: #999;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.tab:hover { color: #222; }
+.active {
+  color: #111;
+  position: relative;
+}
+.active::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: #111;
+  border-radius: 2px;
+}
