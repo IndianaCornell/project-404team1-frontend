@@ -1,6 +1,6 @@
 // src/redux/slices/recipesOperations.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-// import { recipeApi } from "@/services/Api";
+import { recipeApi } from "@/services/Api";
 
 import { api } from "@/lib/api"; // ✅ alias @ → src; без .js в кінці, щоб Vite сам розширив
 
@@ -26,7 +26,7 @@ export const getRecipes = createAsyncThunk(
   async ({ page = 1, limit = 12, ...filters } = {}, { rejectWithValue }) => {
     try {
       const params = buildParams({ page, limit, ...filters });
-      const { data } = await api.get(`/recipes?${params.toString()}`);
+      const { data } = await recipeApi.get(`/recipes?${params.toString()}`);
       // recipeApi.get(`/recipes?${params.toString()}`);
       return data;
     } catch (e) {
