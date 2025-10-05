@@ -1,53 +1,39 @@
 import { BASE_URL } from "./BaseUrl";
 import axios from "axios";
 
-// --- axios instances ---
 export const apiInstance = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
-// ВАЖНО: для multipart не ставим Content-Type вручную,
-// чтобы браузер проставил boundary сам.
 export const apiInstanceImages = axios.create({
   baseURL: BASE_URL,
 });
 
-// --- auth header helper ---
 export const token = {
   set(jwt) {
-    apiInstance.defaults.headers.Authorization = `Bearer ${jwt}`;
-    apiInstanceImages.defaults.headers.Authorization = `Bearer ${jwt}`;
+    const bearer = `Bearer ${jwt}`;
+    apiInstance.defaults.headers.common.Authorization = bearer;
+    apiInstanceImages.defaults.headers.common.Authorization = bearer;
   },
   unset() {
-    apiInstance.defaults.headers.Authorization = "";
-    apiInstanceImages.defaults.headers.Authorization = "";
+    delete apiInstance.defaults.headers.common.Authorization;
+    delete apiInstanceImages.defaults.headers.common.Authorization;
   },
 };
 
-// подтянуть токен из localStorage при старте
-const savedToken =
-  typeof window !== "undefined" && localStorage.getItem("token");
-if (savedToken) token.set(savedToken);
+const saved = localStorage.getItem("token");
+if (saved) {
+  const parsed = (() => {
+    try {
+      return JSON.parse(saved);
+    } catch {
+      return saved;
+    }
+  })();
+  token.set(parsed);
+}
 
-// необязательный перехватчик для наглядных логов
-apiInstance.interceptors.response.use(
-  (r) => r,
-  (err) => {
-    // eslint-disable-next-line no-console
-    console.error(
-      "API Error:",
-      err?.response?.status,
-      err?.response?.data || err?.message
-    );
-    return Promise.reject(err);
-  }
-);
-
-// --- helpers ---
-const isMongoId = (v) => typeof v === "string" && /^[a-f\d]{24}$/i.test(v);
-
-// --- AUTH ---
 export const authApi = {
   register: (data) => apiInstance.post("/api/auth/register", data),
   login: (data) => apiInstance.post("/api/auth/login", data),
@@ -55,40 +41,35 @@ export const authApi = {
   logout: () => apiInstance.post("/api/auth/logout"),
 };
 
-// --- USERS (Mongo _id) ---
 export const userApi = {
-  // профиль по Mongo ObjectId
-  getProfile: (mongoId) => apiInstance.get(`/api/users/${mongoId}`),
-
-  followUser: (mongoId) => apiInstance.post(`/api/users/follow/${mongoId}`),
-  unfollowUser: (mongoId) => apiInstance.delete(`/api/users/follow/${mongoId}`),
-
+  getProfile: (id) => apiInstance.get(`/api/users/${id}`),
+  followUser: (id) => apiInstance.post(`/api/users/follow/${id}`),
+  unfollowUser: (id) => apiInstance.delete(`/api/users/follow/${id}`),
   getFollowers: (params) => apiInstance.get("/api/users/followers", { params }),
   getFollowing: (params) => apiInstance.get("/api/users/following", { params }),
-
   updateAvatar: (formData) =>
     apiInstanceImages.patch("/api/users/avatar", formData),
 };
 
-// --- RECIPES (numeric userId) ---
 export const recipeApi = {
-  getRecipes: (userId, params) => {
-    // Просто используйте строку, не преобразуйте в число!
-    return apiInstance.get(`/api/recipes/${userId}`, { params });
-  },
-  getMyRecipes: (params) => apiInstance.get(`/api/recipes/my`, { params }),
+  getRecipes: (userId, params) =>
+    apiInstance.get(`/api/recipes/${userId}`, { params }),
+
+  getMyRecipes: (params) => apiInstance.get("/api/recipes/my", { params }),
+
   deleteRecipe: (id) => apiInstance.delete(`/api/recipes/${id}`),
 
   getFavoriteRecipes: (params) =>
     apiInstance.get("/api/recipes/favorites/all", { params }),
-   addToFavorites: (id) => apiInstance.post(`/api/recipes/${id}/favorite`),
+
+  addToFavorites: (id) => apiInstance.post(`/api/recipes/${id}/favorite`),
+
   removeFromFavorites: (id) =>
     apiInstance.delete(`/api/recipes/${id}/favorite`),
 
   createRecipe: (formData) => apiInstanceImages.post("/api/recipes", formData),
 };
 
-// --- CATALOGS / PUBLIC ---
 export const categoriesApi = {
   getCategories: () => apiInstance.get("/api/categories"),
   getMoreCategories: (page) => apiInstance.get(`/api/categories?page=${page}`),

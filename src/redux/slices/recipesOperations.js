@@ -1,6 +1,6 @@
 // src/redux/slices/recipesOperations.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "@/lib/api"; // ✅ alias @ → src; без .js в кінці, щоб Vite сам розширив
+import { recipeApi } from "@/services/Api";
 
 // утиліта
 const buildParams = (base = {}) => {
@@ -24,7 +24,7 @@ export const getRecipes = createAsyncThunk(
   async ({ page = 1, limit = 12, ...filters } = {}, { rejectWithValue }) => {
     try {
       const params = buildParams({ page, limit, ...filters });
-      const { data } = await api.get(`/recipes?${params.toString()}`);
+      const { data } = await recipeApi.get(`/recipes?${params.toString()}`);
       return data;
     } catch (e) {
       return rejectWithValue(e.response?.data || e.message);
@@ -46,7 +46,7 @@ export const getRecipesByCategory = createAsyncThunk(
   ) => {
     try {
       const params = buildParams({ category, page, limit, ...filters });
-      const { data } = await api.get(`/recipes?${params.toString()}`);
+      const { data } = await recipeApi.get(`/recipes?${params.toString()}`);
 
       const items = Array.isArray(data)
         ? data
@@ -75,7 +75,9 @@ export const getPopularRecipes = createAsyncThunk(
   async ({ page = 1, limit = 12 } = {}, { rejectWithValue }) => {
     try {
       const params = buildParams({ page, limit });
-      const { data } = await api.get(`/recipes/popular?${params.toString()}`);
+      const { data } = await recipeApi.get(
+        `/recipes/popular?${params.toString()}`
+      );
       return data;
     } catch (e) {
       return rejectWithValue(e.response?.data || e.message);
@@ -84,26 +86,19 @@ export const getPopularRecipes = createAsyncThunk(
 );
 
 // ========================
-// ADD (поки що мок з затримкою)
+// ADD
 // ========================
-const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 
 export const addRecipe = createAsyncThunk(
   "recipes/add",
-  async (newRecipe, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      await delay(150);
-      if (newRecipe.photo) {
-        const formData = new FormData();
-        formData.append("photo", newRecipe.photo);
-        formData.append(
-          "data",
-          JSON.stringify({ ...newRecipe, photo: undefined })
-        );
-        return { ...newRecipe, photo: URL.createObjectURL(newRecipe.photo) };
-      }
-      return newRecipe;
+      const { data } = await recipeApi.createRecipe(formData);
+
+      console.log("Recipe created:", data);
+      return data;
     } catch (e) {
+      console.error("addRecipe error:", e.response?.data || e.message);
       return rejectWithValue(e.response?.data || e.message);
     }
   }
