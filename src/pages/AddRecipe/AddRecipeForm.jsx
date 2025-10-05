@@ -46,7 +46,7 @@ const AddRecipeForm = () => {
     <div>
       <Formik
         initialValues={{
-          photo: null,
+          image: null,
           title: "",
           description: "",
           category: "",
@@ -55,7 +55,7 @@ const AddRecipeForm = () => {
           ingredients: [],
         }}
         validationSchema={Yup.object({
-          photo: Yup.mixed().required("Photo is required"),
+          image: Yup.mixed().required("Photo is required"),
           title: Yup.string().required("Title is required"),
           description: Yup.string().required("Description is required"),
           category: Yup.string().required("Category is required"),
@@ -80,8 +80,8 @@ const AddRecipeForm = () => {
               formData.append(`ingredients[${i}][quantity]`, ing.quantity);
             });
 
-            if (values.photo) {
-              formData.append("photo", values.photo);
+            if (values.image) {
+              formData.append("image", values.image);
             }
 
             const newRecipe = await dispatch(addRecipe(formData)).unwrap();
@@ -114,12 +114,12 @@ const AddRecipeForm = () => {
           <Form className={styles.formContainer}>
             <div className={styles.leftCol}>
               <PhotoUpload
-                value={values.photo}
-                onChange={(file) => setFieldValue("photo", file)}
-                onClear={() => setFieldValue("photo", null)}
+                value={values.image}
+                onChange={(file) => setFieldValue("image", file)}
+                onClear={() => setFieldValue("image", null)}
               />
-              {errors.photo && touched.photo && (
-                <div className={styles.error}>{errors.photo}</div>
+              {errors.image && touched.image && (
+                <div className={styles.error}>{errors.image}</div>
               )}
             </div>
 
@@ -217,7 +217,7 @@ const AddRecipeForm = () => {
                 onDelete={() => {
                   resetForm();
                   setTime(10);
-                  setFieldValue("photo", null);
+                  setFieldValue("image", null);
                   setAddedIngredients([]);
                 }}
                 onSubmit={() => {}}

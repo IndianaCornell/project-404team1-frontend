@@ -1,29 +1,38 @@
 import { BASE_URL } from "./BaseUrl";
 import axios from "axios";
 
-// --- axios instances ---
 export const apiInstance = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
 });
 
-// ВАЖНО: для multipart не ставим Content-Type вручную,
-// чтобы браузер проставил boundary сам.
 export const apiInstanceImages = axios.create({
   baseURL: BASE_URL,
 });
 
-// --- auth header helper ---
 export const token = {
   set(jwt) {
-    apiInstance.defaults.headers.Authorization = `Bearer ${jwt}`;
-    apiInstanceImages.defaults.headers.Authorization = `Bearer ${jwt}`;
+    const bearer = `Bearer ${jwt}`;
+    apiInstance.defaults.headers.common.Authorization = bearer;
+    apiInstanceImages.defaults.headers.common.Authorization = bearer;
   },
   unset() {
-    apiInstance.defaults.headers.Authorization = "";
-    apiInstanceImages.defaults.headers.Authorization = "";
+    delete apiInstance.defaults.headers.common.Authorization;
+    delete apiInstanceImages.defaults.headers.common.Authorization;
   },
 };
+
+const saved = localStorage.getItem("token");
+if (saved) {
+  const parsed = (() => {
+    try {
+      return JSON.parse(saved);
+    } catch {
+      return saved;
+    }
+  })();
+  token.set(parsed);
+}
 
 // подтянуть токен из localStorage при старте
 const savedToken =
@@ -53,24 +62,18 @@ export const authApi = {
   refresh: ()      => apiInstance.get('/api/auth/refresh'),
 };
 
-// --- USERS (Mongo _id) ---
 export const userApi = {
-  // профиль по Mongo ObjectId
-  getProfile: (mongoId) => apiInstance.get(`/api/users/${mongoId}`),
-
-  followUser: (mongoId) => apiInstance.post(`/api/users/follow/${mongoId}`),
-  unfollowUser: (mongoId) => apiInstance.delete(`/api/users/follow/${mongoId}`),
-
+  getProfile: (id) => apiInstance.get(`/api/users/${id}`),
+  followUser: (id) => apiInstance.post(`/api/users/follow/${id}`),
+  unfollowUser: (id) => apiInstance.delete(`/api/users/follow/${id}`),
   getFollowers: (params) => apiInstance.get("/api/users/followers", { params }),
   getFollowing: (params) => apiInstance.get("/api/users/following", { params }),
-
   updateAvatar: (formData) =>
     apiInstanceImages.patch("/api/users/avatar", formData),
   getFollowersByUser: (id, params) => apiInstance.get(`/api/users/${id}/followers`, { params }),
   getFollowingByUser: (id, params) => apiInstance.get(`/api/users/${id}/following`, { params }),
 };
 
-// --- RECIPES (numeric userId) ---
 export const recipeApi = {
   getRecipes: (userId, params) => {
     return apiInstance.get(`/api/recipes/${userId}`, { params });
@@ -80,7 +83,9 @@ export const recipeApi = {
 
   getFavoriteRecipes: (params) =>
     apiInstance.get("/api/recipes/favorites/all", { params }),
-   addToFavorites: (id) => apiInstance.post(`/api/recipes/${id}/favorite`),
+
+  addToFavorites: (id) => apiInstance.post(`/api/recipes/${id}/favorite`),
+
   removeFromFavorites: (id) =>
     apiInstance.delete(`/api/recipes/${id}/favorite`),
 
@@ -89,7 +94,6 @@ export const recipeApi = {
     apiInstance.get(`/api/recipes/owner/${ownerId}`, { params }),
 };
 
-// --- CATALOGS / PUBLIC ---
 export const categoriesApi = {
   getCategories: () => apiInstance.get("/api/categories"),
   getMoreCategories: (page) => apiInstance.get(`/api/categories?page=${page}`),
