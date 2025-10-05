@@ -15,7 +15,6 @@ export const registerUser = createAsyncThunk(
   "/api/auth/register",
   async (credentials, { rejectWithValue }) => {
     try {
-      // const response = await api.post("/auth/register", credentials);
       const response = await authApi.register(credentials);
       const { token } = response.data;
 
@@ -67,20 +66,22 @@ export const logoutUser = createAsyncThunk("/api/auth/logout", async () => {
 
 // --- Refresh current user ---
 export const refreshUser = createAsyncThunk(
-  "/refresh",
+  "auth/refresh",
   async (_, thunkAPI) => {
     const state = thunkAPI.getState();
     const persistedToken = state.auth.token || localStorage.getItem("token");
-
-    if (!persistedToken) {
-      return thunkAPI.rejectWithValue("No token found");
-    }
-
+    if (!persistedToken) return thunkAPI.rejectWithValue("No token found");
     try {
       setAuthHeader(persistedToken);
-      const response = await authApi.refresh();
-      return response.data; // user
+      const { data } = await authApi.refresh();
+      return data;
     } catch (error) {
+      const status = error?.response?.status;
+      if (status === 401) {
+        clearAuthHeader();
+        localStorage.removeItem("token");
+        return thunkAPI.rejectWithValue("Unauthorized");
+      }
       return thunkAPI.rejectWithValue(
         error?.response?.data?.message || error?.message || "Refresh failed"
       );
