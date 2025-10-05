@@ -66,12 +66,13 @@ export const userApi = {
 
   updateAvatar: (formData) =>
     apiInstanceImages.patch("/api/users/avatar", formData),
+  getFollowersByUser: (id, params) => apiInstance.get(`/api/users/${id}/followers`, { params }),
+  getFollowingByUser: (id, params) => apiInstance.get(`/api/users/${id}/following`, { params }),
 };
 
 // --- RECIPES (numeric userId) ---
 export const recipeApi = {
   getRecipes: (userId, params) => {
-    // Просто используйте строку, не преобразуйте в число!
     return apiInstance.get(`/api/recipes/${userId}`, { params });
   },
   getMyRecipes: (params) => apiInstance.get(`/api/recipes/my`, { params }),
@@ -84,6 +85,8 @@ export const recipeApi = {
     apiInstance.delete(`/api/recipes/${id}/favorite`),
 
   createRecipe: (formData) => apiInstanceImages.post("/api/recipes", formData),
+  getUserRecipes: (ownerId, params) =>
+    apiInstance.get(`/api/recipes/owner/${ownerId}`, { params }),
 };
 
 // --- CATALOGS / PUBLIC ---
