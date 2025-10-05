@@ -44,15 +44,13 @@ apiInstance.interceptors.response.use(
   }
 );
 
-// --- helpers ---
-const isMongoId = (v) => typeof v === "string" && /^[a-f\d]{24}$/i.test(v);
-
 // --- AUTH ---
 export const authApi = {
   register: (data) => apiInstance.post("/api/auth/register", data),
   login: (data) => apiInstance.post("/api/auth/login", data),
   getMe: () => apiInstance.get("/api/users/me"),
   logout: () => apiInstance.post("/api/auth/logout"),
+  refresh: ()      => apiInstance.get('/api/auth/refresh'),
 };
 
 // --- USERS (Mongo _id) ---
