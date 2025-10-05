@@ -24,14 +24,22 @@ const UserPage = () => {
   const owner = useOwner();
   const { onFollow, onUnfollow } = useFollow();
   const { onLogout } = useLogout();
-  const { user, isFollow, userImg, isLoading } = useUserProfile();
+
+  const { userProfile, isLoading } = useUserProfile();
+
   const onUpdateAvatar = useUpdateAvatar();
+
+  const isOwner = owner?._id === userProfile?._id;
+  const user = userProfile;
+  const userImg = isOwner ? owner?.avatar : userProfile?.avatar;
+  const isFollow =
+    Array.isArray(owner?.following) &&
+    owner.following.includes(userProfile?._id);
 
   const [isLogoutModal, setIsLogoutModal] = useState(false);
   const onOpenLogoutModal = () => setIsLogoutModal(true);
   const onCloseLogoutModal = () => setIsLogoutModal(false);
 
-  const isOwner = owner?._id === user?._id;
   const buttonText = isOwner ? "log out" : isFollow ? "following" : "follow";
   const onButtonClick = () => {
     if (isOwner) return onOpenLogoutModal();
@@ -50,6 +58,7 @@ const UserPage = () => {
         </div>
 
         <div className={styles.content}>
+          {/* Ліва колонка */}
           <div className={styles.info_wrapper}>
             <UserInfo
               isOwner={isOwner}
@@ -61,6 +70,7 @@ const UserPage = () => {
             <Button onClick={onButtonClick}>{buttonText}</Button>
           </div>
 
+          {/* Права колонка */}
           <div className={styles.main}>
             <TabsList isOwner={isOwner} />
             <Outlet />
