@@ -5,6 +5,7 @@ import { getImagePath, TYPE_IMG } from "@helpers/getImagePath";
 const UserInfo = ({ isOwner, user, userImg, onUpdateAvatar }) => {
   const name = user?.name || "No name";
   const email = user?.email || "No email";
+
   const recipes = user?.recipes ?? 0;
   const favorites =
     user?.favoritesCount ??
