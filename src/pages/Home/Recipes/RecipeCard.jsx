@@ -1,7 +1,11 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUser,addFavoriteLocal, removeFavoriteLocal } from "@redux/slices/authSlice";
+import {
+  selectUser,
+  addFavoriteLocal,
+  removeFavoriteLocal,
+} from "@redux/slices/authSlice";
 import s from "./RecipeCard.module.css";
 import { recipeApi } from "@services/Api";
 
@@ -40,7 +44,10 @@ export default function RecipeCard({ recipe }) {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => setIsFav(derivedIsFav), [derivedIsFav]);
-  useEffect(() => setFavCount(Number(recipe.favoritesCount ?? 0)), [recipe.favoritesCount]);
+  useEffect(
+    () => setFavCount(Number(recipe.favoritesCount ?? 0)),
+    [recipe.favoritesCount]
+  );
 
   const openRecipe = () => {
     if (recipeId) navigate(`/recipe/${recipeId}`);
@@ -65,7 +72,7 @@ export default function RecipeCard({ recipe }) {
     try {
       if (next) {
         await recipeApi.addToFavorites(recipeId);
-          dispatch(addFavoriteLocal(recipeId));
+        dispatch(addFavoriteLocal(recipeId));
       } else {
         await recipeApi.removeFromFavorites(recipeId);
         dispatch(removeFavoriteLocal(recipeId));

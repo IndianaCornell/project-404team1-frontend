@@ -29,6 +29,10 @@ body {
   color: var(--color-black);
 }
 
+ul {
+  list-style: none;
+}
+
 img,
 picture,
 video,
