@@ -6,7 +6,7 @@
 .avatar { width:120px; height:120px; border-radius:50%; overflow:hidden; margin: 0 auto 12px; }
 .avatar img { width:100%; height:100%; object-fit:cover; }
 .name { text-align:center; font-weight:600; margin-bottom:8px; }
-.meta { color:#444; display:flex; flex-direction:column; gap:6px; margin: 8px 0 16px; }
+.meta { color:#444; display:flex; flex-direction:column; gap:6px; margin: 8px 0 16px; & span { font-weight: bold; color: #000} }
 .list { min-width:0; }
 .tabsHeader { font-weight:700; margin-bottom:12px; }
 @media (max-width: 900px){
@@ -39,4 +39,23 @@
   height: 2px;
   background: #111;
   border-radius: 2px;
+}
+
+.tinyLoader {
+    height: 9px;
+    width: 60px;
+    --c:no-repeat linear-gradient(#fff 0 0);
+    background: var(--c), var(--c), var(--c), var(--c);
+    background-size: 26% 3px;
+    animation: l1 1s infinite;
+}
+@keyframes l1 {
+    0%,
+    70%,
+    100%   {background-position: calc(0*100%/3) 50% ,calc(1*100%/3) 50% ,calc(2*100%/3) 50% ,calc(3*100%/3) 50% }
+    11.67% {background-position: calc(0*100%/3) 0   ,calc(1*100%/3) 50% ,calc(2*100%/3) 50% ,calc(3*100%/3) 50% }
+    23.33% {background-position: calc(0*100%/3) 100%,calc(1*100%/3) 0   ,calc(2*100%/3) 50% ,calc(3*100%/3) 50% }
+    35%    {background-position: calc(0*100%/3) 50% ,calc(1*100%/3) 100%,calc(2*100%/3) 0   ,calc(3*100%/3) 50% }
+    46.67% {background-position: calc(0*100%/3) 50% ,calc(1*100%/3) 50% ,calc(2*100%/3) 100%,calc(3*100%/3) 0   }
+    58.34% {background-position: calc(0*100%/3) 50% ,calc(1*100%/3) 50% ,calc(2*100%/3) 50% ,calc(3*100%/3) 100%}
 }
