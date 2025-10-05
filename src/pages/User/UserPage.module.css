@@ -28,7 +28,7 @@
     display: grid;
     grid-template-columns: 394px minmax(0, 1fr);
     align-items: start;
-    gap: 60px;
+    gap: 40px;
   }
 }
 
@@ -47,5 +47,5 @@
 
 .main {
   width: 100%;
-  min-width: 0; /* щоб правий контент не розтягувався за межі */
+  min-width: 0;
 }
