@@ -1,0 +1,196 @@
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import styles from "./PublicUserPage.module.css";
+import ListItems from "@pages/User/ListItems/ListItems";
+import Button from "@ui/Button.jsx";
+import Back from "@/components/ui/Back/Back.jsx";
+import { routes } from "@constants/routes";
+import { getPathWithId } from "@helpers/getPathWithId";
+import { getImagePath, TYPE_IMG } from "@helpers/getImagePath";
+import { userApi, recipeApi } from "@services/Api";
+import { selectUser } from "@redux/slices/authSlice";
+import { TYPE_TABS, EMPTY_TEXT } from "@constants/common";
+
+const PAGE_SIZE = 9;
+const TABS = { RECIPES: "recipes", FOLLOWERS: "followers" };
+
+export default function PublicUserPage() {
+  const { id } = useParams();
+  const me = useSelector(selectUser);
+  const navigate = useNavigate();
+
+  const [info, setInfo] = useState(null);
+  const [list, setList] = useState(null);
+  const [loadingInfo, setLoadingInfo] = useState(true);
+  const [loadingList, setLoadingList] = useState(true);
+
+  const [tab, setTab] = useState(TABS.RECIPES);
+  const [page, setPage] = useState(1);
+
+  const isOwner = useMemo(
+    () => (me?.id || me?._id) && String(me?.id || me?._id) === String(id),
+    [me, id]
+  );
+
+  // FOLLOW button state
+  const isFollowingInitial = useMemo(() => {
+    if (!me?.following) return false;
+    return me.following.map(String).includes(String(id));
+  }, [me?.following, id]);
+  const [isFollowing, setIsFollowing] = useState(isFollowingInitial);
+  useEffect(() => setIsFollowing(isFollowingInitial), [isFollowingInitial]);
+
+  // load profile card
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        setLoadingInfo(true);
+        const { data } = await userApi.getProfile(id);
+        if (mounted) setInfo(data);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (mounted) setLoadingInfo(false);
+      }
+    })();
+    return () => { mounted = false; };
+  }, [id]);
+
+  // loaders for tabs
+  const loadRecipes = async (p) => {
+    try {
+      setLoadingList(true);
+      const { data } = await recipeApi.getUserRecipes(id, { page: p, limit: PAGE_SIZE });
+      setList({
+        result: data.items ?? [],
+        items: data.items ?? [],
+        total: Number(data.total ?? 0),
+        page: Number(data.page ?? p),
+        limit: Number(data.limit ?? PAGE_SIZE),
+      });
+    } catch (e) {
+      console.error(e);
+      setList({ result: [], items: [], total: 0, page: p, limit: PAGE_SIZE });
+    } finally {
+      setLoadingList(false);
+    }
+  };
+
+const loadFollowers = async (p) => {
+  try {
+    setLoadingList(true);
+    const { data } = await userApi.getFollowersByUser(id, { page: p, limit: PAGE_SIZE });
+
+    const normalized = (data.items ?? []).map(u => ({
+  _id: u._id || u.id,
+  name: u.name ?? u.username ?? "User",
+  avatar: u.avatar ?? null,
+  recipes: Array.isArray(u.recipes) ? u.recipes : [], // <= важливо
+}));
+setList({
+  result: normalized,
+  items: normalized,
+  total: Number(data.total ?? 0),
+  page: Number(data.page ?? p),
+  limit: Number(data.limit ?? PAGE_SIZE),
+});
+  } catch (e) {
+    console.error(e);
+    setList({ result: [], items: [], total: 0, page: p, limit: PAGE_SIZE });
+  } finally {
+    setLoadingList(false);
+  }
+};
+
+  useEffect(() => {
+    if (!id) return;
+    if (tab === TABS.RECIPES) loadRecipes(page);
+    else loadFollowers(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, tab, page]);
+
+  useEffect(() => {
+    if (list?.result?.length === 0 && page > 1) setPage((prev) => prev - 1);
+  }, [list?.result?.length, page]);
+
+  const onChangePage = ({ selected }) => setPage(selected + 1);
+  const changeTab = (next) => { setTab(next); setPage(1); };
+
+  const follow = async () => { try { await userApi.followUser(id); setIsFollowing(true); } catch (e) { console.error(e); } };
+  const unfollow = async () => { try { await userApi.unfollowUser(id); setIsFollowing(false); } catch (e) { console.error(e); } };
+
+  const goToRecipe = (rid) => navigate(getPathWithId(routes.recipe, rid));
+
+  return (
+    <div className={styles.wrap}>
+      <h1 className={styles.h1}>PROFILE</h1>
+      <p className={styles.lead}>
+        Reveal your culinary art, share your favorite recipe and create gastronomic masterpieces with us.
+      </p>
+
+      <div className={styles.grid}>
+        {/* LEFT CARD */}
+        <div className={styles.card}>
+          <div className={styles.avatar}>
+            <img src={getImagePath(info?.avatar, TYPE_IMG.AVATAR)} alt={info?.name || "User"} />
+          </div>
+          <p className={styles.name}>{info?.name || "User"}</p>
+
+          <div className={styles.meta}>
+            <div>Email:<span> {info?.email || "-"}</span></div>
+            {typeof info?.addedRecipesCount === "number" && (
+              <div>Added recipes:<span> {info.addedRecipesCount}</span></div>
+            )}
+            {typeof info?.followersCount === "number" && (
+              <div>Followers:<span> {info.followersCount}</span></div>
+            )}
+          </div>
+
+          {!isOwner && (
+            <Button onClick={isFollowing ? unfollow : follow} variant="outline_secondary">
+              {isFollowing ? "following" : "follow"}
+            </Button>
+          )}
+        </div>
+
+        {/* RIGHT: TABS + LIST */}
+        <div className={styles.list}>
+          <div className={styles.tabs}>
+            <button
+              className={`${styles.tab} ${tab === TABS.RECIPES ? styles.active : ""}`}
+              onClick={() => changeTab(TABS.RECIPES)}
+              type="button"
+            >
+              RECIPES
+            </button>
+            <button
+              className={`${styles.tab} ${tab === TABS.FOLLOWERS ? styles.active : ""}`}
+              onClick={() => changeTab(TABS.FOLLOWERS)}
+              type="button"
+            >
+              FOLLOWERS
+            </button>
+          </div>
+
+          <ListItems
+            emptyText={tab === TABS.RECIPES ? EMPTY_TEXT.RECIPES : (EMPTY_TEXT.FOLLOWERS || "No followers yet")}
+            data={list}
+            type={tab === TABS.RECIPES ? TYPE_TABS.RECIPE : TYPE_TABS.USER}
+            isOwner={false}
+            isLoading={loadingInfo || loadingList}
+            onDeleteRecipe={undefined}
+            page={page}
+            onChangePage={onChangePage}
+            itemsPerPage={PAGE_SIZE}
+            onOpen={tab === TABS.RECIPES ? (rid) => goToRecipe(rid) : undefined}
+          />
+        </div>
+      </div>
+
+      <Back icon="icon-arrow-up-right" onClick={() => navigate(-1)} />
+    </div>
+  );
+}
