@@ -1,3 +1,4 @@
+import { api } from "@/lib/api";
 import { BASE_URL } from "./BaseUrl";
 import axios from "axios";
 
@@ -15,10 +16,12 @@ export const token = {
     const bearer = `Bearer ${jwt}`;
     apiInstance.defaults.headers.common.Authorization = bearer;
     apiInstanceImages.defaults.headers.common.Authorization = bearer;
+    api.defaults.headers.common.Authorization = bearer;
   },
   unset() {
     delete apiInstance.defaults.headers.common.Authorization;
     delete apiInstanceImages.defaults.headers.common.Authorization;
+    delete api.defaults.headers.common.Authorization;
   },
 };
 
@@ -59,7 +62,7 @@ export const authApi = {
   login: (data) => apiInstance.post("/api/auth/login", data),
   getMe: () => apiInstance.get("/api/users/me"),
   logout: () => apiInstance.post("/api/auth/logout"),
-  refresh: ()      => apiInstance.get('/api/auth/refresh'),
+  refresh: () => apiInstance.get("/api/auth/refresh"),
 };
 
 export const userApi = {
@@ -70,8 +73,10 @@ export const userApi = {
   getFollowing: (params) => apiInstance.get("/api/users/following", { params }),
   updateAvatar: (formData) =>
     apiInstanceImages.patch("/api/users/avatar", formData),
-  getFollowersByUser: (id, params) => apiInstance.get(`/api/users/${id}/followers`, { params }),
-  getFollowingByUser: (id, params) => apiInstance.get(`/api/users/${id}/following`, { params }),
+  getFollowersByUser: (id, params) =>
+    apiInstance.get(`/api/users/${id}/followers`, { params }),
+  getFollowingByUser: (id, params) =>
+    apiInstance.get(`/api/users/${id}/following`, { params }),
 };
 
 export const recipeApi = {
