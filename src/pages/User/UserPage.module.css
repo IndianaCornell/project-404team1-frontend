@@ -1,0 +1,51 @@
+.page {
+}
+
+.texts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+  max-width: 443px;
+}
+
+@media (min-width: 768px) {
+  .texts {
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Десктопний двоколонковий макет */
+@media (min-width: 1200px) {
+  .content {
+    display: grid;
+    grid-template-columns: 394px minmax(0, 1fr);
+    align-items: start;
+    gap: 60px;
+  }
+}
+
+.info_wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .info_wrapper {
+    max-width: 394px;
+  }
+}
+
+.main {
+  width: 100%;
+  min-width: 0; /* щоб правий контент не розтягувався за межі */
+}
