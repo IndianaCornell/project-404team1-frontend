@@ -1,16 +1,16 @@
-import styles from './UserInfo.module.css';
-import UploadButton  from '@/components/ui/UploadButton/UploadButton';
-import { getImagePath, TYPE_IMG } from '@helpers/getImagePath';
+import styles from "./UserInfo.module.css";
+import UploadButton from "@/components/ui/UploadButton/UploadButton";
+import { getImagePath, TYPE_IMG } from "@helpers/getImagePath";
 
 const UserInfo = ({ isOwner, user, userImg, onUpdateAvatar }) => {
-  const name = user?.name || 'No name';
-  const email = user?.email || 'No email';
+  const name = user?.name || "No name";
+  const email = user?.email || "No email";
   const recipes = user?.recipes ?? 0;
   const favorites =
-  user?.favoritesCount ??
-  (Array.isArray(user?.favorites) ? user.favorites.length : 0);
-  const followers = user?.followers ?? 0;
-  const following = user?.following ?? 0;
+    user?.favoritesCount ??
+    (Array.isArray(user?.favorites) ? user.favorites.length : 0);
+  const followers = user?.followersCount ?? 0;
+  const following = user?.followingCount ?? 0;
 
   return (
     <div className={styles.wrapper}>
