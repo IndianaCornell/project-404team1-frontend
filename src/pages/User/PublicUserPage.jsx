@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import styles from "./PublicUserPage.module.css";
@@ -9,9 +9,9 @@ import Back from "@/components/ui/Back/Back.jsx";
 import { routes } from "@constants/routes";
 import { getPathWithId } from "@helpers/getPathWithId";
 import { getImagePath, TYPE_IMG } from "@helpers/getImagePath";
-import { userApi, recipeApi } from "@services/Api";
+import { recipeApi, userApi } from "@services/Api";
 import { selectUser } from "@redux/slices/authSlice";
-import { TYPE_TABS, EMPTY_TEXT } from "@constants/common";
+import { EMPTY_TEXT, TYPE_TABS } from "@constants/common";
 
 const PAGE_SIZE = 9;
 const TABS = { RECIPES: "recipes", FOLLOWERS: "followers" };
@@ -25,13 +25,14 @@ export default function PublicUserPage() {
   const [list, setList] = useState(null);
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [loadingList, setLoadingList] = useState(true);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
 
   const [tab, setTab] = useState(TABS.RECIPES);
   const [page, setPage] = useState(1);
 
   const isOwner = useMemo(
     () => (me?.id || me?._id) && String(me?.id || me?._id) === String(id),
-    [me, id]
+    [me, id],
   );
 
   // FOLLOW button state
@@ -56,14 +57,19 @@ export default function PublicUserPage() {
         if (mounted) setLoadingInfo(false);
       }
     })();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [id]);
 
   // loaders for tabs
   const loadRecipes = async (p) => {
     try {
       setLoadingList(true);
-      const { data } = await recipeApi.getUserRecipes(id, { page: p, limit: PAGE_SIZE });
+      const { data } = await recipeApi.getUserRecipes(id, {
+        page: p,
+        limit: PAGE_SIZE,
+      });
       setList({
         result: data.items ?? [],
         items: data.items ?? [],
@@ -79,31 +85,34 @@ export default function PublicUserPage() {
     }
   };
 
-const loadFollowers = async (p) => {
-  try {
-    setLoadingList(true);
-    const { data } = await userApi.getFollowersByUser(id, { page: p, limit: PAGE_SIZE });
+  const loadFollowers = async (p) => {
+    try {
+      setLoadingList(true);
+      const { data } = await userApi.getFollowersByUser(id, {
+        page: p,
+        limit: PAGE_SIZE,
+      });
 
-    const normalized = (data.items ?? []).map(u => ({
-  _id: u._id || u.id,
-  name: u.name ?? u.username ?? "User",
-  avatar: u.avatar ?? null,
-  recipes: Array.isArray(u.recipes) ? u.recipes : [], // <= важливо
-}));
-setList({
-  result: normalized,
-  items: normalized,
-  total: Number(data.total ?? 0),
-  page: Number(data.page ?? p),
-  limit: Number(data.limit ?? PAGE_SIZE),
-});
-  } catch (e) {
-    console.error(e);
-    setList({ result: [], items: [], total: 0, page: p, limit: PAGE_SIZE });
-  } finally {
-    setLoadingList(false);
-  }
-};
+      const normalized = (data.items ?? []).map((u) => ({
+        _id: u._id || u.id,
+        name: u.name ?? u.username ?? "User",
+        avatar: u.avatar ?? null,
+        recipes: Array.isArray(u.recipes) ? u.recipes : [], // <= важливо
+      }));
+      setList({
+        result: normalized,
+        items: normalized,
+        total: Number(data.total ?? 0),
+        page: Number(data.page ?? p),
+        limit: Number(data.limit ?? PAGE_SIZE),
+      });
+    } catch (e) {
+      console.error(e);
+      setList({ result: [], items: [], total: 0, page: p, limit: PAGE_SIZE });
+    } finally {
+      setLoadingList(false);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -117,10 +126,33 @@ setList({
   }, [list?.result?.length, page]);
 
   const onChangePage = ({ selected }) => setPage(selected + 1);
-  const changeTab = (next) => { setTab(next); setPage(1); };
+  const changeTab = (next) => {
+    setTab(next);
+    setPage(1);
+  };
 
-  const follow = async () => { try { await userApi.followUser(id); setIsFollowing(true); } catch (e) { console.error(e); } };
-  const unfollow = async () => { try { await userApi.unfollowUser(id); setIsFollowing(false); } catch (e) { console.error(e); } };
+  const follow = async () => {
+    try {
+      setIsFollowLoading(true);
+      userApi
+        .followUser(id)
+        .then(() => setIsFollowing(true))
+        .finally(() => setIsFollowLoading(false));
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  const unfollow = async () => {
+    try {
+      setIsFollowLoading(true);
+      userApi
+        .unfollowUser(id)
+        .then(() => setIsFollowing(false))
+        .finally(() => setIsFollowLoading(false));
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const goToRecipe = (rid) => navigate(getPathWithId(routes.recipe, rid));
 
@@ -128,30 +160,49 @@ setList({
     <div className={styles.wrap}>
       <h1 className={styles.h1}>PROFILE</h1>
       <p className={styles.lead}>
-        Reveal your culinary art, share your favorite recipe and create gastronomic masterpieces with us.
+        Reveal your culinary art, share your favorite recipe and create
+        gastronomic masterpieces with us.
       </p>
 
       <div className={styles.grid}>
         {/* LEFT CARD */}
         <div className={styles.card}>
           <div className={styles.avatar}>
-            <img src={getImagePath(info?.avatar, TYPE_IMG.AVATAR)} alt={info?.name || "User"} />
+            <img
+              src={getImagePath(info?.avatar, TYPE_IMG.AVATAR)}
+              alt={info?.name || "User"}
+            />
           </div>
           <p className={styles.name}>{info?.name || "User"}</p>
 
           <div className={styles.meta}>
-            <div>Email:<span> {info?.email || "-"}</span></div>
-            {typeof info?.addedRecipesCount === "number" && (
-              <div>Added recipes:<span> {info.addedRecipesCount}</span></div>
+            <div>
+              Email:<span> {info?.email || "-"}</span>
+            </div>
+            {info?.createdRecipesCount && (
+              <div>
+                Added recipes:<span> {info?.createdRecipesCount}</span>
+              </div>
             )}
-            {typeof info?.followersCount === "number" && (
-              <div>Followers:<span> {info.followersCount}</span></div>
+            {info?.followersCount && (
+              <div>
+                Followers:<span> {info?.followersCount}</span>
+              </div>
             )}
           </div>
 
           {!isOwner && (
-            <Button onClick={isFollowing ? unfollow : follow} variant="outline_secondary">
-              {isFollowing ? "following" : "follow"}
+            <Button
+              onClick={isFollowing ? unfollow : follow}
+              variant="outline_secondary"
+            >
+              {isFollowLoading ? (
+                <div className={styles.tinyLoader}></div>
+              ) : isFollowing ? (
+                "following"
+              ) : (
+                "follow"
+              )}
             </Button>
           )}
         </div>
@@ -176,7 +227,11 @@ setList({
           </div>
 
           <ListItems
-            emptyText={tab === TABS.RECIPES ? EMPTY_TEXT.RECIPES : (EMPTY_TEXT.FOLLOWERS || "No followers yet")}
+            emptyText={
+              tab === TABS.RECIPES
+                ? EMPTY_TEXT.RECIPES
+                : EMPTY_TEXT.FOLLOWERS || "No followers yet"
+            }
             data={list}
             type={tab === TABS.RECIPES ? TYPE_TABS.RECIPE : TYPE_TABS.USER}
             isOwner={false}
