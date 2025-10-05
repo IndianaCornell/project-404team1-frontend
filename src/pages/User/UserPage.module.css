@@ -23,7 +23,7 @@
 }
 
 /* Десктопний двоколонковий макет */
-@media (min-width: 1200px) {
+@media (min-width: 1440px) {
   .content {
     display: grid;
     grid-template-columns: 394px minmax(0, 1fr);
@@ -42,6 +42,7 @@
 @media (min-width: 768px) {
   .info_wrapper {
     max-width: 394px;
+    margin-inline: auto;
   }
 }
 
