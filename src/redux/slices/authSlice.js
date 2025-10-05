@@ -69,6 +69,11 @@ const authSlice = createSlice({
         .map(String)
         .filter((x) => x !== id);
     },
+    updateAvatar: (state, action) => {
+      if (state.user) {
+        state.user.avatar = action.payload;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -142,6 +147,7 @@ export const {
   clearTestUser,
   addFavoriteLocal,
   removeFavoriteLocal,
+  updateAvatar,
 } = authSlice.actions;
 
 export default authSlice.reducer;
