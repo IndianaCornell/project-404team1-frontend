@@ -1,7 +1,6 @@
 import axios from "axios";
+import { BASE_URL } from '../services/BaseUrl';
 
 export const api = axios.create({
-  baseURL:
-    import.meta.env.VITE_API_URL ||
-    "https://project-404team1-backend.onrender.com/api",
+  baseURL: BASE_URL+"api/",
 });
