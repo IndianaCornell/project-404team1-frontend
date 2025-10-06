@@ -15,7 +15,6 @@ import {
   useUpdateAvatar,
   useUserProfile,
 } from "@hooks/user";
-import { useLogout } from "@hooks/auth";
 import LogOutModal from "@components/common/Modal/LogOutModal";
 
 import styles from "./UserPage.module.css";
@@ -23,7 +22,6 @@ import styles from "./UserPage.module.css";
 const UserPage = () => {
   const owner = useOwner();
   const { onFollow, onUnfollow } = useFollow();
-  const { onLogout } = useLogout();
 
   const { userProfile, isLoading } = useUserProfile();
 
@@ -43,7 +41,9 @@ const UserPage = () => {
   const buttonText = isOwner ? "log out" : isFollow ? "following" : "follow";
   const onButtonClick = () => {
     if (isOwner) return onOpenLogoutModal();
-    return isFollow ? onUnfollow() : onFollow();
+    return isFollow
+      ? onUnfollow(userProfile?._id)
+      : onFollow(userProfile?._id);
   };
 
   return (
@@ -58,7 +58,6 @@ const UserPage = () => {
         </div>
 
         <div className={styles.content}>
-          {/* Ліва колонка */}
           <div className={styles.info_wrapper}>
             <UserInfo
               isOwner={isOwner}
@@ -70,7 +69,6 @@ const UserPage = () => {
             <Button onClick={onButtonClick}>{buttonText}</Button>
           </div>
 
-          {/* Права колонка */}
           <div className={styles.main}>
             <TabsList isOwner={isOwner} />
             <Outlet />
