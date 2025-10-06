@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {authApi, token as axiosTokenHelper } from "@services/Api"
 
-// --- Helpers ---
 export const setAuthHeader = (token) => {
   axiosTokenHelper.set(token);
 };
@@ -10,7 +9,6 @@ export const clearAuthHeader = () => {
     axiosTokenHelper.unset();
 };
 
-// --- Register ---
 export const registerUser = createAsyncThunk(
   "/api/auth/register",
   async (credentials, { rejectWithValue }) => {
@@ -30,7 +28,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// --- Login ---
 export const loginUser = createAsyncThunk(
   "/api/auth/login",
   async (credentials, { rejectWithValue }) => {
@@ -51,7 +48,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// --- Logout ---
 export const logoutUser = createAsyncThunk("/api/auth/logout", async () => {
   try {
     // await api.post("/auth/logout");
@@ -64,7 +60,6 @@ export const logoutUser = createAsyncThunk("/api/auth/logout", async () => {
   }
 });
 
-// --- Refresh current user ---
 export const refreshUser = createAsyncThunk(
   "auth/refresh",
   async (_, thunkAPI) => {
@@ -89,7 +84,6 @@ export const refreshUser = createAsyncThunk(
   }
 );
 
-// --- Get another user's profile ---
 export const getUserProfile = createAsyncThunk(
   "auth/getUserProfile",
   async (id, { rejectWithValue }) => {

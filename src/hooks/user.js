@@ -6,11 +6,9 @@ import { userApi } from "../services/Api";
 import { showNotification } from "../redux/slices/notificationsSlice.js";
 import * as authSelectors from "../redux/slices/authSelectors.js";
 import * as authOperations from "../redux/slices/authOperations";
-import * as authSlice from "../redux/slices/authSlice.js";
 
 export const useOwner = () => {
   const owner = useSelector(authSelectors.getUser);
-
   return owner;
 };
 
@@ -20,8 +18,7 @@ export const useFollow = () => {
   const onFollow = async (id) => {
     try {
       await userApi.followUser(id);
-      dispatch(authSlice.updateFollowing(id));
-      dispatch(authSlice.updateUserProfile({ key: "following", value: 1 }));
+      await dispatch(authOperations.getUserProfile());
       dispatch(
         showNotification({ type: "success", message: "You followed this user" })
       );
@@ -34,8 +31,7 @@ export const useFollow = () => {
   const onUnfollow = async (id) => {
     try {
       await userApi.unfollowUser(id);
-      dispatch(authSlice.updateFollowing(id));
-      dispatch(authSlice.updateUserProfile({ key: "following", value: -1 }));
+      await dispatch(authOperations.getUserProfile());
       dispatch(
         showNotification({ type: "info", message: "You unfollowed this user" })
       );
@@ -67,7 +63,6 @@ export const useUpdateAvatar = () => {
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      // >2MB
       dispatch(
         showNotification({
           type: "error",
@@ -82,7 +77,7 @@ export const useUpdateAvatar = () => {
       formData.append("avatar", file);
       const { data } = await userApi.updateAvatar(formData);
 
-      dispatch(authSlice.updateAvatar(data?.avatar));
+      await dispatch(authOperations.getUserProfile());
       dispatch(
         showNotification({
           type: "success",

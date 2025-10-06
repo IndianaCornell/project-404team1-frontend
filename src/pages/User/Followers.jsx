@@ -1,12 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
 import ListItems from '@/pages/User/ListItems/ListItems.jsx';
 import { TYPE_TABS, EMPTY_TEXT } from '@constants/common';
 import { userApi } from '@services/Api';
 import { useFollow, useOwner } from '@hooks/user';
+import * as authOperations from "@redux/slices/authOperations";
 
 const FollowersPage = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +40,7 @@ const FollowersPage = () => {
   const getUsers = async () => {
     try {
       setIsLoading(true);
-      const { data } = await userApi.getFollowers(id, {
+      const { data } = await userApi.getFollowersByUser(id, {
         page,
         limit: itemsPerPage,
       });
@@ -56,7 +59,6 @@ const FollowersPage = () => {
 
   const handleFollow = async (targetUserId) => {
     const uid = String(targetUserId);
-    console(uid);
     if (!uid) return;
 
     setOptimisticFollowing((prev) => {
@@ -67,6 +69,7 @@ const FollowersPage = () => {
 
     try {
       await onFollow?.(uid);
+      await dispatch(authOperations.getUserProfile());
     } catch (e) {
       setOptimisticFollowing((prev) => {
         const next = new Set(prev);
@@ -89,6 +92,7 @@ const FollowersPage = () => {
 
     try {
       await onUnfollow?.(uid);
+      await dispatch(authOperations.getUserProfile());
     } catch (e) {
       setOptimisticFollowing((prev) => {
         const next = new Set(prev);
@@ -107,12 +111,9 @@ const FollowersPage = () => {
       onCurrentPageChange={onChangePage}
       data={users}
       isLoading={isLoading}
-
       owner={ownerWithOptimistic}
-
       onFollow={handleFollow}
       onUnfollow={handleUnfollow}
-
       page={page}
       onChangePage={onChangePage}
       itemsPerPage={itemsPerPage}

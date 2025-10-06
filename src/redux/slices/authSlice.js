@@ -7,7 +7,6 @@ import {
   getUserProfile,
 } from "./authOperations";
 
-// --- Initial State ---
 const initialState = {
   user: null,
   token: localStorage.getItem("token") || null,
@@ -17,7 +16,6 @@ const initialState = {
   error: null,
 };
 
-// --- Helpers ---
 const handlePending = (state) => {
   state.isLoading = true;
   state.error = null;
@@ -35,7 +33,6 @@ const sanitizeUser = (u) => {
   return { ...u, favorites };
 };
 
-// --- Slice ---
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -77,7 +74,6 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // --- Register ---
       .addCase(registerUser.pending, handlePending)
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -88,7 +84,6 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.rejected, handleRejected)
 
-      // --- Login ---
       .addCase(loginUser.pending, handlePending)
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -99,7 +94,6 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, handleRejected)
 
-      // --- Logout ---
       .addCase(logoutUser.pending, handlePending)
       .addCase(logoutUser.fulfilled, (state) => {
         state.isLoading = false;
@@ -110,13 +104,11 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.rejected, handleRejected)
 
-      // --- Refresh ---
       .addCase(refreshUser.pending, (state) => {
         state.isRefreshing = true;
       })
       .addCase(refreshUser.fulfilled, (state, action) => {
         state.isRefreshing = false;
-        // приймаємо і { user }, і просто user
         const incomingUser = action.payload?.user ?? action.payload;
         state.user = sanitizeUser(incomingUser);
         state.isLoggedIn = true;
@@ -129,18 +121,16 @@ const authSlice = createSlice({
         state.error =
           action.payload ?? action.error?.message ?? "Refresh failed";
       })
-      // --- Get another user's profile ---
       .addCase(getUserProfile.pending, handlePending)
       .addCase(getUserProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.error = null;
-        state.userProfile = action.payload; // <-- сохраняем профиль
+        state.userProfile = action.payload; 
       })
       .addCase(getUserProfile.rejected, handleRejected);
   },
 });
 
-// --- Exports ---
 export const {
   clearError,
   setTestUser,
@@ -152,7 +142,6 @@ export const {
 
 export default authSlice.reducer;
 
-// --- Selectors ---
 export const selectUser = (state) => state.auth.user;
 export const selectToken = (state) => state.auth.token;
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
