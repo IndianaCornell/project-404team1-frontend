@@ -12,6 +12,13 @@
     box-shadow 0.2s ease,
     transform 0.2s ease;
 }
+
+@media (min-width: 1200px) {
+  .card {
+    width: 290px;
+  }
+}
+
 .card:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
@@ -22,11 +29,26 @@
 
 .thumb {
   position: relative;
-  padding-top: 65%;
-  aspect-ratio: 4 / 4;
+  width: 100%;
+  height: 230px;
   overflow: hidden;
   border-radius: 30px;
+  background: #fff;
 }
+
+@media (min-width: 768px) {
+  .thumb {
+    height: 275px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .thumb {
+    width: 290px;
+    height: 275px;
+  }
+}
+
 .thumb img {
   position: absolute;
   inset: 0;
