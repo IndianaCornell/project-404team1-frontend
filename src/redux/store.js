@@ -10,6 +10,7 @@ import testimonialsReducer from "./slices/testimonialsSlice";
 import notificationsReducer from "./slices/notificationsSlice";
 import authReducer from "./slices/authSlice";
 import { logoutUser } from "./slices/authOperations";
+import modalsReducer from "./slices/modalsSlice";
 
 const appReducer = combineReducers({
   auth: authReducer,
@@ -20,6 +21,7 @@ const appReducer = combineReducers({
   users: usersReducer,
   testimonials: testimonialsReducer,
   notifications: notificationsReducer,
+  modals: modalsReducer,
 });
 
 // ===== Головний ред’юсер з reset =====

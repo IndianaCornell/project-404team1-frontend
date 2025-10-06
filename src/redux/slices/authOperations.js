@@ -1,27 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import {authApi, token as axiosTokenHelper } from "@services/Api"
-
-// --- Helpers ---
-export const setAuthHeader = (token) => {
-  axiosTokenHelper.set(token);
-};
-
-export const clearAuthHeader = () => {
-    axiosTokenHelper.unset();
-};
+import { apiInstance as api, token, authApi, userApi } from "@/services/Api";
 
 // --- Register ---
 export const registerUser = createAsyncThunk(
-  "/api/auth/register",
+  "auth/register",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await authApi.register(credentials);
-      const { token } = response.data;
+      const { token: accessToken, user } = response.data;
 
-      localStorage.setItem("token", token);
-      setAuthHeader(token);
+      if (accessToken) {
+        token.set(accessToken);
+      }
 
-      return response.data; // { token, user }
+      return { token: accessToken, user };
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error?.message || "Signup failed"
@@ -32,17 +24,15 @@ export const registerUser = createAsyncThunk(
 
 // --- Login ---
 export const loginUser = createAsyncThunk(
-  "/api/auth/login",
+  "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      // const response = await api.post("/auth/login", credentials);
       const response = await authApi.login(credentials);
-      const { token } = response.data;
+      const { token: accessToken, user } = response.data;
 
-      localStorage.setItem("token", token);
-      setAuthHeader(token);
+      if (accessToken) token.set(accessToken);
 
-      return response.data; // { token, user }
+      return { token: accessToken, user };
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error?.message || "Login failed"
@@ -52,36 +42,37 @@ export const loginUser = createAsyncThunk(
 );
 
 // --- Logout ---
-export const logoutUser = createAsyncThunk("/api/auth/logout", async () => {
-  try {
-    // await api.post("/auth/logout");
-    await authApi.logout();
-  } catch (error) {
-    console.warn("Logout request failed:", error?.message);
-  } finally {
-    localStorage.removeItem("token");
-    clearAuthHeader();
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, thunkAPI) => {
+    try {
+      await authApi.logout();
+      token.unset();
+    } catch (error) {
+      console.error("Logout request failed:", error?.message);
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || "Logout failed"
+      );
+    }
   }
-});
+);
 
 // --- Refresh current user ---
 export const refreshUser = createAsyncThunk(
   "auth/refresh",
   async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const persistedToken = state.auth.token || localStorage.getItem("token");
-    if (!persistedToken) return thunkAPI.rejectWithValue("No token found");
+    const persistedToken = localStorage.getItem("token");
+
+    if (!persistedToken) {
+      return thunkAPI.rejectWithValue("No token found");
+    }
+
     try {
-      setAuthHeader(persistedToken);
-      const { data } = await authApi.refresh();
-      return data;
+      token.set(persistedToken); // застосовуємо токен до всіх запитів
+      const { data } = await api.get("/api/users/me");
+      return data; // user
     } catch (error) {
-      const status = error?.response?.status;
-      if (status === 401) {
-        clearAuthHeader();
-        localStorage.removeItem("token");
-        return thunkAPI.rejectWithValue("Unauthorized");
-      }
+      token.unset(); // якщо токен недійсний
       return thunkAPI.rejectWithValue(
         error?.response?.data?.message || error?.message || "Refresh failed"
       );
@@ -91,10 +82,10 @@ export const refreshUser = createAsyncThunk(
 
 // --- Get another user's profile ---
 export const getUserProfile = createAsyncThunk(
-  "auth/getUserProfile",
+  "auth/getProfile",
   async (id, { rejectWithValue }) => {
     try {
-      const { data } = await authApi.getMe();
+      const { data } = await userApi.getProfile(id);
       return data;
     } catch (error) {
       return rejectWithValue(

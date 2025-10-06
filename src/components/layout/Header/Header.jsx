@@ -36,7 +36,7 @@ export default function Header({ openModal }) {
 
         <div className="header__center">
           <div className="header__desktop">
-            {isLoggedIn && <Nav openModal={openModal} />}
+            <Nav openModal={openModal} />
           </div>
         </div>
 
@@ -52,24 +52,23 @@ export default function Header({ openModal }) {
 
         <div className="header__mobile">
           {isLoggedIn ? (
-            <>
-              <UserBar openModal={openModal} />
-              <button
-                className={`header__burger ${isMobileMenuOpen ? "header__burger--hidden" : ""}`}
-                onClick={toggleMobileMenu}
-                aria-label="Toggle mobile menu"
-              >
-                <span></span>
-                <span></span>
-                <span></span>
-              </button>
-            </>
+            <UserBar openModal={openModal} />
           ) : (
             <AuthBar openModal={openModal} />
           )}
+
+          <button
+            className={`header__burger ${isMobileMenuOpen ? "header__burger--hidden" : ""}`}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle mobile menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
 
-        {isMobileMenuOpen && isLoggedIn && (
+        {isMobileMenuOpen && (
           <div className="mobile-menu-overlay" onClick={closeMobileMenu}>
             <div className="mobile-menu" onClick={(e) => e.stopPropagation()}>
               <div className="mobile-menu__header">
@@ -86,6 +85,14 @@ export default function Header({ openModal }) {
               <div className="mobile-menu__content">
                 <div className="mobile-menu__nav" onClick={closeMobileMenu}>
                   <Nav openModal={openModal} />
+                </div>
+
+                <div className="mobile-menu__bottom">
+                  {isLoggedIn ? (
+                    <UserBar openModal={openModal} />
+                  ) : (
+                    <AuthBar openModal={openModal} />
+                  )}
                 </div>
 
                 <div className="mobile-menu__images">

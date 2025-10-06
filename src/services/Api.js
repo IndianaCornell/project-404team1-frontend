@@ -1,27 +1,38 @@
-import { api } from "@/lib/api";
 import { BASE_URL } from "./BaseUrl";
 import axios from "axios";
 
+import { store } from "@/redux/store";
+import { logoutUser } from "@redux/slices/authOperations";
+import { openAuthModal } from "@redux/slices/modalsSlice";
+import { showNotification } from "@redux/slices/notificationsSlice";
+
+// ====== Основний інстанс з куками ======
 export const apiInstance = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 export const apiInstanceImages = axios.create({
   baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
 });
 
+// ====== Управління Bearer-токеном ======
 export const token = {
-  set(jwt) {
-    const bearer = `Bearer ${jwt}`;
+  set(token) {
+    const bearer = `Bearer ${token}`;
     apiInstance.defaults.headers.common.Authorization = bearer;
     apiInstanceImages.defaults.headers.common.Authorization = bearer;
-    api.defaults.headers.common.Authorization = bearer;
+    localStorage.setItem("token", token);
   },
   unset() {
     delete apiInstance.defaults.headers.common.Authorization;
     delete apiInstanceImages.defaults.headers.common.Authorization;
-    delete api.defaults.headers.common.Authorization;
+    localStorage.removeItem("token");
   },
 };
 
@@ -38,15 +49,13 @@ if (saved) {
 }
 
 // подтянуть токен из localStorage при старте
-const savedToken =
-  typeof window !== "undefined" && localStorage.getItem("token");
+const savedToken = localStorage.getItem("token");
 if (savedToken) token.set(savedToken);
 
 // необязательный перехватчик для наглядных логов
 apiInstance.interceptors.response.use(
   (r) => r,
   (err) => {
-    // eslint-disable-next-line no-console
     console.error(
       "API Error:",
       err?.response?.status,
@@ -56,7 +65,38 @@ apiInstance.interceptors.response.use(
   }
 );
 
-// --- AUTH ---
+// ====== Глобальний перехоплювач 401 ======
+const handleUnauthorized = () => {
+  const state = store.getState();
+  if (state.auth.isLoggedIn) {
+    store.dispatch(logoutUser());
+    store.dispatch(
+      showNotification({
+        type: "error",
+        message: "Session is invalid, leave again",
+        autoClose: 3000,
+      })
+    );
+    store.dispatch(openAuthModal("signin"));
+  }
+};
+
+apiInstance.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error?.response?.status === 401) handleUnauthorized();
+    return Promise.reject(error);
+  }
+);
+apiInstanceImages.interceptors.response.use(
+  (res) => res,
+  (error) => {
+    if (error?.response?.status === 401) handleUnauthorized();
+    return Promise.reject(error);
+  }
+);
+
+// ====== API-сервіси ======
 export const authApi = {
   register: (data) => apiInstance.post("/api/auth/register", data),
   login: (data) => apiInstance.post("/api/auth/login", data),
