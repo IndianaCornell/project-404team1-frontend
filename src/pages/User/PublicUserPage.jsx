@@ -207,6 +207,7 @@ const handleUnfollow = async (targetId) => {
 
           {!isOwner && (
            <Button
+           style={{ display: "flex", width: "100%" }}
   onClick={isFollowing ? () => handleUnfollow(id) : () => handleFollow(id)}
   variant="outline_secondary"
   disabled={loadingFollowId === String(id)}
@@ -259,8 +260,6 @@ const handleUnfollow = async (targetId) => {
           />
         </div>
       </div>
-
-      <Back icon="icon-arrow-up-right" onClick={() => navigate(-1)} />
     </div>
   );
 }

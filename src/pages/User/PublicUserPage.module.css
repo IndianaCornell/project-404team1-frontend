@@ -109,6 +109,31 @@
   font-weight: 700;
   margin-bottom: 12px;
 }
+
+@media (min-width: 1440px) {
+  .wrap {
+    padding: 80px;
+  }
+}
+
+@media (min-width: 768px) {
+  .wrap {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .wrap {
+    padding: 16px;
+    gap: 16px;
+  }
+  .card {
+    width: min(100%, 343px); 
+    margin-inline: auto;
+    padding: 30px 54px;
+  }
+}
+
 .tabs {
   display: flex;
   gap: 18px;
