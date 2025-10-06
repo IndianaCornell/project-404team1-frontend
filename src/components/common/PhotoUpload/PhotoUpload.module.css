@@ -53,8 +53,7 @@
   cursor: pointer;
 }
 
-/* Tablet */
-@media (min-width: 768px) {
+@media (min-width: 376px) and (max-width: 1440px) {
   .photoUpload {
     max-width: 704px;
   }
@@ -70,7 +69,6 @@
   }
 }
 
-/* Desktop */
 @media (min-width: 1440px) {
   .photoUpload {
     max-width: 551px;
