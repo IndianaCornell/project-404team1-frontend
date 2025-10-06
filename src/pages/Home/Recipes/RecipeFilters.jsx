@@ -26,6 +26,14 @@ import styles from "./RecipeFilters.module.css";
 
 const Field = ({ children }) => <div>{children}</div>;
 
+const alphaSort = (arr, key = "name") =>
+  [...(arr || [])].sort((a, b) =>
+    String(a?.[key] ?? "").localeCompare(String(b?.[key] ?? ""), undefined, {
+      sensitivity: "base",
+      numeric: false,
+    })
+  );
+
 export default function RecipeFilters() {
   const dispatch = useDispatch();
 
@@ -48,7 +56,10 @@ export default function RecipeFilters() {
   const ingredientOptions = useMemo(
     () =>
       [{ value: "", label: "Ingredients" }].concat(
-        (ingredients || []).map((it) => ({ value: it.name, label: it.name }))
+        alphaSort(ingredients, "name").map((it) => ({
+          value: it.name,
+          label: it.name,
+        }))
       ),
     [ingredients]
   );
@@ -56,7 +67,7 @@ export default function RecipeFilters() {
   const areaOptions = useMemo(
     () =>
       [{ value: "", label: "Area" }].concat(
-        (areas || []).map((it) => ({
+        alphaSort(areas, "name").map((it) => ({
           value: it.slug || it.id || it.name,
           label: it.name,
         }))
@@ -79,7 +90,7 @@ export default function RecipeFilters() {
             disabled={disableControls}
           >
             {ingredientOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <option key={opt.value || "all-ing"} value={opt.value}>
                 {opt.label}
               </option>
             ))}
@@ -96,7 +107,7 @@ export default function RecipeFilters() {
             disabled={disableControls}
           >
             {areaOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <option key={opt.value || "all-area"} value={opt.value}>
                 {opt.label}
               </option>
             ))}
