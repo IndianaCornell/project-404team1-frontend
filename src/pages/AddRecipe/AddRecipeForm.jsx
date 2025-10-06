@@ -72,12 +72,18 @@ const AddRecipeForm = () => {
             formData.append("description", values.description);
             formData.append("category", values.category);
             formData.append("area", values.area);
-            formData.append("preparation", values.preparation);
-            formData.append("cookingTime", time);
+            formData.append("instructions", values.preparation);
+            formData.append("time", time);
 
             addedIngredients.forEach((ing, i) => {
-              formData.append(`ingredients[${i}][name]`, ing.name);
-              formData.append(`ingredients[${i}][quantity]`, ing.quantity);
+              formData.append(
+                `ingredients[${i}]`,
+                JSON.stringify({
+                  id: ing.id,
+                  name: ing.name,
+                  quantity: ing.quantity,
+                })
+              );
             });
 
             if (values.image) {

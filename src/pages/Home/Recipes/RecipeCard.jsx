@@ -18,13 +18,6 @@ export default function RecipeCard({ recipe }) {
   const author = recipe.author || {};
   const authorId = author.id || author._id || recipe.owner;
 
-  // useEffect(() => {
-  //   console.log("recipeId:", recipeId, typeof recipeId);
-  //   console.log("user.favorites:", user?.favorites);
-  //   const inc = (user?.favorites ?? []).map(String).includes(String(recipeId));
-  //   console.log("includes? =>", inc);
-  // }, [user?.favorites, recipeId]);
-
   const authorInitial = useMemo(
     () => (author.name?.trim()?.[0] || "A").toUpperCase(),
     [author.name]
@@ -54,7 +47,7 @@ export default function RecipeCard({ recipe }) {
     if (recipeId) navigate(`/recipe/${recipeId}`);
   };
 
-    const openAuthor = (e) => {
+  const openAuthor = (e) => {
     e.stopPropagation?.();
     if (!authorId) return;
     navigate(`/users/${authorId}`);
@@ -102,7 +95,7 @@ export default function RecipeCard({ recipe }) {
       e.preventDefault();
       openRecipe();
     }
-  };  
+  };
   const onAuthorKey = (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -134,13 +127,15 @@ export default function RecipeCard({ recipe }) {
         ) : null}
 
         <div className={s.meta}>
-          <div className={s.author}
+          <div
+            className={s.author}
             onClick={openAuthor}
             onKeyDown={onAuthorKey}
             role="button"
             tabIndex={0}
             aria-label={`Open ${author.name || "author"} profile`}
-            title="Open author profile">
+            title="Open author profile"
+          >
             {author.avatar ? (
               <img
                 className={s.avatar}

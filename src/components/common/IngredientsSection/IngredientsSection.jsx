@@ -19,6 +19,7 @@ const IngredientsSection = ({
     const ingredientObj = ingredients.find((i) => i.name === values.ingredient);
 
     const newIngredient = {
+      id: ingredientObj?.id || ingredientObj?._id,
       name: values.ingredient,
       quantity: values.quantity,
       image: ingredientObj?.img,

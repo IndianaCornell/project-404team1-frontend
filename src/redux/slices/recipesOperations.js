@@ -1,10 +1,8 @@
-// src/redux/slices/recipesOperations.js
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { recipeApi } from "@/services/Api";
 
-import { api } from "@/lib/api"; // ✅ alias @ → src; без .js в кінці, щоб Vite сам розширив
+import { api } from "@/lib/api";
 
-// утиліта
 const buildParams = (base = {}) => {
   const params = new URLSearchParams();
   Object.entries(base).forEach(([key, val]) => {
@@ -15,19 +13,12 @@ const buildParams = (base = {}) => {
   return params;
 };
 
-// ========================
-// GET /recipes
-// Підтримує page/limit + будь-які фільтри (ingredient, area, category, ...)
-// Повертає те, що очікує ваш handleFulfilled:
-//   або { items, total, page, limit }, або масив
-// ========================
 export const getRecipes = createAsyncThunk(
   "recipes/getAll",
   async ({ page = 1, limit = 12, ...filters } = {}, { rejectWithValue }) => {
     try {
       const params = buildParams({ page, limit, ...filters });
       const { data } = await recipeApi.get(`/recipes?${params.toString()}`);
-      // recipeApi.get(`/recipes?${params.toString()}`);
       return data;
     } catch (e) {
       return rejectWithValue(e.response?.data || e.message);
@@ -35,12 +26,6 @@ export const getRecipes = createAsyncThunk(
   }
 );
 
-// ========================
-// GET /recipes (за категорією)
-// Варіант А (уніфікований): /recipes?category=<cat>&page=&limit=&ingredient=&area=
-// Формуємо payload саме у форматі, який чекає handleCategoryFulfilled:
-//   { category, recipes: { items, total, page, limit } }
-// ========================
 export const getRecipesByCategory = createAsyncThunk(
   "recipes/getByCategory",
   async (
@@ -50,7 +35,6 @@ export const getRecipesByCategory = createAsyncThunk(
     try {
       const params = buildParams({ category, page, limit, ...filters });
       const { data } = await api.get(`/recipes?${params.toString()}`);
-      // recipeApi.get(`/recipes?${params.toString()}`)
 
       const items = Array.isArray(data)
         ? data
@@ -70,10 +54,6 @@ export const getRecipesByCategory = createAsyncThunk(
   }
 );
 
-// ========================
-// GET /recipes/popular
-// Можна лишити без фільтрів; page/limit — опційно
-// ========================
 export const getPopularRecipes = createAsyncThunk(
   "recipes/getPopular",
   async ({ page = 1, limit = 12 } = {}, { rejectWithValue }) => {
@@ -89,17 +69,11 @@ export const getPopularRecipes = createAsyncThunk(
   }
 );
 
-// ========================
-// ADD
-// ========================
-
 export const addRecipe = createAsyncThunk(
   "recipes/add",
   async (formData, { rejectWithValue }) => {
     try {
       const { data } = await recipeApi.createRecipe(formData);
-
-      console.log("Recipe created:", data);
       return data;
     } catch (e) {
       console.error("addRecipe error:", e.response?.data || e.message);
