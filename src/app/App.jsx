@@ -6,7 +6,7 @@ import { setAuthHeader } from "@redux/slices/authOperations";
 
 import AppRoutes from "./routes";
 import Notification from "../components/common/Notification/Notification";
- 
+import Loader from "@/components/common/Loader/Loader";
 
 function App() {
   const dispatch = useDispatch();
@@ -21,7 +21,11 @@ function App() {
   }, [dispatch]);
 
   if (isRefreshing) {
-    return <div>Loading...</div>;
+    return (
+      <div className="loaderRefreshBox">
+        <Loader />
+      </div>
+    );
   }
 
   return (
