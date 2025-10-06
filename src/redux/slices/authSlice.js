@@ -5,7 +5,7 @@ import { registerUser, loginUser, logoutUser, refreshUser } from "./authOperatio
 const initialState = {
   user: null,
   token: localStorage.getItem("token") || null,
-  isLoggedIn: false,
+  isLoggedIn: !!localStorage.getItem("token"),
   isRefreshing: false,
   isLoading: false,
   error: null,
@@ -95,22 +95,25 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         state.isLoggedIn = false;
+        localStorage.removeItem("token");
       })
       .addCase(logoutUser.rejected, handleRejected)
 
       // --- Refresh ---
       .addCase(refreshUser.pending, (state) => {
         state.isRefreshing = true;
+        state.error = null;
       })
       .addCase(refreshUser.fulfilled, (state, action) => {
         state.isRefreshing = false;
-        // приймаємо і { user }, і просто user
         const incomingUser = action.payload?.user ?? action.payload;
         state.user = sanitizeUser(incomingUser);
         state.isLoggedIn = true;
+        state.error = null;
       })
       .addCase(refreshUser.rejected, (state, action) => {
         state.isRefreshing = false;
+        state.isLoading = false;
         state.user = null;
         state.token = null;
         state.isLoggedIn = false;

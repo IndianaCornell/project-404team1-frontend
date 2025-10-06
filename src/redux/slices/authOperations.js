@@ -1,27 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { api } from "@/lib/api.js";
-
-// --- Helpers ---
-export const setAuthHeader = (token) => {
-  api.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
-
-export const clearAuthHeader = () => {
-  api.defaults.headers.common.Authorization = "";
-};
+import { apiInstance as api, token } from "@/services/Api";
 
 // --- Register ---
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post("/auth/register", credentials);
-      const { token } = response.data;
+      const response = await api.post("/api/users/signup", credentials);
+      const { token: accessToken, user } = response.data;
 
-      localStorage.setItem("token", token);
-      setAuthHeader(token);
+      // === Додаємо інтеграцію з Api.js ===
+      if (accessToken) {
+        token.set(accessToken);
+      }
 
-      return response.data; // { token, user }
+      return { token: accessToken, user };
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error?.message || "Signup failed"
@@ -35,13 +28,12 @@ export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      const response = await api.post("/auth/login", credentials);
-      const { token } = response.data;
+      const response = await api.post("/api/users/signin", credentials);
+      const { token: accessToken, user } = response.data;
 
-      localStorage.setItem("token", token);
-      setAuthHeader(token);
+      if (accessToken) token.set(accessToken);
 
-      return response.data; // { token, user }
+      return { token: accessToken, user };
     } catch (error) {
       return rejectWithValue(
         error?.response?.data?.message || error?.message || "Login failed"
@@ -51,14 +43,15 @@ export const loginUser = createAsyncThunk(
 );
 
 // --- Logout ---
-export const logoutUser = createAsyncThunk("auth/logout", async () => {
+export const logoutUser = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
-    await api.post("/auth/logout");
+    await api.post("/api/users/logout"); 
+    token.unset(); // очищає Authorization у всіх apiInstance + localStorage
   } catch (error) {
-    console.warn("Logout request failed:", error?.message);
-  } finally {
-    localStorage.removeItem("token");
-    clearAuthHeader();
+    console.error("Logout request failed:", error?.message);
+    return thunkAPI.rejectWithValue(
+      error?.response?.data?.message || "Logout failed"
+    );
   }
 });
 
@@ -66,18 +59,18 @@ export const logoutUser = createAsyncThunk("auth/logout", async () => {
 export const refreshUser = createAsyncThunk(
   "auth/refresh",
   async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const persistedToken = state.auth.token || localStorage.getItem("token");
+    const persistedToken = localStorage.getItem("token");
 
     if (!persistedToken) {
       return thunkAPI.rejectWithValue("No token found");
     }
 
     try {
-      setAuthHeader(persistedToken);
-      const response = await api.get("/users/me");
-      return response.data; // user
+      token.set(persistedToken); // застосовуємо токен до всіх запитів
+      const { data } = await api.get("/api/users/current");
+      return data; // user
     } catch (error) {
+      token.unset(); // якщо токен недійсний
       return thunkAPI.rejectWithValue(
         error?.response?.data?.message || error?.message || "Refresh failed"
       );
