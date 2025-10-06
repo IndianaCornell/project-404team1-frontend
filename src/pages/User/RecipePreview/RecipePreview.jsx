@@ -10,7 +10,8 @@ const RecipePreview = ({ isOwner, recipe, onDeleteRecipe }) => {
   const navigate = useNavigate();
 
   const goToRecipe = () => {
-    navigate(getPathWithId(routes.recipe, recipe?._id));
+    const recipeId = recipe?.id || recipe?._id;
+    navigate(getPathWithId(routes.recipe, recipeId));
   };
 
   return (
@@ -29,7 +30,10 @@ const RecipePreview = ({ isOwner, recipe, onDeleteRecipe }) => {
         <Back icon="icon-arrow-up-right" onClick={goToRecipe} />
 
         {isOwner && (
-          <Back icon="icon-trash" onClick={() => onDeleteRecipe(recipe?._id)} />
+          <Back
+            icon="icon-trash"
+            onClick={() => onDeleteRecipe(recipe?.id || recipe?._id)}
+          />
         )}
       </div>
     </div>

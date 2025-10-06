@@ -42,7 +42,6 @@ const RecipePage = () => {
   };
 
   const ingredientMap = ingredientsDB.reduce((acc, ing) => {
-    // Добавляем ингредиент по обоим ключам для совместимости
     acc[ing._id] = ing;
     acc[ing.id] = ing;
     return acc;
@@ -55,28 +54,61 @@ const RecipePage = () => {
 
     return recipe.ingredients
       .map((item) => {
-        // Если item это строка JSON, парсим её
         let parsedItem = item;
         if (typeof item === "string") {
           try {
             parsedItem = JSON.parse(item);
           } catch {
             console.error("Failed to parse ingredient:", item);
-            return null;
+            return {
+              id: Math.random().toString(),
+              name: item,
+              measure: "1 unit",
+              img: "/default-ingredient.png",
+            };
           }
+        }
+
+        if (parsedItem.name) {
+          let ingredientDetails = null;
+          if (parsedItem.id) {
+            ingredientDetails =
+              ingredientMap[parsedItem.id] || ingredientMap[parsedItem._id];
+          }
+
+          if (!ingredientDetails) {
+            ingredientDetails = Object.values(ingredientMap).find(
+              (ing) => ing.name === parsedItem.name
+            );
+          }
+
+          return {
+            id: parsedItem.id || Math.random().toString(),
+            name: parsedItem.name,
+            measure: parsedItem.quantity || parsedItem.measure || "1 unit",
+            img:
+              ingredientDetails?.img ||
+              parsedItem.img ||
+              "/default-ingredient.png",
+          };
         }
 
         const ingredientDetails =
           ingredientMap[parsedItem.id] || ingredientMap[parsedItem._id];
 
         if (!ingredientDetails) {
-          return null;
+          return {
+            id: parsedItem.id || parsedItem._id || Math.random().toString(),
+            name: "Unknown ingredient",
+            measure: parsedItem.measure || parsedItem.quantity || "1 unit",
+            img: "/default-ingredient.png",
+          };
         }
 
         return {
           id: parsedItem.id || parsedItem._id,
           name: ingredientDetails.name,
-          measure: parsedItem.measure || parsedItem.quantity,
+          measure: parsedItem.measure || parsedItem.quantity || "1 unit",
           img: ingredientDetails.img,
         };
       })
@@ -134,7 +166,11 @@ const RecipePage = () => {
 
             <div className={styles.logo}>
               <p className={styles.logo2}>{recipe.category}</p>
-              <p className={styles.logo2}>{recipe.time}min</p>
+              <p className={styles.logo2}>
+                {recipe.time && recipe.time !== "0" && recipe.time !== 0
+                  ? `${recipe.time}min`
+                  : "Time not specified"}
+              </p>
             </div>
             <p>{recipe.description}</p>
             <div className={styles.items}>

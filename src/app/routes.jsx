@@ -10,7 +10,7 @@ import FavoritesPage from "@pages/User/Favorites";
 import FollowersPage from "@/pages/User/Followers";
 import FollowingPage from "@/pages/User/Following";
 import RecipesPage from "@pages/User/Recipes";
-import PublicUserPage from "@pages/User/PublicUserPage"; 
+import PublicUserPage from "@pages/User/PublicUserPage";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +34,7 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         >
+          <Route index element={<RecipesPage />} />
           <Route path="recipes" element={<RecipesPage />} />
           <Route path="favorites" element={<FavoritesPage />} />
           <Route path="followers" element={<FollowersPage />} />
