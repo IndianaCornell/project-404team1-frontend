@@ -1,36 +1,113 @@
+.wrap {
+  padding-block: 24px;
+  padding-inline: 16px; /* мобілка */
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .wrap {
+    padding-inline: 32px;
+  }
+} /* планшет */
+@media (min-width: 1152px) {
+  .wrap {
+    padding-inline: 80px;
+  }
+} /* десктоп */
 
-.h1 { font-size: 28px; margin: 0 0 8px; }
-.lead { color:#666; margin: 0 0 20px; }
+.h1 {
+  font-size: 28px;
+  margin: 0 0 8px;
+}
+.lead {
+  color: #666;
+  margin: 0 0 20px;
+}
+
+/* Одноколонка за замовчуванням; дві колонки з 1440px – як у User Page */
 .grid {
   display: grid;
-  grid-template-columns: 394px minmax(0, 1fr);
   gap: 32px;
-  align-items: start;
 }
-
-.card { 
-  border: 1px solid #eee; 
-  border-radius: 16px; 
-  padding: 40px 80px; 
-  align-self: start; 
-  gap: 20px;
-}
-
-.avatar { width:120px; height:120px; border-radius:50%; overflow:hidden; margin: 0 auto 12px; }
-.avatar img { width:100%; height:100%; object-fit:cover; }
-.name { text-align:center; font-weight:600; margin-bottom:8px; }
-.meta { color:#444; display:flex; flex-direction:column; gap:6px; margin: 8px 0 16px; & span { font-weight: bold; color: #000} }
-.list { min-width:0; }
-.tabsHeader { font-weight:700; margin-bottom:12px; }
-
-@media (max-width: 1439.98px){
-  .grid { 
-    grid-template-columns: 1fr; 
+@media (min-width: 1440px) {
+  .grid {
+    grid-template-columns: 394px minmax(0, 1fr);
+    align-items: start;
+    gap: 40px;
   }
+}
+
+/* Ліва картка */
+.card {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 32px;
+  padding: 24px;
+}
+@media (min-width: 768px) {
   .card {
-    width: min(100%, 394px); 
-    margin-inline: auto;
+    padding: 28px;
   }
+}
+
+.avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 16px;
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (min-width: 768px) {
+  .avatar {
+    width: 160px;
+    height: 160px;
+    margin-bottom: 18px;
+  }
+}
+
+.name {
+  text-align: center;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 20px;
+  letter-spacing: -0.3px;
+  margin-bottom: 12px;
+}
+
+.meta {
+  color: #8c8c8c;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0 24px;
+}
+.meta span {
+  color: #111;
+  font-weight: 800;
+}
+
+.card button {
+  width: 100%;
+  border-radius: 9999px;
+  padding: 18px 24px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1;
+  /* якщо Button приходить як outline — це зробить її візуально як primary */
+}
+
+/* Права колонка */
+.list {
+  min-width: 0;
+}
+
+/* Таби */
+.tabsHeader {
+  font-weight: 700;
+  margin-bottom: 12px;
 }
 
 @media (min-width: 1440px) {
@@ -65,42 +142,86 @@
 }
 .tab {
   padding: 8px 0;
-  font-weight: 600;
-  letter-spacing: .02em;
-  color: #999;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #a3a3a3;
   border: 0;
   background: transparent;
   cursor: pointer;
+  position: relative; /* для ::after */
 }
-.tab:hover { color: #222; }
+.tab:hover {
+  color: #222;
+}
 .active {
   color: #111;
   position: relative;
 }
+
+/* коротка синя смужка під активним табом, як у макеті */
 .active::after {
   content: "";
   position: absolute;
-  left: 0; right: 0; bottom: -1px;
-  height: 2px;
-  background: #111;
-  border-radius: 2px;
+  left: 0;
+  bottom: -1px;
+  width: 56px;
+  height: 4px;
+  background: #3b82f6;
+  border-radius: 999px;
 }
 
+/* Лоадер */
 .tinyLoader {
-    height: 9px;
-    width: 60px;
-    --c:no-repeat linear-gradient(#fff 0 0);
-    background: var(--c), var(--c), var(--c), var(--c);
-    background-size: 26% 3px;
-    animation: l1 1s infinite;
+  height: 9px;
+  width: 60px;
+  --c: no-repeat linear-gradient(#fff 0 0);
+  background: var(--c), var(--c), var(--c), var(--c);
+  background-size: 26% 3px;
+  animation: l1 1s infinite;
 }
 @keyframes l1 {
-    0%,
-    70%,
-    100%   {background-position: calc(0*100%/3) 50% ,calc(1*100%/3) 50% ,calc(2*100%/3) 50% ,calc(3*100%/3) 50% }
-    11.67% {background-position: calc(0*100%/3) 0   ,calc(1*100%/3) 50% ,calc(2*100%/3) 50% ,calc(3*100%/3) 50% }
-    23.33% {background-position: calc(0*100%/3) 100%,calc(1*100%/3) 0   ,calc(2*100%/3) 50% ,calc(3*100%/3) 50% }
-    35%    {background-position: calc(0*100%/3) 50% ,calc(1*100%/3) 100%,calc(2*100%/3) 0   ,calc(3*100%/3) 50% }
-    46.67% {background-position: calc(0*100%/3) 50% ,calc(1*100%/3) 50% ,calc(2*100%/3) 100%,calc(3*100%/3) 0   }
-    58.34% {background-position: calc(0*100%/3) 50% ,calc(1*100%/3) 50% ,calc(2*100%/3) 50% ,calc(3*100%/3) 100%}
+  0%,
+  70%,
+  100% {
+    background-position:
+      calc(0 * 100% / 3) 50%,
+      calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 50%,
+      calc(3 * 100% / 3) 50%;
+  }
+  11.67% {
+    background-position:
+      calc(0 * 100% / 3) 0,
+      calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 50%,
+      calc(3 * 100% / 3) 50%;
+  }
+  23.33% {
+    background-position:
+      calc(0 * 100% / 3) 100%,
+      calc(1 * 100% / 3) 0,
+      calc(2 * 100% / 3) 50%,
+      calc(3 * 100% / 3) 50%;
+  }
+  35% {
+    background-position:
+      calc(0 * 100% / 3) 50%,
+      calc(1 * 100% / 3) 100%,
+      calc(2 * 100% / 3) 0,
+      calc(3 * 100% / 3) 50%;
+  }
+  46.67% {
+    background-position:
+      calc(0 * 100% / 3) 50%,
+      calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 100%,
+      calc(3 * 100% / 3) 0;
+  }
+  58.34% {
+    background-position:
+      calc(0 * 100% / 3) 50%,
+      calc(1 * 100% / 3) 50%,
+      calc(2 * 100% / 3) 50%,
+      calc(3 * 100% / 3) 100%;
+  }
 }
