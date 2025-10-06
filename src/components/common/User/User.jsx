@@ -42,8 +42,10 @@ const User = ({
       <Container>
         <PathInfo path="profile" />
         <div className={styles.texts}>
-          <MainTitle children="Profile" />
-          <Subtitle children="Reveal your culinary art, share your favorite recipe and create gastronomic masterpieces with us." />
+          <MainTitle>Profile</MainTitle>
+          <Subtitle>
+            Reveal your culinary art, share your favorite recipe and create gastronomic masterpieces with us.
+          </Subtitle>
         </div>
         <div className={styles.content}>
           <div className={styles.info_wrapper}>
