@@ -30,3 +30,20 @@ export const { showNotification, removeNotification, clearNotifications } =
   notificationsSlice.actions;
 
 export default notificationsSlice.reducer;
+
+export const showTimedNotification = (payload) => (dispatch) => {
+  const id = Date.now();
+  dispatch(
+    showNotification({
+      ...payload,
+      id,
+    })
+  );
+
+  // Якщо передано autoClose — автоматично видаляємо після таймауту
+  if (payload.autoClose) {
+    setTimeout(() => {
+      dispatch(removeNotification(id));
+    }, payload.autoClose);
+  }
+};
