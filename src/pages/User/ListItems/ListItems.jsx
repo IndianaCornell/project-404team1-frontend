@@ -18,6 +18,7 @@ const ListItems = ({
   page,
   onChangePage,
   itemsPerPage,
+  loadingFollowId
 }) => {
   if (isLoading) {
     return (
@@ -61,6 +62,7 @@ const ListItems = ({
                   owner={owner}
                   onFollow={onFollow}
                   onUnfollow={onUnfollow}
+                  loadingFollowId={loadingFollowId}
                 />
               </li>
             );

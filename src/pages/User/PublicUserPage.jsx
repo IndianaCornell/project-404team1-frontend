@@ -25,7 +25,7 @@ export default function PublicUserPage() {
   const [list, setList] = useState(null);
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [loadingList, setLoadingList] = useState(true);
-  const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [loadingFollowId, setLoadingFollowId] = useState(null);
 
   const [tab, setTab] = useState(TABS.RECIPES);
   const [page, setPage] = useState(1);
@@ -35,7 +35,6 @@ export default function PublicUserPage() {
     [me, id],
   );
 
-  // FOLLOW button state
   const isFollowingInitial = useMemo(() => {
     if (!me?.following) return false;
     return me.following.map(String).includes(String(id));
@@ -43,7 +42,18 @@ export default function PublicUserPage() {
   const [isFollowing, setIsFollowing] = useState(isFollowingInitial);
   useEffect(() => setIsFollowing(isFollowingInitial), [isFollowingInitial]);
 
-  // load profile card
+  const [followingSet, setFollowingSet] = useState(
+    () => new Set((me?.following ?? []).map(String))
+  );
+  useEffect(() => {
+    setFollowingSet(new Set((me?.following ?? []).map(String)));
+  }, [me?.id, me?.following]);
+
+  const ownerOptimistic = useMemo(
+    () => ({ ...(me || {}), following: Array.from(followingSet) }),
+    [me, followingSet]
+  );
+
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -57,19 +67,13 @@ export default function PublicUserPage() {
         if (mounted) setLoadingInfo(false);
       }
     })();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [id]);
 
-  // loaders for tabs
   const loadRecipes = async (p) => {
     try {
       setLoadingList(true);
-      const { data } = await recipeApi.getUserRecipes(id, {
-        page: p,
-        limit: PAGE_SIZE,
-      });
+      const { data } = await recipeApi.getUserRecipes(id, { page: p, limit: PAGE_SIZE });
       setList({
         result: data.items ?? [],
         items: data.items ?? [],
@@ -88,16 +92,12 @@ export default function PublicUserPage() {
   const loadFollowers = async (p) => {
     try {
       setLoadingList(true);
-      const { data } = await userApi.getFollowersByUser(id, {
-        page: p,
-        limit: PAGE_SIZE,
-      });
-
+      const { data } = await userApi.getFollowersByUser(id, { page: p, limit: PAGE_SIZE });
       const normalized = (data.items ?? []).map((u) => ({
         _id: u._id || u.id,
         name: u.name ?? u.username ?? "User",
         avatar: u.avatar ?? null,
-        recipes: Array.isArray(u.recipes) ? u.recipes : [], // <= важливо
+        recipes: Array.isArray(u.recipes) ? u.recipes : [],
       }));
       setList({
         result: normalized,
@@ -126,33 +126,53 @@ export default function PublicUserPage() {
   }, [list?.result?.length, page]);
 
   const onChangePage = ({ selected }) => setPage(selected + 1);
-  const changeTab = (next) => {
-    setTab(next);
-    setPage(1);
-  };
+  const changeTab = (next) => { setTab(next); setPage(1); };
 
-  const follow = async () => {
-    try {
-      setIsFollowLoading(true);
-      userApi
-        .followUser(id)
-        .then(() => setIsFollowing(true))
-        .finally(() => setIsFollowLoading(false));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-  const unfollow = async () => {
-    try {
-      setIsFollowLoading(true);
-      userApi
-        .unfollowUser(id)
-        .then(() => setIsFollowing(false))
-        .finally(() => setIsFollowLoading(false));
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  const handleFollow = async (targetId) => {
+  const uid = String(targetId ?? id);
+  if (!uid) return;
+
+  setLoadingFollowId(uid);
+  setFollowingSet((prev) => new Set(prev).add(uid));
+  if (uid === String(id)) setIsFollowing(true);
+
+  try {
+    await userApi.followUser(uid);
+  } catch (e) {
+    setFollowingSet((prev) => {
+      const next = new Set(prev);
+      next.delete(uid);
+      return next;
+    });
+    if (uid === String(id)) setIsFollowing(false);
+    console.error(e);
+  } finally {
+    setLoadingFollowId(null);
+  }
+};
+
+const handleUnfollow = async (targetId) => {
+  const uid = String(targetId ?? id);
+  if (!uid) return;
+
+  setLoadingFollowId(uid);
+  setFollowingSet((prev) => {
+    const next = new Set(prev);
+    next.delete(uid);
+    return next;
+  });
+  if (uid === String(id)) setIsFollowing(false);
+
+  try {
+    await userApi.unfollowUser(uid);
+  } catch (e) {
+    setFollowingSet((prev) => new Set(prev).add(uid));
+    if (uid === String(id)) setIsFollowing(true);
+    console.error(e);
+  } finally {
+    setLoadingFollowId(null);
+  }
+};
 
   const goToRecipe = (rid) => navigate(getPathWithId(routes.recipe, rid));
 
@@ -176,34 +196,26 @@ export default function PublicUserPage() {
           <p className={styles.name}>{info?.name || "User"}</p>
 
           <div className={styles.meta}>
-            <div>
-              Email:<span> {info?.email || "-"}</span>
-            </div>
+            <div>Email:<span> {info?.email || "-"}</span></div>
             {info?.createdRecipesCount && (
-              <div>
-                Added recipes:<span> {info?.createdRecipesCount}</span>
-              </div>
+              <div>Added recipes:<span> {info?.createdRecipesCount}</span></div>
             )}
             {info?.followersCount && (
-              <div>
-                Followers:<span> {info?.followersCount}</span>
-              </div>
+              <div>Followers:<span> {info?.followersCount}</span></div>
             )}
           </div>
 
           {!isOwner && (
-            <Button
-              onClick={isFollowing ? unfollow : follow}
-              variant="outline_secondary"
-            >
-              {isFollowLoading ? (
-                <div className={styles.tinyLoader}></div>
-              ) : isFollowing ? (
-                "following"
-              ) : (
-                "follow"
-              )}
-            </Button>
+           <Button
+  onClick={isFollowing ? () => handleUnfollow(id) : () => handleFollow(id)}
+  variant="outline_secondary"
+  disabled={loadingFollowId === String(id)}
+  aria-busy={loadingFollowId === String(id)}
+>
+  {loadingFollowId === String(id) ? (
+    <div className={styles.tinyLoader}></div>
+  ) : isFollowing ? "following" : "follow"}
+</Button>
           )}
         </div>
 
@@ -228,9 +240,7 @@ export default function PublicUserPage() {
 
           <ListItems
             emptyText={
-              tab === TABS.RECIPES
-                ? EMPTY_TEXT.RECIPES
-                : EMPTY_TEXT.FOLLOWERS || "No followers yet"
+              tab === TABS.RECIPES ? EMPTY_TEXT.RECIPES : (EMPTY_TEXT.FOLLOWERS || "No followers yet")
             }
             data={list}
             type={tab === TABS.RECIPES ? TYPE_TABS.RECIPE : TYPE_TABS.USER}
@@ -241,6 +251,11 @@ export default function PublicUserPage() {
             onChangePage={onChangePage}
             itemsPerPage={PAGE_SIZE}
             onOpen={tab === TABS.RECIPES ? (rid) => goToRecipe(rid) : undefined}
+            owner={ownerOptimistic}
+            onFollow={handleFollow}
+            onUnfollow={handleUnfollow}
+            loadingFollowId={loadingFollowId}
+
           />
         </div>
       </div>

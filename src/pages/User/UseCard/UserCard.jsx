@@ -7,11 +7,12 @@ import { routes } from "@constants/routes";
 import { getPathWithId } from "@helpers/getPathWithId";
 import { getImagePath, TYPE_IMG } from "@helpers/getImagePath";
 
-const UserCard = ({ user, onFollow, onUnfollow, owner }) => {
+const UserCard = ({ user, onFollow, onUnfollow, owner, loadingFollowId  }) => {
   const navigate = useNavigate();
 
   const userId = String(user?._id || user?.id || "");
   const ownerId = String(owner?._id || owner?.id || "");
+  const isLoading = loadingFollowId === userId;
 
   const followingIds = Array.isArray(owner?.following)
     ? owner.following.map(String)
@@ -54,9 +55,16 @@ const UserCard = ({ user, onFollow, onUnfollow, owner }) => {
           <div className={styles.count}>
             {`Own recipes: ${safeRecipes.length}`}
           </div>
-          <Button onClick={onButtonClick} variant="outline_secondary">
-            {buttonText}
-          </Button>
+          <Button
+  onClick={onButtonClick}
+  variant="outline_secondary"
+  disabled={isLoading}
+  aria-busy={isLoading}
+>
+  {isLoading ? (
+    <div className={styles.tinyLoader}></div>
+  ) : buttonText}
+</Button>
         </div>
       </div>
 
