@@ -97,7 +97,7 @@ export const useUpdateAvatar = () => {
     }
   };
 
-  return { onUpdateAvatar };
+  return onUpdateAvatar;
 };
 
 export const useUserProfile = () => {
