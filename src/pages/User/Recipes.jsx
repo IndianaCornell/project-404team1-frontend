@@ -1,11 +1,10 @@
-// src/pages/User/RecipesPage.jsx
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import ListItems from "@pages/User/ListItems/ListItems";
 import { TYPE_TABS, EMPTY_TEXT } from "@constants/common";
 import { recipeApi } from "@services/Api";
-import * as authSlice from "@redux/slices/authSlice.js";
 import { showNotification } from "@redux/slices/notificationsSlice";
+import * as authOperations from "@redux/slices/authOperations"; // импортируем операции
 
 const RecipesPage = () => {
   const dispatch = useDispatch();
@@ -47,7 +46,6 @@ const RecipesPage = () => {
 
   useEffect(() => {
     getRecipes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   useEffect(() => {
@@ -73,9 +71,7 @@ const RecipesPage = () => {
         };
       });
 
-      await dispatch(
-        authSlice.updateUserProfile({ key: "recipes", value: -1 })
-      );
+      await dispatch(authOperations.getUserProfile());
 
       dispatch(
         showNotification({

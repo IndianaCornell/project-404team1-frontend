@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import ListItems from "@/pages/User/ListItems/ListItems.jsx";
 import { TYPE_TABS, EMPTY_TEXT } from "@constants/common";
 import { recipeApi } from "@services/Api";
+import * as authOperations from "@redux/slices/authOperations";
 
 const FavoritesPage = () => {
+  const dispatch = useDispatch();
   const { id } = useParams();
   const [recipes, setRecipes] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +48,6 @@ const FavoritesPage = () => {
   useEffect(() => {
     if (!id) return;
     getRecipes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   useEffect(() => {
@@ -69,6 +71,8 @@ const FavoritesPage = () => {
           total: Math.max(0, (prev.total ?? filtered.length) - 1),
         };
       });
+
+      await dispatch(authOperations.getUserProfile());
 
     } catch (error) {
       console.log(error);

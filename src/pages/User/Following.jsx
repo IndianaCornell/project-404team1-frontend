@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import ListItems from '@/pages/User/ListItems/ListItems.jsx';
 import { TYPE_TABS, EMPTY_TEXT } from '@constants/common';
 import { userApi } from '@services/Api';
 import { useFollow, useOwner } from '@hooks/user';
 
 const FollowingPage = () => {
+  const { id } = useParams();
   const [users, setUsers] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const owner = useOwner();
@@ -18,7 +20,8 @@ const FollowingPage = () => {
 
   const getUsers = async () => {
     try {
-      const { data } = await userApi.getFollowing({
+      setIsLoading(true);
+      const { data } = await userApi.getFollowingByUser(id, {
         page,
         limit: itemsPerPage,
       });
@@ -31,8 +34,9 @@ const FollowingPage = () => {
   };
 
   useEffect(() => {
+    if (!id) return;
     getUsers();
-  }, [page]);
+  }, [id, page]);
 
   return (
     <ListItems

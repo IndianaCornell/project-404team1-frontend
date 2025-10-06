@@ -2,14 +2,31 @@ import styles from "./UserInfo.module.css";
 import UploadButton from "@/components/ui/UploadButton/UploadButton";
 import { getImagePath, TYPE_IMG } from "@helpers/getImagePath";
 
-const UserInfo = ({ isOwner, user, userImg, onUpdateAvatar }) => {
+const UserInfo = ({ isOwner, user, userImg, onUpdateAvatar, isLoading }) => {
+  if (isLoading || !user) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.avatar}>
+          <div className={styles.img}>
+            <div className={styles.loader}>Loading...</div>
+          </div>
+        </div>
+        <p className={styles.name}>Loading...</p>
+        <ul className={styles.list}>
+          <InfoItem title="Email" value="..." />
+          <InfoItem title="Added recipes" value="..." />
+          {isOwner && <InfoItem title="Favorites" value="..." />}
+          <InfoItem title="Followers" value="..." />
+          {isOwner && <InfoItem title="Following" value="..." />}
+        </ul>
+      </div>
+    );
+  }
+
   const name = user?.name || "No name";
   const email = user?.email || "No email";
-
-  const recipes = user?.recipes ?? 0;
-  const favorites =
-    user?.favoritesCount ??
-    (Array.isArray(user?.favorites) ? user.favorites.length : 0);
+  const recipes = user?.createdRecipesCount ?? 0;
+  const favorites = user?.favoritesCount ?? 0;
   const followers = user?.followersCount ?? 0;
   const following = user?.followingCount ?? 0;
 

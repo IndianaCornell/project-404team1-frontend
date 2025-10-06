@@ -28,7 +28,9 @@ const ListItems = ({
     );
   }
 
-  if (!data?.result?.length) {
+  const items = data?.result ?? data?.items ?? [];
+
+  if (!items.length) {
     return (
       <div className={styles.empty}>
         <p className={styles.empty_text}>{emptyText}</p>
@@ -39,7 +41,7 @@ const ListItems = ({
   return (
     <div className={styles.wrapper}>
       <ul className={styles.list}>
-        {data?.result?.map(item => {
+        {items.map(item => {
           const key = item.id || item._id;
 
           if (type === TYPE_TABS.RECIPE) {
