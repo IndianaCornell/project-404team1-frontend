@@ -1,17 +1,62 @@
-.wrap { padding: 24px 0; }
+
 .h1 { font-size: 28px; margin: 0 0 8px; }
 .lead { color:#666; margin: 0 0 20px; }
-.grid { display:grid; grid-template-columns: 320px 1fr; gap: 32px; }
-.card { border:1px solid #eee; border-radius:16px; padding:20px; }
+.grid {
+  display: grid;
+  grid-template-columns: 394px minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.card { 
+  border: 1px solid #eee; 
+  border-radius: 16px; 
+  padding: 40px 80px; 
+  align-self: start; 
+  gap: 20px;
+}
+
 .avatar { width:120px; height:120px; border-radius:50%; overflow:hidden; margin: 0 auto 12px; }
 .avatar img { width:100%; height:100%; object-fit:cover; }
 .name { text-align:center; font-weight:600; margin-bottom:8px; }
 .meta { color:#444; display:flex; flex-direction:column; gap:6px; margin: 8px 0 16px; & span { font-weight: bold; color: #000} }
 .list { min-width:0; }
 .tabsHeader { font-weight:700; margin-bottom:12px; }
-@media (max-width: 900px){
-  .grid{ grid-template-columns: 1fr; }
+
+@media (max-width: 1439.98px){
+  .grid { 
+    grid-template-columns: 1fr; 
+  }
+  .card {
+    width: min(100%, 394px); 
+    margin-inline: auto;
+  }
 }
+
+@media (min-width: 1440px) {
+  .wrap {
+    padding: 80px;
+  }
+}
+
+@media (min-width: 768px) {
+  .wrap {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .wrap {
+    padding: 16px;
+    gap: 16px;
+  }
+  .card {
+    width: min(100%, 343px); 
+    margin-inline: auto;
+    padding: 30px 54px;
+  }
+}
+
 .tabs {
   display: flex;
   gap: 18px;
